@@ -1,0 +1,9 @@
+open | https://www.fednetbank.com/corp/AuthenticationController?__START_TRAN_FLAG__=Y&FORMSGROUP_ID__=AuthenticationFG&__EVENT_ID__=LOAD&FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=1&BANK_ID=049&LANGUAGE_ID=001 | 
+click | id=AuthenticationFG.USER_PRINCIPAL | 
+type | id=AuthenticationFG.USER_PRINCIPAL | USER-NAME
+click | id=AuthenticationFG.ACCESS_CODE | 
+type | id=AuthenticationFG.ACCESS_CODE | PASSWORD
+click | id=VALIDATE_CREDENTIALS | 
+click | //div[@id='header-nav']/ul/li[5]/a/span/b | 
+click | id=HREF_Logout | 
+
