@@ -1,0 +1,45 @@
+open | https://www.online.citibank.co.in/products-services/online-services/internet-banking.htm | 
+click | link=LOGIN NOW | 
+selectWindow | win_ser_1 | 
+click | id=User_Id | 
+type | id=User_Id | USERNAME
+click | id=skImg | 
+click | id=password | 
+type | id=password | PWD
+click | //div[@id='main-wrapper']/div/div[2]/div[2]/div/div/div[2]/div[3]/div/a/div | 
+selectFrame | index=2 | 
+click | link=Credit Card | 
+selectFrame | relative=parent | 
+selectFrame | index=0 | 
+click | id=3 | 
+selectFrame | relative=parent | 
+selectFrame | index=2 | 
+click | link=View account summary | 
+selectFrame | relative=parent | 
+selectFrame | index=0 | 
+click | id=224 | 
+selectFrame | relative=parent | 
+selectFrame | index=2 | 
+click | link=View Account Summary | 
+selectFrame | relative=parent | 
+selectFrame | index=0 | 
+click | id=8 | 
+click | id=cboMenu | 
+select | id=cboMenu | label=Take me directly to...
+click | id=cboMenu | 
+selectFrame | relative=parent | 
+selectFrame | index=2 | 
+click | link=Insurance | 
+click | link=View Account Summary | 
+selectFrame | relative=parent | 
+selectFrame | index=3 | 
+click | id=im012 | 
+click | //div[@id='box02']/table/tbody/tr[2]/td/a/font | 
+select | id=select2 | label=PDF file
+click | id=select2 | 
+select | id=select2 | label=CSV file
+select | id=select2 | label=XLS file
+selectFrame | relative=parent | 
+selectFrame | index=0 | 
+click | link=Sign out | 
+
