@@ -1,0 +1,29 @@
+open | https://netbanking.canarabank.in/entry/ENULogin.jsp? | 
+click | id=fldLoginUserId | 
+type | id=fldLoginUserId | USERNAME
+click | id=fldPassword | 
+type | id=fldPassword | PWD
+click | id=fldcaptcha | 
+type | id=fldcaptcha | 2W72L
+click | //input[@value='SIGN IN'] | 
+selectWindow | win_ser_1 | 
+selectWindow | win_ser_local | 
+close | win_ser_local | 
+selectWindow | win_ser_1 | 
+selectFrame | index=1 | 
+click | id=grpspan_A_A07 | 
+click | id=RRASMlink | 
+selectFrame | relative=parent | 
+selectFrame | index=4 | 
+click | //table[@id='graphtable']/tbody/tr[3]/td/div[2] | 
+click | xpath=(//a[contains(text(),'Account Statement')])[2] |  
+select | id=fldsearchformat | label=PDF Format
+click | id=fldsearchformat | 
+selectFrame | relative=parent | 
+selectFrame | index=0 | 
+click | link=Invest & Insure | 
+click | link=Logout | 
+selectFrame | relative=parent | 
+click | name=fldSubmit | 
+close | win_ser_1 | 
+
