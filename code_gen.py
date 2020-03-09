@@ -20,6 +20,7 @@ temp = open("/home/anjaligeorgep/Desktop/perfios/templates/mytemplate.py", "w") 
 temp.write("from selenium import webdriver\n")
 temp.write("from bs4 import BeautifulSoup\n")
 temp.write("import os\n")
+temp.write("import time\n")
 temp.write("from selenium.webdriver.chrome.options import Options\n")
 
 temp.write("options = Options()\n")
@@ -34,39 +35,51 @@ def save_html(x):
     temp.write("file_nm=open('/home/anjaligeorgep/Desktop/perfios/html_files/file{}.html', 'w')\n".format(x))
     temp.write("file_nm.write(a)\n")
 
-
 for a, b, c in zip(command, target, val):
     if a == "open":
         temp.write("driver.get('{}')\n".format(b))
+        temp.write("parent = driver.current_window_handle\n")
 
     if a == "click" and b.startswith("//"):
         temp.write("driver.find_element_by_xpath(\"{}\").click()\n".format(b))
-        save_html(x)
-        x = x + 1
 
     if a == "click" and b.startswith("link"):
-        temp.write("driver.find_element_by_link_text('{}').click()\n".format(b[5:-3]))
-        save_html(x)
-        x = x + 1
+        temp.write("driver.find_element_by_link_text(\"{}\").click()\n".format(b[5:]))
 
     if a == "click" and b.startswith("id"):
         temp.write("driver.find_element_by_id(\"{}\").click()\n".format(b[3:]))
-        save_html(x)
-        x = x + 1
 
     if a == "click" and b.startswith("name"):
         temp.write("driver.find_element_by_name(\"{}\").click()\n".format(b[5:]))
-        save_html(x)
-        x = x + 1
 
     if a == "type" and b.startswith("id"):
         temp.write("driver.find_element_by_id('%s').send_keys('%s')\n" % (b[3:], c[:-1]))
 
-    if a == "select" and b.startswith("id") and c.startswith("label"):  # dropdown
-        temp.write("Select(driver.find_element_by_id(\"{}\").select_by_visible_text(\"{}\")\n".format(b[3:]), c[6:])
-        save_html(x)
-        x = x + 1
+    if a == "select" and b.startswith("id") and c.startswith("label"):
+        temp.write("Select(driver.find_element_by_id(\"{}\")).select_by_visible_text(\"{}\")\n".format(b[3:], c[6:-1]))
 
-    if a == "assertAlert":  # alert box
-        temp.write("a=driver.switch_to.alert\na.accept()\n")
+
+
+    if a == "selectWindow" and b.startswith("win_ser_1"):
+        temp.write("child=driver.window_handles[1]\n")
+        temp.write("driver.switch_to.window(child)\n")
+
+    if a == "selectWindow" and b.startswith("win_ser_local"):
+        temp.write("driver.switch_to.window(parent)\n")
+
+    if a == "selectFrame" and b.startswith("index"):
+        index=b[-1:]
+        temp.write("index={}\n".format(b[-1:]))
+        temp.write("time.sleep(5)")
+        temp.write("driver.switch_to.frame({})\n".format(index))
+
+    if a == "selectFrame" and b.startswith("relative=parent"):
+        temp.write("driver.switch_to.default_content()\n")
+
+    if a == "close" and b.startswith("win_ser_1"):
+        temp.write("driver.close()\n")
+
+
+
+
 
