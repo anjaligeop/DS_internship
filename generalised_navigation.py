@@ -18,11 +18,11 @@ def login(bankname):
         child = driver.window_handles[1]
         driver.switch_to.window(child)
     eval(dfr.findElement(cfg.login_id[bankname]["userid"])).click()
-    eval(dfr.findElement(cfg.login_id[bankname]["userid"])).send_keys('username') 
+    eval(dfr.findElement(cfg.login_id[bankname]["userid"])).send_keys('username')
     if bankname.upper() == "CITI":
         eval(dfr.findElement(cfg.login_id[bankname]["keyboardid"])).click()
     eval(dfr.findElement(cfg.login_id[bankname]["pwid"])).click()
-    eval(dfr.findElement(cfg.login_id[bankname]["pwid"])).send_keys('pwd') 
+    eval(dfr.findElement(cfg.login_id[bankname]["pwid"])).send_keys('pwd')
     if bankname.upper()=="CANARA":
         eval(dfr.findElement(cfg.login_id[bankname]["captchaid"])).click()
         a = input("captcha?")
@@ -88,7 +88,17 @@ def navigate_transaction(bankname):
         #click on download in req format
 
 if __name__=="__main__":
-    bnm="federal"
-    login(bnm)
-    navigate_transaction(bnm)
-    logout(bnm)
+    try:
+        bnm="federal"
+        login(bnm)
+        navigate_transaction(bnm)
+        logout(bnm)
+
+    except Exception as e:
+        print("**ERROR**")
+        print(e.__doc__)
+    
+
+
+
+
