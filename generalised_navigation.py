@@ -13,7 +13,7 @@ def download_html(bankname,driver):
     file_nm.write(a)
 
 
-class Driver_ini:
+class Driver_ini():
     def get_driver(self):
         driver_path = cfg.webdriver_path["chrome"]
         self.driver = eval(driver_path)
