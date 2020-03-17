@@ -29,11 +29,11 @@ class Login(Driver_ini):
             child = driver.window_handles[1]
             driver.switch_to.window(child)
         eval(dfr.findElement(cfg.login_id[bankname]["userid"])).click()
-        eval(dfr.findElement(cfg.login_id[bankname]["userid"])).send_keys("71204880") #user name to be entered
+        eval(dfr.findElement(cfg.login_id[bankname]["userid"])).send_keys("uname") #user name to be entered
         if bankname.upper() == "CITI":
             eval(dfr.findElement(cfg.login_id[bankname]["keyboardid"])).click()
         eval(dfr.findElement(cfg.login_id[bankname]["pwid"])).click()
-        eval(dfr.findElement(cfg.login_id[bankname]["pwid"])).send_keys("Mybd060195") #password to be entered
+        eval(dfr.findElement(cfg.login_id[bankname]["pwid"])).send_keys("pwd") #password to be entered
         if bankname.upper()=="CANARA":
             eval(dfr.findElement(cfg.login_id[bankname]["captchaid"])).click()
             a = input("captcha?")
