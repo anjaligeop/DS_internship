@@ -14,29 +14,26 @@ def download_html(bankname,driver):
 
 
 class Driver_ini():
-    def get_driver(self):
         driver_path = cfg.webdriver_path["chrome"]
-        self.driver = eval(driver_path)
-        return self.driver
+        driver = eval(driver_path)
 
-
-
-class Navigate():
+class Login(Driver_ini):
     def __init__(self,bankname):
         self.bankname = bankname
 
-    def login(self,bankname,driver):
+    def login(self,bankname):
+        driver = Driver_ini.driver
         driver.get(cfg.bank_url[bankname])
         if bankname.upper() == "CITI":
             eval(dfr.findElement(cfg.login_id[bankname]["loginbtn"])).click()
             child = driver.window_handles[1]
             driver.switch_to.window(child)
         eval(dfr.findElement(cfg.login_id[bankname]["userid"])).click()
-        eval(dfr.findElement(cfg.login_id[bankname]["userid"])).send_keys('username') #user name to be entered
+        eval(dfr.findElement(cfg.login_id[bankname]["userid"])).send_keys("71204880") #user name to be entered
         if bankname.upper() == "CITI":
             eval(dfr.findElement(cfg.login_id[bankname]["keyboardid"])).click()
         eval(dfr.findElement(cfg.login_id[bankname]["pwid"])).click()
-        eval(dfr.findElement(cfg.login_id[bankname]["pwid"])).send_keys("pwd") #password to be entered
+        eval(dfr.findElement(cfg.login_id[bankname]["pwid"])).send_keys("Mybd060195") #password to be entered
         if bankname.upper()=="CANARA":
             eval(dfr.findElement(cfg.login_id[bankname]["captchaid"])).click()
             a = input("captcha?")
@@ -46,7 +43,13 @@ class Navigate():
             child = driver.window_handles[1]
             driver.switch_to.window(child)
 
-    def logout(self,bankname,driver):
+
+class Logout(Driver_ini):
+    def __init__(self,bankname):
+        self.bankname = bankname
+
+    def logout(self,bankname):
+        driver = Driver_ini.driver
         if bankname.upper()=="FEDERAL":
             eval(dfr.findElement(cfg.logout_id[bankname]["logoutnav"])).click()
             eval(dfr.findElement(cfg.logout_id[bankname]["logoutbtn"])).click()
@@ -62,7 +65,12 @@ class Navigate():
             driver.switch_to.default_content()
             driver.close()
 
-    def navigate_transaction(self,bankname,driver):
+class Navigate(Driver_ini):
+    def __init__(self,bankname):
+        self.bankname = bankname
+
+    def navigate_transaction(self,bankname):
+        driver = Driver_ini.driver
         if bankname.upper()=="FEDERAL":
             eval(dfr.findElement(cfg.navigate_id[bankname]["click0"])).click()
             eval(dfr.findElement(cfg.navigate_id[bankname]["click1"])).click()
@@ -100,23 +108,16 @@ class Navigate():
 
 if __name__=="__main__":
     try:
-        bnm = "federal"     #input("enter bankname")
-        dr = Driver_ini()
-        driver = dr.get_driver()
+        bnm = "canara"  # input("enter bankname")
+        lin = Login(bnm)
+        nav = Navigate(bnm)
+        lout = Logout(bnm)
 
-        n = Navigate(bnm)
-        n.login(bnm, driver)
-        n.navigate_transaction(bnm, driver)
-        n.logout(bnm, driver)
-
-
-
-
+        lin.login(bnm)
+        nav.navigate_transaction(bnm)
+        lout.logout(bnm)
 
     except Exception as e:
         print("**ERROR**")
         print(e.__doc__)
-
-
-
 
