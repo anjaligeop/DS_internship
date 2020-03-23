@@ -1,0 +1,108 @@
+
+                                                                                                                                                        02/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To jaganpradeep@ybl,REF NO - XXXXXXXX6587, Payment from PhonePe,1002.00,,34657.26
+
+                                                                                                                                                        02/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To XXXXXX4983@ybl,REF NO - 006144066975, Payment from PhonePe,387.00,,34270.26
+
+                                                                                                                                                        02/03/2020
+                                                                                                                                                ,IMPS INWARD ORG                                                                                                         UPI From praveen.srini951@okicici,REF NO - 006111341626, UPI,,3394.00,37664.26
+
+                                                                                                                                                        02/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To BHARATPE.XXXXXX6407@icici,REF NO - 006149763316, Verified Merchant,140.00,,37524.26
+
+                                                                                                                                                        02/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To XXXXXXXXX8455@cnrb0001285.ifsc.npci,REF NO - 006113237565, UPI,10000.00,,27524.260000000002
+
+                                                                                                                                                        02/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To cred@axisb,REF NO - XXXXXXXX6711, credit card bill payment on CRED,20204.11,,7320.1500000000015
+
+                                                                                                                                                        02/03/2020
+                                                                                                                                                ,IMPS INWARD ORG                                                                                                         UPI From goog -payment@okaxis,REF NO - 006114867589, Rewarded for paying with Google Pay,,10.00,7330.1500000000015
+
+                                                                                                                                                        02/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To add -money@paytm,REF NO - XXXXXXXX4219, Oid10451461811@PaytmAddMoney,12.12,,7318.030000000002
+
+                                                                                                                                                        02/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To QXXXX6108@ybl,REF NO - 006272911327, On tapping Pay youll be paying this amount through,500.00,,6818.030000000002
+
+                                                                                                                                                        03/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To BHARATPE.XXXXXX6407@icici,REF NO - 006374477168, Verified Merchant,74.00,,6744.030000000002
+
+                                                                                                                                                        03/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To QXXXX0378@ybl,REF NO - 006308435713, On tapping Pay youll be paying this amount through,50.00,,6694.030000000002
+
+                                                                                                                                                        04/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To QXXXX4901@ybl,REF NO - 006400495316, On tapping Pay youll be paying this amount through,20.00,,6674.030000000002
+
+                                                                                                                                                        04/03/2020
+                                                                                                                                                ,IMPS OUTWARD REV                                            UPI To QXXXX4901@ybl,REF NO - 006400495316,,,20.00,6694.030000000002
+
+                                                                                                                                                        04/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To QXXXX4901@ybl,REF NO - 006400117457, On tapping Pay youll be paying this amount through,20.00,,6674.030000000002
+
+                                                                                                                                                        04/03/2020
+                                                                                                                                                ,IMPS OUTWARD REV                                            UPI To QXXXX4901@ybl,REF NO - 006400117457,,,20.00,6694.030000000002
+
+                                                                                                                                                        04/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To QXXXX4901@ybl,REF NO - 006488440868, NA,20.00,,6674.030000000002
+
+                                                                                                                                                        04/03/2020
+                                                                                                                                                ,IMPS OUTWARD REV                                            UPI To QXXXX4901@ybl,REF NO - 006488440868,,,20.00,6694.030000000002
+
+                                                                                                                                                        04/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To paytm -XXXX1475@paytm,REF NO - 006488442475, Oid202003040031160022@Mustafastall,20.00,,6674.030000000002
+
+                                                                                                                                                        04/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To BHARATPE.XXXXXX6407@icici,REF NO - 006421581689, On tapping Pay youll be paying this amount through,30.00,,6644.030000000002
+
+                                                                                                                                                        05/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To paytm -XXXX6053@paytm,REF NO - 006512195611, Oid202003051738550039@Bakery,45.00,,6599.030000000002
+
+                                                                                                                                                        05/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To BHARATPE.XXXXXX6010@icici,REF NO - 006516513452, Verified Merchant,335.00,,6264.030000000002
+
+                                                                                                                                                        06/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To BHARATPE.XXXXXX6407@icici,REF NO - 006631874723, Verified Merchant,93.00,,6171.030000000002
+
+                                                                                                                                                        07/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To add -money@paytm,REF NO - XXXXXXXX0549, Oid10492255619@PaytmAddMoney,40.00,,6131.030000000002
+
+                                                                                                                                                        07/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To BHARATPE.XXXXXX6407@icici,REF NO - 006746510864, Verified Merchant,53.00,,6078.030000000002
+
+                                                                                                                                                        09/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To XXXXXX2230@ybl,REF NO - 006932006045, Payment from PhonePe,70.00,,6008.030000000002
+
+                                                                                                                                                        09/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To XXXXXX8974@paytm,REF NO - 006966858193, NA,250.00,,5758.030000000002
+
+                                                                                                                                                        09/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To QXXXX2837@ybl,REF NO - 006917708093, On tapping Pay youll be paying this amount through,85.00,,5673.030000000002
+
+                                                                                                                                                        10/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To paytm -XXXX7022@paytm,REF NO - 006974045906, Oid202003092240230043@SriSaravanaBhavan,76.00,,5597.030000000002
+
+                                                                                                                                                        10/03/2020
+                                                                                                                                                ,IMPS INWARD ORG                                                                                                         UPI From praveen.srini951@okicici,REF NO - 006923058660, UPI,,2000.00,7597.030000000002
+
+                                                                                                                                                        10/03/2020
+                                                                                                                                                ,ATM CASH WITHDRAWAL                                         Card No.: 5497XXX0XXXX9807 of DHINESH KUMARAN M      09MAR20 Ref: 006908182870 MARUTHI NAGARBANGALORE    KAIN,4000.00,,3597.0300000000016
+
+                                                                                                                                                        10/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To paytm -XXXX7022@paytm,REF NO - 007085340072, Oid202003102235220024@SriSaravanaBhavan,76.00,,3521.0300000000016
+
+                                                                                                                                                        11/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To QXXXX7907@ybl,REF NO - 007085510248, NA,22.00,,3499.0300000000016
+
+                                                                                                                                                        11/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To paytmqrXXXXXXXX0101neb6dzrozotx@paytm,REF NO - 007164435734, On tapping Pay youll be paying this amount through,40.00,,3459.0300000000016
+
+                                                                                                                                                        12/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To paytm -XXXX6397@paytm,REF NO - 007198756645, Oid202003112305180048@VARIETYTEAPOINT,24.00,,3435.0300000000016
+
+                                                                                                                                                        13/03/2020
+                                                                                                                                                ,PURCHASE                                                    SUBJECT: MCUPOS 11MAR0000                                   Card no.: 5497XXX0XXXX9807 11MAR20 223451 GOOGLE *YouTube Music\1600 Amp Ref: 007138386943,99.00,,3336.0300000000016
+
+                                                                                                                                                        16/03/2020
+                                                                                                                                                ,IMPS OUTWARD ORG                                            UPI To XXXXXX7984@ybl,REF NO - 007638912287, Payment from PhonePe,340.00,,2996.0300000000016

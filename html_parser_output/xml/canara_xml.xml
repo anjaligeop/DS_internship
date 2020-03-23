@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+<transaction>
+	<date>02-03-2020 02:03:48</date>
+	<description>SLABWISE NMMB CHARGES</description>
+	<withdraw>53.00</withdraw>
+	<deposit></deposit>
+	<balance>505.00</balance>
+</transaction>
+<transaction>
+	<date>05-02-2020 03:11:02</date>
+	<description>DEBIT CARD ANNUAL CHARGES Due Dt :20/12/2019</description>
+	<withdraw>142.00</withdraw>
+	<deposit></deposit>
+	<balance>558.00</balance>
+</transaction>
+<transaction>
+	<date>04-02-2020 11:29:14</date>
+	<description>UPI/003511676535/AXIa8c2baf2ab3e4adb9f78db7b49ad4c89/04/02/2020 11:29:14/dhineshmohan07-1@okaxis/1222101103944@cnrb00012</description>
+	<withdraw></withdraw>
+	<deposit>700.00</deposit>
+	<balance>700.00</balance>
+</transaction>
+</root>
