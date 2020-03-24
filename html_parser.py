@@ -10,7 +10,7 @@ def fed_html(format):
     tr_amt = soup.find_all(title="Amount")
     tr_type=soup.find_all(title="Amount Type")
     tr_balance = soup.find_all(title="Balance Amount")
-    c_num=[]
+
     x=[]
     y=[]
     z=[]
@@ -36,20 +36,27 @@ def fed_html(format):
 
 
     if format.upper()=="JSON":
+        num=len(tr_dt)
+        ind=1
         temp = open("/home/anjaligeorgep/Desktop/federal_json.json", "w")  # store in json format
-        temp.write("{\n")
+        temp.write("[\n")
         for a, b, c, d, e in zip(tr_dt,y,z,amt,bal):
-            temp.write("{{date : {},\n".format(a))
-            temp.write("cheque_num : \\N,\n")
-            temp.write("description : {},\n".format(b))
+            ind=ind+1
+            temp.write('{{"date" : "{}",\n'.format(a))
+            temp.write('"cheque_num" :"",\n')
+            temp.write('"description" : "{}",\n'.format(b))
             if c.upper() == "DR.":
-                temp.write("withdraw : {},\n".format(d))
-                temp.write("deposit : ,\n")
+                temp.write('"withdraw" : "{}",\n'.format(d))
+                temp.write('"deposit" : "",\n')
             else:
-                temp.write("deposit : {},\n".format(d))
-                temp.write("withdraw : ,\n")
-            temp.write("balance : {}}},\n".format(e))
-        temp.write("}")
+                temp.write('"deposit" : "{}",\n'.format(d))
+                temp.write('"withdraw" : "" ,\n')
+            if ind==num:
+                temp.write('"balance" : "{}"}}\n'.format(e))
+            else:
+                temp.write('"balance" : "{}"}},\n'.format(e))
+
+        temp.write("]")
 
     if format.upper()=="CSV":
         temp = open("/home/anjaligeorgep/Desktop/federal_csv", "w")  # store in csv format
@@ -118,6 +125,7 @@ def citi_html(format):
         tr_date.append(val[2]+"-"+val[1]+"-"+val[0])
 
     for dcr in tr_part:
+        dcr=dcr.replace('\\',' ')
         tr_particulars.append(re.sub(' +', ' ', dcr))
 
 
@@ -130,16 +138,24 @@ def citi_html(format):
             bal = bal - float(i)
 
     if format.upper() == "JSON":
+        ind = 0
+        num = len(tr_date)
         temp = open("/home/anjaligeorgep/Desktop/citi_json.json", "w")  # store in json format
-        temp.write("{\n")
+
+        temp.write("[\n")
         for a, b, c, d, e in zip(tr_date, tr_particulars,tr_withdraw,tr_deposit, tr_balance):
-            temp.write("{{date : {},\n".format(a))
-            temp.write("cheque_num : \\N,\n")
-            temp.write("description : {},\n".format(b))
-            temp.write("withdraw: {},\n".format(c))
-            temp.write("deposit : {},\n".format(d))
-            temp.write("balance : {}}},\n".format(e))
-        temp.write("}")
+            ind=ind+1
+            temp.write('{{"date" : "{}",\n'.format(a))
+            temp.write('"cheque_num" :"",\n')
+            temp.write('"description" : "{}",\n'.format(b))
+            temp.write('"withdraw": "{}",\n'.format(c))
+            temp.write('"deposit" : "{}",\n'.format(d))
+
+            if ind == num:
+                temp.write('"balance" : "{}"}}\n'.format(e))
+            else:
+                temp.write('"balance" : "{}"}},\n'.format(e))
+        temp.write("]")
 
     if format.upper()=="CSV":
         temp = open("/home/anjaligeorgep/Desktop/citi_csv", "w")  # store in csv format
@@ -187,19 +203,27 @@ def canara_html(format):
         tr_date.append(val[2]+"-"+val[1]+"-"+val[0])
 
     if format.upper() == "JSON":
+        ind = 0
+        num = len(tr_date)
         temp = open("/home/anjaligeorgep/Desktop/canara_json.json", "w")  # store in json format
-        temp.write("{\n")
+        temp.write("[\n")
+
+        print(num)
         for a,cnum, b, c, d, e in zip(tr_date, ch_n,tr_particulars, tr_withdraw, tr_deposit, tr_balance):
-            temp.write("{{date : {},\n".format(a))
+            ind=ind+1
+            temp.write('{{"date" : "{}",\n'.format(a))
             if len(cnum)!=0:
-                temp.write("cheque_num : {},\n".format(cnum))
+                temp.write('"cheque_num" : "{}",\n'.format(cnum))
             else:
-                temp.write("cheque_num : \\N,\n")
-            temp.write("description : {},\n".format(b))
-            temp.write("withdraw: {},\n".format(c))
-            temp.write("deposit : {},\n".format(d))
-            temp.write("balance : {}}},\n".format(e))
-        temp.write("}")
+                temp.write('"cheque_num" :"",\n')
+            temp.write('"description" : "{}",\n'.format(b))
+            temp.write('"withdraw": "{}",\n'.format(c))
+            temp.write('"deposit" : "{}",\n'.format(d))
+            if ind == num:
+                temp.write('"balance" : "{}"}}\n'.format(e))
+            else:
+                temp.write('"balance" : "{}"}},\n'.format(e))
+        temp.write("]")
 
     if format.upper()=="CSV":
         temp = open("/home/anjaligeorgep/Desktop/canara_csv", "w")  # store in csv format
