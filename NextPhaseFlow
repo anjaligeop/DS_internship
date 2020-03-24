@@ -1,0 +1,14 @@
+Main script --> Initialise driver, has all the params..
+            --> Calls navigator login class
+            --> Call page validator
+            --> Calls navigator Account summary class ---> Returns objs of account details
+            --> Parse the accounts 
+                ---> Fetch summary
+                ---> Calls navigator for Transaction class
+                ---> Respective parser and fetch the transactions ---> Store trans in the same obj of summary
+                ---> Repeat the same for next account
+            --> Print the data in the required format
+            --> Call logout class of navigator
+
+For Error
+    -> Page validator after each and every navigation or new page
