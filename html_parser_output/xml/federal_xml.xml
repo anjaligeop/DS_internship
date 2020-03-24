@@ -1,66 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
 <transaction>
-	<date>18-02-2020</date>
+	<date>2020-02-18</date>
+	<cheque_num>\N</cheque_num>
 	<description>UPIOUT/004918513387/lekhanag.3003@okhdfcbank/Momo</description>
 	<deposit>70.00</deposit>
 	<withdraw></withdraw>
-	<balance>5,240.26</balance>
+	<balance>5240.26</balance>
 </transaction>
 <transaction>
-	<date>20-02-2020</date>
+	<date>2020-02-20</date>
+	<cheque_num>\N</cheque_num>
 	<description>UPIOUT/005113555032/swiggyupi@axisbank/Swiggy Ord</description>
 	<withdraw>149.00</withdraw>
 	<deposit></deposit>
-	<balance>5,091.26</balance>
+	<balance>5091.26</balance>
 </transaction>
 <transaction>
-	<date>22-02-2020</date>
+	<date>2020-02-22</date>
+	<cheque_num>\N</cheque_num>
 	<description>UPIOUT/005314034413/kruthi.ym@okicici/UPI</description>
 	<withdraw>21.00</withdraw>
 	<deposit></deposit>
-	<balance>5,070.26</balance>
+	<balance>5070.26</balance>
 </transaction>
 <transaction>
-	<date>22-02-2020</date>
+	<date>2020-02-22</date>
+	<cheque_num>\N</cheque_num>
 	<description>UPIOUT/005314043194/anouksha1998@oksbi/Lunch</description>
 	<withdraw>240.00</withdraw>
 	<deposit></deposit>
-	<balance>4,830.26</balance>
+	<balance>4830.26</balance>
 </transaction>
 <transaction>
-	<date>22-02-2020</date>
+	<date>2020-02-22</date>
+	<cheque_num>\N</cheque_num>
 	<description>UPIOUT/005314047681/anouksha1998@oksbi/UPI</description>
 	<withdraw>280.00</withdraw>
 	<deposit></deposit>
-	<balance>4,550.26</balance>
+	<balance>4550.26</balance>
 </transaction>
 <transaction>
-	<date>28-02-2020</date>
+	<date>2020-02-28</date>
+	<cheque_num>\N</cheque_num>
 	<description>UPIOUT/005915893752/anouksha1998@oksbi/Ice cream</description>
 	<withdraw>138.00</withdraw>
 	<deposit></deposit>
-	<balance>4,412.26</balance>
+	<balance>4412.26</balance>
 </transaction>
 <transaction>
-	<date>28-02-2020</date>
+	<date>2020-02-28</date>
+	<cheque_num>\N</cheque_num>
 	<description>UPIOUT/005915936281/kruthi.ym@okicici/Auto</description>
 	<withdraw>24.00</withdraw>
 	<deposit></deposit>
-	<balance>4,388.26</balance>
+	<balance>4388.26</balance>
 </transaction>
 <transaction>
-	<date>29-02-2020</date>
+	<date>2020-02-29</date>
+	<cheque_num>\N</cheque_num>
 	<description>NFT/PERFIOS/CITIN20033188771/CITI</description>
-	<withdraw>14,431.00</withdraw>
+	<withdraw>14431.00</withdraw>
 	<deposit></deposit>
-	<balance>18,819.26</balance>
+	<balance>18819.26</balance>
 </transaction>
 <transaction>
-	<date>01-03-2020</date>
+	<date>2020-03-01</date>
+	<cheque_num>\N</cheque_num>
 	<description>SBINT:01-12-2019 to 29-02-2020[21990100004024]</description>
 	<deposit>24.00</deposit>
 	<withdraw></withdraw>
-	<balance>18,843.26</balance>
+	<balance>18843.26</balance>
 </transaction>
 </root>
