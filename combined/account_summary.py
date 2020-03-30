@@ -18,10 +18,12 @@ def acc_fed():
 
     fp = open("/home/anjaligeorgep/Desktop/account_summary_federal.txt", "w")
     fp.write("[\n")
+
     for x,y in zip(acc_num,amt):
         fp.write('{{"accountNumber" : "{}",\n'.format(x))
         fp.write('"balance" : "{}"}},\n'.format(y))
     fp.write("]")
+    return acc_num
 
 def acc_citi():
     acc_num=[]
@@ -36,8 +38,8 @@ def acc_citi():
     for x in bal:
         amt.append(x.text.replace('Balance','').strip().replace(',',''))
     amt=amt[:-1]
-
     acc_num=acc_num[:-1]
+    print(acc_num)
     am=[]
     for x in amt:
         if x:
@@ -49,6 +51,7 @@ def acc_citi():
         fp.write('{{"accountNumber" : "{}",\n'.format(x[-12:]))
         fp.write('"balance" : "{}"}},\n'.format(y))
     fp.write("]")
+    return acc_num
 
 
 
@@ -72,6 +75,7 @@ def acc_canara():
         fp.write('{{"accountNumber" : "{}",\n'.format(x))
         fp.write('"balance" : "{}"}},\n'.format(y))
     fp.write("]")
+    return acc_num
 
 
-acc_citi()
+
