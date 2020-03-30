@@ -1,6 +1,6 @@
 [
-{"account number" : "Ready Credit a/c no.  0-4XX6XX-X18",
+{"accountNumber" : "0-4XX6XX-X18",
 "balance" : "-12.42"},
-{"account number" : "Savings a/c	no.  5-4XX8XX-X15",
+{"accountNumber" : "5-4XX8XX-X15",
 "balance" : "2296.03"},
 ]
