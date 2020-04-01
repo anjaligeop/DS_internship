@@ -41,7 +41,7 @@ def fed_html(format):
         for a, b, c, d, e in zip(tr_dt,y,z,amt,bal):
             ind=ind+1
             temp.write('{{"date" : "{}",\n'.format(a))
-            temp.write('"cheque_num" :"",\n')
+            temp.write('"chequeNum" :"",\n')
             temp.write('"description" : "{}",\n'.format(b))
             if c.upper() == "DR.":
                 temp.write('"withdraw" : "{}",\n'.format(d))
@@ -68,7 +68,7 @@ def fed_html(format):
         for a, b, c, d, e in zip(tr_dt, y, z, amt, bal):
             temp.write("<transaction>\n")
             temp.write("\t<date>{}</date>\n".format(a))
-            temp.write("\t<cheque_num>\\N</cheque_num>\n")
+            temp.write("\t<chequeNum>\\N</cheque_num>\n")
             temp.write("\t<description>{}</description>\n".format(b))
             if c.upper() == "DR.":
                 temp.write("\t<withdraw>{}</withdraw>\n".format(d))
@@ -144,7 +144,7 @@ def citi_html(format):
         for a, b, c, d, e in zip(tr_date, tr_particulars,tr_withdraw,tr_deposit, tr_balance):
             ind=ind+1
             temp.write('{{"date" : "{}",\n'.format(a))
-            temp.write('"cheque_num" :"",\n')
+            temp.write('"chequeNum" :"",\n')
             temp.write('"description" : "{}",\n'.format(b))
             temp.write('"withdraw": "{}",\n'.format(c))
             temp.write('"deposit" : "{}",\n'.format(d))
@@ -167,7 +167,7 @@ def citi_html(format):
         temp.write("<root>\n")
         for a, b, c, d, e in zip(tr_date, tr_particulars, tr_withdraw, tr_deposit, tr_balance):
             temp.write("\t<date>{}</date>\n".format(a))
-            temp.write("\t<cheque_num>\\N</cheque_num>\n")
+            temp.write("\t<chequeNum>\\N</cheque_num>\n")
             temp.write("\t<description>{}</description>\n".format(b.strip()))
             temp.write("\t<withdraw>{}</withdraw>\n".format(c))
             temp.write("\t<deposit>{}</deposit>\n".format(d))
@@ -211,9 +211,9 @@ def canara_html(format):
             ind=ind+1
             temp.write('{{"date" : "{}",\n'.format(a))
             if len(cnum)!=0:
-                temp.write('"cheque_num" : "{}",\n'.format(cnum))
+                temp.write('"chequeNum" : "{}",\n'.format(cnum))
             else:
-                temp.write('"cheque_num" :"",\n')
+                temp.write('"chequeNum" :"",\n')
             temp.write('"description" : "{}",\n'.format(b))
             temp.write('"withdraw": "{}",\n'.format(c))
             temp.write('"deposit" : "{}",\n'.format(d))
@@ -240,9 +240,9 @@ def canara_html(format):
             temp.write("<transaction>\n")
             temp.write("\t<date>{}</date>\n".format(a))
             if len(cnum) != 0:
-                temp.write("\t<cheque_num>{}</cheque_num>\n".format(cnum))
+                temp.write("\t<chequeNum>{}</cheque_num>\n".format(cnum))
             else:
-                temp.write("\t<cheque_num>\\N</cheque_num>\n")
+                temp.write("\t<chequeNum>\\N</cheque_num>\n")
             temp.write("\t<description>{}</description>\n".format(b))
             temp.write("\t<withdraw>{}</withdraw>\n".format(c))
             temp.write("\t<deposit>{}</deposit>\n".format(d))
