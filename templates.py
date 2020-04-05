@@ -1,4 +1,4 @@
-dump_file = open("/home/anjaligeorgep/Desktop/perfios/templates/katalon_dump.txt", "r")
+dump_file = open("/home/anjaligeorgep/Desktop/sample.txt", "r")
 # store the contents of katalon dump in the form of 3 lists for iteration of each line
 command = []
 target = []
@@ -15,14 +15,14 @@ for z in iter1:
         else:
             val.append("0")
 
-temp = open("/home/anjaligeorgep/Desktop/perfios/templates/mytemplate.py", "w")  # open file to write selenium code
+temp = open("/home/anjaligeorgep/Desktop/NAVIGATION.py", "w")  # open file to write selenium code
 
 temp.write("from selenium import webdriver\n")
 temp.write("from bs4 import BeautifulSoup\n")
 temp.write("import os\n")
 temp.write("import time\n")
 temp.write("from selenium.webdriver.chrome.options import Options\n")
-
+temp.write("from selenium.webdriver.support.ui import Select\n")
 temp.write("options = Options()\n")
 temp.write("options.add_argument(\"--headless\")\n")
 temp.write('driver = webdriver.Chrome(executable_path="/home/anjaligeorgep/Desktop/perfios/chromedriver")\n')
@@ -55,6 +55,8 @@ for a, b, c in zip(command, target, val):
     if a == "type" and b.startswith("id"):
         temp.write("driver.find_element_by_id('%s').send_keys('%s')\n" % (b[3:], c[:-1]))
 
+    if a == "type" and b.startswith("//"):
+        temp.write("driver.find_element_by_xpath('%s').send_keys('%s')\n" % (b,c[:-1]))
     if a == "select" and b.startswith("id") and c.startswith("label"):
         temp.write("Select(driver.find_element_by_id(\"{}\")).select_by_visible_text(\"{}\")\n".format(b[3:], c[6:-1]))
 
@@ -70,7 +72,7 @@ for a, b, c in zip(command, target, val):
     if a == "selectFrame" and b.startswith("index"):
         index=b[-1:]
         temp.write("index={}\n".format(b[-1:]))
-        temp.write("time.sleep(5)")
+        temp.write("time.sleep(5)\n")
         temp.write("driver.switch_to.frame({})\n".format(index))
 
     if a == "selectFrame" and b.startswith("relative=parent"):
@@ -78,7 +80,6 @@ for a, b, c in zip(command, target, val):
 
     if a == "close" and b.startswith("win_ser_1"):
         temp.write("driver.close()\n")
-
 
 
 
