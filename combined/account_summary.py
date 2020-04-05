@@ -4,7 +4,7 @@ import re
 def acc_fed():
     acc_num=[]
     amt = []
-    soup = BeautifulSoup(open("/home/anjaligeorgep/Desktop/download_html/file_fed_accounts.html"), features="lxml")
+    soup = BeautifulSoup(open("/home/anjaligeorgep/Desktop/download_html/account_summary/federal/fed_acc.html"), features="lxml")
     acc= soup.findAll('td', attrs={'class': 'radio clear-after'})
     for val in acc:
         val=val.text[1:]
@@ -16,7 +16,7 @@ def acc_fed():
         val=val.text[:-3].replace(',','')
         amt.append(val[1:])
 
-    fp = open("/home/anjaligeorgep/Desktop/account_summary_federal.txt", "w")
+    fp = open("/home/anjaligeorgep/Desktop/download_html/acc_outputs/account_summary_federal.txt", "w")
     fp.write("[\n")
 
     for x,y in zip(acc_num,amt):
@@ -28,7 +28,7 @@ def acc_fed():
 def acc_citi():
     acc_num=[]
     amt=[]
-    soup = BeautifulSoup(open("/home/anjaligeorgep/Desktop/download_html/file_citi_accounts.html"), features="lxml")
+    soup = BeautifulSoup(open("/home/anjaligeorgep/Desktop/download_html/account_summary/citi/citi_acc.html"), features="lxml")
     td=soup.findAll('td',attrs={'class': 'pad5 ligt_grey','align':'left'})
     bal=soup.findAll('td', attrs={'class': 'pad5 ligt_grey','align':'right'})
     for x in range(len(td)):
@@ -39,19 +39,21 @@ def acc_citi():
         amt.append(x.text.replace('Balance','').strip().replace(',',''))
     amt=amt[:-1]
     acc_num=acc_num[:-1]
-    print(acc_num)
+    acc_no=[]
+    for values in acc_num:
+        acc_no.append(values[-12:])
     am=[]
     for x in amt:
         if x:
             am.append(x)
 
-    fp = open("/home/anjaligeorgep/Desktop/account_summary_citi.txt", "w")
+    fp = open("/home/anjaligeorgep/Desktop/download_html/acc_outputs/account_summary_citi.txt", "w")
     fp.write("[\n")
-    for x,y in zip(acc_num,am):
-        fp.write('{{"accountNumber" : "{}",\n'.format(x[-12:]))
+    for x,y in zip(acc_no,am):
+        fp.write('{{"accountNumber" : "{}",\n'.format(x))
         fp.write('"balance" : "{}"}},\n'.format(y))
     fp.write("]")
-    return acc_num
+    return acc_no
 
 
 
@@ -59,7 +61,7 @@ def acc_canara():
     acc_num = []
     amt = []
     details=[]
-    soup = BeautifulSoup(open("/home/anjaligeorgep/Desktop/download_html/file_canara_0.html.html"), features="lxml")
+    soup = BeautifulSoup(open("/home/anjaligeorgep/Desktop/download_html/account_summary/canara/canara_acc.html"), features="lxml")
     tr = soup.findAll('tr', attrs={'class': 'alterrow2'})
 
     for x in range(len(tr)):
@@ -67,15 +69,14 @@ def acc_canara():
         details.append(td[1].text.strip())
 
     acc_num.append(details[0])
-    amt.append(details[3])
+    amt.append(details[3].replace(',',''))
 
-    fp = open("/home/anjaligeorgep/Desktop/account_summary_canara.txt", "w")
+    fp = open("/home/anjaligeorgep/Desktop/download_html/acc_outputs/account_summary_canara.txt", "w")
     fp.write("[\n")
     for x, y in zip(acc_num, amt):
         fp.write('{{"accountNumber" : "{}",\n'.format(x))
         fp.write('"balance" : "{}"}},\n'.format(y))
     fp.write("]")
     return acc_num
-
 
 

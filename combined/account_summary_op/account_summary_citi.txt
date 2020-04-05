@@ -1,6 +1,0 @@
-[
-{"accountNumber" : "0-4XX6XX-X18",
-"balance" : "-12.42"},
-{"accountNumber" : "5-4XX8XX-X15",
-"balance" : "2296.03"},
-]

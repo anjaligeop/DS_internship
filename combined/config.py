@@ -20,6 +20,33 @@ login_id = {"federal":{"userid":"AuthenticationFG.USER_PRINCIPAL,id",
                     "clicklogin":"//div[@id='main-wrapper']/div/div[2]/div[2]/div/div/div[2]/div[3]/div/a/div,xpath",
                     }
             }
+transaction_id={"federal":{"click0":"//a[@id='Accounts']/span,xpath",
+                            "click1":"Accounts-Info_Operative-Accounts,id",
+                            "click2":"//button[@id='txnHistoryBtn']/span,xpath",
+                           "click3":"//*[@id='s2id_TransactionHistoryFG.INITIATOR_ACCOUNT']/a/span[1],xpath",
+                           "click4":"//*[@id='select2-drop']/div/input,xpath",
+                           "click5":"//body,xpath",
+                           "click6":"//*[@id='Button33089187'],xpath",
+                           "dateFrom":"TransactionHistoryFG.FROM_TXN_DATE,id",
+                           "dateTo":"TransactionHistoryFG.TO_TXN_DATE,id",
+
+                           },
+                "canara":{"click0":"fldacctnodesc,id",
+                          "click1":"fldsubmit,name",
+                          "click2":"fldacctivity,name",
+                          "click3":"fldsearch1,id",
+                          "dateFrom":"fldfromdateid,id",
+                          "dateTo":"fldtodateid,id"
+                          },
+                "citi":{"click0":"2,id",
+                        "click1":"View Account Summary,text",
+                        "click2":"imgexpand,id",
+                        "click3":"select3,id",
+                        "dateFrom":"//*[@id='textfieldid1'],xpath",
+                        "dateTo":"//*[@id='textfieldid2'],xpath",
+                        "click4":"//*[@id='noOflist02']/table/tbody/tr/td[6]/a/img,xpath"}}
+
+
 
 navigate_id={"federal":{  "accid":"Accounts,id",
                        "all_accid":"Accounts-Info_Operative-Accounts,id",
