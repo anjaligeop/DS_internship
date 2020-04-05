@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+<transaction>
+	<date>2019-12-02</date>
+	<cheque_num>\N</cheque_num>
+	<description>UPIOUT/93361...</description>
+	<deposit>78.00</deposit>
+	<withdraw></withdraw>
+	<balance>2661.76</balance>
+</transaction>
+<transaction>
+	<date>2019-12-10</date>
+	<cheque_num>\N</cheque_num>
+	<description>FN/SHP/94792...</description>
+	<withdraw>88.50</withdraw>
+	<deposit></deposit>
+	<balance>2573.26</balance>
+</transaction>
+<transaction>
+	<date>2019-12-12</date>
+	<cheque_num>\N</cheque_num>
+	<description>UPIOUT/93461...</description>
+	<withdraw>351.00</withdraw>
+	<deposit></deposit>
+	<balance>2222.26</balance>
+</transaction>
+<transaction>
+	<date>2019-12-13</date>
+	<cheque_num>\N</cheque_num>
+	<description>UPIOUT/93472...</description>
+	<withdraw>374.00</withdraw>
+	<deposit></deposit>
+	<balance>1848.26</balance>
+</transaction>
+<transaction>
+	<date>2019-12-13</date>
+	<cheque_num>\N</cheque_num>
+	<description>UPIOUT/93472...</description>
+	<withdraw>345.00</withdraw>
+	<deposit></deposit>
+	<balance>1503.26</balance>
+</transaction>
+<transaction>
+	<date>2019-12-14</date>
+	<cheque_num>\N</cheque_num>
+	<description>SBINT:01-09-...</description>
+	<withdraw>539.00</withdraw>
+	<deposit></deposit>
+	<balance>2042.26</balance>
+</transaction>
+<transaction>
+	<date>2019-12-17</date>
+	<cheque_num>\N</cheque_num>
+	<description>CHRG/MOB ALE...</description>
+	<deposit>0.50</deposit>
+	<withdraw></withdraw>
+	<balance>2041.76</balance>
+</transaction>
+<transaction>
+	<date>2019-12-19</date>
+	<cheque_num>\N</cheque_num>
+	<description>UPI IN/93531...</description>
+	<withdraw>65.00</withdraw>
+	<deposit></deposit>
+	<balance>2106.76</balance>
+</transaction>
+<transaction>
+	<date>2019-12-27</date>
+	<cheque_num>\N</cheque_num>
+	<description>UPIOUT/93612...</description>
+	<deposit>99.50</deposit>
+	<withdraw></withdraw>
+	<balance>2007.26</balance>
+</transaction>
+<transaction>
+	<date>2019-12-28</date>
+	<cheque_num>\N</cheque_num>
+	<description>UPIOUT/93621...</description>
+	<withdraw>168.00</withdraw>
+	<deposit></deposit>
+	<balance>1839.26</balance>
+</transaction>
+</root>

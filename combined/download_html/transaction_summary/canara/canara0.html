@@ -1,0 +1,2399 @@
+<html><head><!--[if lte IE 7]><link rel="stylesheet" href="css/THMSEABLUE/eng_01.css" type="text/css" /><![endif]--><!--[if (!IE) | (gte IE 8)]--><link rel="stylesheet" href="css/THMSEABLUE/eng_01.uri.css" type="text/css"><!--[endif]--><style type="text/css">
+	@import url("css/dunstcss/style.css");
+</style><meta content="text/html; charset=UTF-8" http-equiv="Content-Type"><title>Account Activity</title><meta content="IE=edge" http-equiv="X-UA-Compatible"><meta content="text/html; charset=utf-8" http-equiv="Content-Type"><meta content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="default" name="apple-mobile-web-app-status-bar-style"><meta content="true" name="HandheldFriendly"><meta content="width" name="MobileOptimized"><meta content="no-cache" http-equiv="cache-control"><meta content="no-store" http-equiv="cache-control"><meta content="no-cache" http-equiv="Pragma"><meta content="0" http-equiv="Expires"> 
+
+		<!--[if lte IE 7]>
+			<style type="text/css" >
+				@import url("css/cmn/theme.css");
+			</style>
+		<![endif]-->
+        <!--[if (!IE) | (gte IE 8)]-->
+			<style type="text/css">
+				@import url("css/cmn/theme.uri.css");
+			</style>			
+		<!--[endif]-->
+		<style type="text/css">
+				@import url("css/cmn/theme.uri.css");
+			</style><style type="text/css">
+				@import url("css/bootstrap_3/css/bootstrap.css");
+			</style><script src="JS/combined/jquery-includes.js" type="text/JavaScript"></script><style type="text/css">
+
+.favadded {
+		background:  url(images/star.gif) no-repeat center left; 
+        alt:Add to Favorites;
+	}
+	
+ .favremoved {
+    background:  url(images/CLA.gif) no-repeat center left; 
+    alt:Remove from Favorites;
+  }
+</style><script>
+var globalcnt = 1;
+var useragent = "";
+
+var MaxOpenWndCnt = 3;
+var openWindowArray = new Array();
+var message = new Object ();
+var isHelp= 'Y';
+message.maxopen = "Maximum limit reached for number of open windows. Please close a window to open new Transaction.";
+message.alreadyopen = "Window already Open.";
+message.addfav = "Add to Favourites";
+message.alertstr = "Alert";
+function SendNewWindowRequest (p_txn, p_desc){
+    var features	=	"dependant=no,directories=no,location=no,menubar=no"
+					+	",resizable=yes,scrollbars=yes,titlebar=no,toolbar=no"
+					+	",height=710,width=990,top=0,left=0,status=yes";
+     if(txn_initreq[p_txn]) {
+        document.frmext.fldRequestId.value	= txn_initreq[p_txn];
+    } else {
+        document.frmext.fldRequestId.value   = defAppId + p_txn + "01";
+    } 
+    
+    var newwin  =   window.open("",p_txn,features);
+    document.frmext.target	= p_txn;
+    document.frmext.submit();
+    newwin.focus();
+    
+}
+/*
+This function would open the transaction in a new window.
+*/
+function SendDashboardRequest(p_txn, p_desc, p_seq) {
+	if (p_seq == null || p_seq == '') {
+    if(txn_initreq[p_txn]) {
+        document.frmtp.fldRequestId.value	= txn_initreq[p_txn];
+    } else {
+        document.frmtp.fldRequestId.value   = defAppId + p_txn + "01";
+    } 
+	} else {
+	    document.frmtp.fldRequestId.value   = defAppId + p_txn + p_seq;
+	}
+	var windowobj = openWindow(p_txn, unescape(p_desc));
+    if(windowobj) {
+        document.frmtp.fldServiceType.value	= p_txn;
+        document.frmtp.target	= windowobj.getFrameName();
+        document.frmtp.submit();
+    }
+}
+
+function SendDashboardFormRequest (p_frm,p_desc,p_currtxn,p_nosubmitForm) {
+    try{
+    
+        var windowobj = openWindow(p_frm.fldServiceType.value, p_desc);
+        if(p_nosubmitForm) {
+            return windowobj;
+        }
+        //document.frmtp.fldRequestId.value	= defAppId+p_frm.fldServiceType.value+requestId;
+        //document.frmtp.fldServiceType.value	= p_frm.fldServiceType.value;
+        if(windowobj) {
+            p_frm.target	= windowobj.getFrameName();
+            p_frm.submit();
+        }
+    } catch(e) {
+        
+    }
+}
+function openWindow(p_txn, p_desc) {
+	var count = globalcnt;
+	var frame_name = "frame_" + p_txn + count;
+	var fav_btn_id = "btn_fav_" + p_txn + count;
+	var print_btn_id = "btn_print_" + p_txn + count;
+	var btn_help_id = "btn_help_" + p_txn + count;
+
+    if($.window.getCount() == MaxOpenWndCnt) {
+        var title = '<div style="display:inline"  width="100%" ><span style="float:left"  class="ui-icon ui-icon-info" ></span>'+message.alertstr+'</div>';
+        var content = message.maxopen;
+        callDialog(title, content, 400, 120, true);
+        return;
+    }
+    var winTitle = '<img class="menuIcons"  src="images/menuicons/txn_bullet.gif" ></img> '
+                    + p_desc;
+
+    var myButtons = [
+       // facebook button
+       {
+       id: fav_btn_id,           // required, it must be unique in this array data
+       title:"",                       // optional, it will popup a tooltip by browser while mouse cursor over it
+       clazz: "my_button",             // optional, don't set border, padding, margin or any style which will change element position or size
+       style: "",                      // optional, don't set border, padding, margin or any style which will change element position or size
+       image: "",                      // required, the url of button icon(16x16 pixels)
+       callback:                       // required, the callback function while click it
+          function(btn, wnd) {
+            toggleimg(p_txn, "#" + fav_btn_id, p_desc);
+
+          }
+       },
+       {
+       id: print_btn_id,
+       title: "Print this page",
+       clazz: "my_button",
+       style: "",
+       image: "images/print.gif",
+       callback:
+          function(btn, wnd) {
+          fireprint (frame_name);
+
+          }
+       }
+    ];
+		
+	if(isHelp=='Y'){
+	var helpbtn = new Object(
+	 {
+       id: btn_help_id,
+       title: "Help",
+       clazz: "my_button",
+       style: "",
+       image: "images/help.gif",
+       callback:
+          function(btn, wnd) {
+          fireMenuHelp(p_txn);
+		  }
+       });
+	myButtons.push(helpbtn);
+	}
+
+    //var txninit = '//faml/response/loginresponsedto/menu/menuresponsedto/menu/menudto[generate-id () = generate-id (key ('submenu', idtxn)) and tabdescription = $tab]'
+    var windowobj = $("#ApplicationLayout").window({
+               title: winTitle,
+               url: "images/loading.gif",
+               frameName: frame_name,
+               minimizable: true,
+               showRoundCorner: false,
+               checkBoundary: true,
+               bookmarkable:false,
+               resizable:true,
+               width: 775,
+               height: 500,
+               y: $("#txnbodyLayout").offset().top,
+               x: $("#txnbodyLayout").offset().left,
+               z: 200,
+               custBtns: myButtons,
+               showFooter: false,
+			   frameClass: "dashboardWindowFrame",
+			   maximizeText : "maximize window",
+			   cascadeText : "cascade window",
+			   minimizeText : "minimize window",
+			   closeText : "close window",
+			   bookmarkText : "bookmark this",
+               onClose: function(wnd) { // a callback function while user click close button
+					removeFromArray(openWindowArray, p_txn);
+					try {
+						if (parent.popupWindow) {
+							//closing existing pop up window if any.
+							//to do - should close respective pop up only.
+							parent.popupWindow.close();
+						} 
+					} catch (e) {}
+					return;
+               },
+               onOpen: function(wnd) { // a callback function while user click close button
+                  addIntoArray(openWindowArray, p_txn);
+                  return;
+               }
+            });
+    getimg(p_txn, "#" + fav_btn_id);   
+    globalcnt++;
+    return windowobj;
+}
+function getPosition(arr,val) {
+    if(arr != null && arr.length > 0) {
+        for(var cnt = 0;cnt < arr.length; cnt++ ) {
+            if(arr[cnt] == val) {
+                return cnt;
+            }
+        }
+    }
+    return -1;
+}
+function getPresentWindow(arr,val) {
+var count=0;
+    if(arr != null && arr.length > 0) {
+        for(var cnt1 = 0;cnt1 < arr.length; cnt1++ ) {
+            if(arr[cnt1] == val) {
+                count++;
+            }
+        }
+    }
+    return count;
+}
+function addIntoArray(p_array, p_txn) {
+    p_array.push(p_txn);
+}
+function removeFromArray(p_array, p_txn) {
+    var index_value = getPosition(p_array,p_txn);
+    var range = 1;
+    p_array.splice(index_value,range);
+}
+
+function callDialog(ptitle, contentString, w, h, modal) {
+    
+    $('#dialog').dialog('option','height',h);
+    $('#dialog').dialog('option','width',w);
+    $('#dialog').dialog('option','modal',modal);
+    $('#dialog').dialog('option','title',ptitle);
+	$('#dialog').dialog('option','bgiframe',true);
+    if(typeof contentString == 'string') {
+        $('#dialog').html(contentString);
+    } else {
+        $('#dialog').append(contentString);
+    }
+    $('#dialog').dialog('open');
+}
+function fireMenuHelp(p_txn){
+		 var l_idtxn= "/help/HTMLS/eng/"+ p_txn + ".htm";
+		 var l_default= "/help/HTMLS/eng/"+ p_txn + ".htm";
+		 var features = "directories=no,location=no,menubar=no,status=no,scrollbars=yes,"
+				+	"toolbar=no,dependant=no,resizable=no,top=75,left=750,"
+				+	"scrollbars=yes,width=400,height=500";
+		addlistWindow = window.open ("static/help.jsp?REFIDTXN="+l_idtxn+"&DEFPATH="+l_default, "details", features);
+		//addlistWindow.moveTo(700,80);
+}
+
+$(document).ready(function() {
+
+if(useragent=="ipad"){
+	if (!parent.isMenuClassic()) 
+	{
+		if (parent.frames.length > 0) 
+		{
+			var heightDiv = $('form[name="frmmain"]').height() + $(window).height() - 200;
+			$('.contentarea').css({height:heightDiv});
+			$('body').addClass("mainFrame");
+			$('form[name="frmmain"]').addClass("mainscroll");
+			try
+			{
+				$('form[name="frmmain"]').touchScroll({elastic: true, momentum: false});
+				touchTableScroll('displayTable');
+				function loaded() 
+				{
+					document.addEventListener('touchmove', function(e){ e.preventDefault(); });
+					myScroll = new iScroll('displayTable', {elastic: false, momentum: false});
+				}
+
+			document.addEventListener('DOMContentLoaded', loaded);
+	
+			}
+			catch(e){
+			}
+		}
+	}
+	
+}});
+
+
+</script><style>
+
+
+.calMask
+{
+	position: absolute;
+	z-index:1000;
+	background:#FFFFFF;
+	border:0px solid;
+	
+}
+.calContainer
+{
+	position: relative;
+	background:#FFFFFF;
+	z-index:1007;
+	border-bottom-color:#FFFFFF;
+	border-color:#FFFFFF;
+	border-left-color:#FFFFFF;
+	border-top-color:#FFFFFF;
+	border-right-color:#FFFFFF;
+	font-color:#6677DD;
+}
+.screenMask
+{
+	position: absolute;
+	height:1000%;
+	width: 1000%;
+	left:0px;
+	top:0px;
+	z-index:1005;
+	background: url('images/transparent.gif');
+}
+.calContent
+{
+	position: relative;
+	z-index:1010;
+	background:#FFFFFF;
+	border:2px inset;
+	padding: 5px;
+	
+}	
+	.TESTcpYearNavigation,
+	.TESTcpMonthNavigation
+			{
+			background-color:#6677DD;
+			text-align:center;
+			vertical-align:center;
+			text-decoration:none;
+			color:#FFFFFF;
+			font-weight:bold;
+			}
+	.TESTcpDayColumnHeader,
+	.TESTcpYearNavigation,
+	.TESTcpMonthNavigation,
+	.TESTcpCurrentMonthDate,
+	.TESTcpCurrentMonthDateDisabled,
+	.TESTcpOtherMonthDate,
+	.TESTcpOtherMonthDateDisabled,
+	.TESTcpCurrentDate,
+	.TESTcpCurrentDateDisabled,
+	.TESTcpTodayText,
+	.TESTcpTodayTextDisabled,
+	.TESTcpText
+			{
+			font-family:arial;
+			font-size:8pt;
+			}
+	TD.TESTcpDayColumnHeader
+			{
+			text-align:right;
+			border:solid thin #6677DD;
+			border-width:0 0 1 0;
+			}
+	.TESTcpCurrentMonthDate,
+	.TESTcpOtherMonthDate,
+	.TESTcpCurrentDate
+			{
+			text-align:right;
+			text-decoration:none;
+			}
+	.TESTcpCurrentMonthDateDisabled,
+	.TESTcpOtherMonthDateDisabled,
+	.TESTcpCurrentDateDisabled
+			{
+			color:#D0D0D0;
+			text-align:right;
+			text-decoration:line-through;
+			}
+	.TESTcpCurrentMonthDate
+			{
+			color:#6677DD;
+			font-weight:bold;
+			}
+	.TESTcpCurrentDate
+			{
+			color: #FFFFFF;
+			font-weight:bold;
+			}
+	.TESTcpOtherMonthDate
+			{
+			color:#808080;
+			}
+	TD.TESTcpCurrentDate
+			{
+			color:#FFFFFF;
+			background-color: #6677DD;
+			border-width:1;
+			border:solid thin #000000;
+			}
+	TD.TESTcpCurrentDateDisabled
+			{
+			border-width:1;
+			border:solid thin #FFAAAA;
+			}
+	TD.TESTcpTodayText,
+	TD.TESTcpTodayTextDisabled
+			{
+			border:solid thin #6677DD;
+			border-width:1 0 0 0;
+			}
+	A.TESTcpTodayText,
+	SPAN.TESTcpTodayTextDisabled
+			{
+			height:20px;
+			}
+	A.TESTcpTodayText
+			{
+			color:#6677DD;
+			font-weight:bold;
+			}
+	SPAN.TESTcpTodayTextDisabled
+			{
+			color:#D0D0D0;
+			}
+	.TESTcpBorder
+			{
+			border:solid thin #6677DD;
+			}
+	.printWarning {
+		display:none;
+	}
+	.noPrintWarning {
+		display:none;
+	}
+	</style><style media="print">
+	.printWarning {
+		display:block;
+	}
+	.noPrintWarning {
+		display:none;
+	}
+</style><meta name="format-detection" content="telephone=no"><meta name="format-detection" content="telephone=no"></head><body marginwidth="0" marginheight="0" id="dunst" onload="disable();scrollToResults();"><div style="position:absolute;visibility:hidden;background-color:white;layer-background-color:white;z-index:10005" id="testdiv1"></div><div onclick="hide_Cal();" style="position:absolute;display:none;background-color:white" id="calenderMask" class="screenMask"></div><script src="jsdir/common.js" type="text/javascript"></script><script type="text/JavaScript" language="JavaScript">
+try{
+    if(!top.isMenuClassic()){
+        $(document).ready(function() {
+            var winTitle = '<img align="absMiddle"  class="menuIcons"  src="images/menuicons/txn_bullet.png" ></img> '
+                + $("#pageheading").html();
+            $("#"+window.name,parent.$("#ApplicationLayout")).closest("div.window_panel").find("div.window_title_text").html(winTitle);
+        });
+    }
+} catch(e) {
+}
+var popup_txnid="";
+var popup_seq="";
+var popup_target="";
+var popup_win_name="";
+var flgbtn=false;
+var highlightedTabs = new Array ();
+var helptxn='AAC';
+//-----------------------------------------------------------------------------
+function displayStatusMessage () {
+
+    var idtxn = 'RRAAC02';
+    if(idtxn) {
+        idtxn = idtxn.substring(2,5);
+    }
+
+	
+
+	var totalcnt	= 0
+					+ 0;
+					//+ 0;
+
+	if(totalcnt == 0) {
+		if (window.parent.frames['messageFrame']) {
+			window.parent.frames['messageFrame'].resetErrors();		
+		} else if (window.top.frames['messageFrame']) {
+			window.top.frames['messageFrame'].resetErrors();		
+		}
+	}
+
+	checkForAuditLogFrame();
+	
+}
+//-----------------------------------------------------------------------------
+$(function () {
+	var count	=	0
+				+	0
+				+	0;
+
+	
+
+	if (count > 0) {
+		$('#dialog-modal-error').dialog (
+			{
+				autoOpen: true,
+				position : 'center',
+				modal : false,
+				bgiframe : true,
+				close : minimizeMessages,
+				resizable : false,
+				draggable : false
+			}
+		);
+		$("#dialog-modal-error").css("min-height", "");
+		$("#error-dialog-table").css("display", "block");
+	}
+	
+
+})
+//-----------------------------------------------------------------------------
+function minimizeMessages () {
+	var msgFrame;
+	var msg_text = "Click here to view messages..."
+
+	var l_footer_content = '<div id="msg_' + document.frmmain.fldServiceType.value + '" class="msgFrame">';
+
+	l_footer_content += '<img src="images/list_errors.gif" align="abdMiddle" title="' + msg_text +'" id="msg_' + document.frmmain.fldServiceType.value + '_img" >';
+	//l_footer_content += '&nbsp;' + msg_text
+	l_footer_content += '</div>';
+
+	if (window.top.frames ["messageFrame"]) {
+		//msgFrame = $("#errorTab", window.top.frames ["messageFrame"].document);
+
+		//parent.document.getElementById('dataframe').rows = "25,*";
+		msgFrame = $("#errorTab");
+		msgFrame.show();
+	} else {
+		msgFrame = $("#errorTab");
+		msgFrame.show();
+	}
+
+	msgFrame.html (l_footer_content);
+	
+	msgFrame.click (
+		function () {
+		$('#dialog-modal-error').dialog ('open');
+		$("#dialog-modal-error").css("min-height", "");
+		/*$('#dialog-modal-error').parent().css(
+			{
+				position:'absolute !important',
+				left:'auto !important',
+				right:'0px !important',
+				top:'24px!important'
+			});*/
+		}
+	);
+}
+//-----------------------------------------------------------------------------
+function highlightTab (p_tab_id) {
+	var l_tab_obj, imageid, test, image1;
+
+	if (highlightedTabs.length > 0 && highlightedTabs.contains (p_tab_id)) {
+
+		l_tab_obj = document.getElementById (p_tab_id);
+		imageid = l_tab_obj.id + "image";
+		test = l_tab_obj;
+		image1 = document.createElement("img");
+
+		image1.setAttribute('id',imageid);
+		image1.setAttribute('src','images/red_error.gif');
+		image1.setAttribute('align','absMiddle');
+		image1.className='errorImg';
+		test.childNodes [0].insertBefore(image1);	
+		
+		addIntoArray (highlightedTabs, p_tab_id);
+
+		/*$("#"+imageid).tooltip({
+			track: true, 
+			delay: 0, 
+			showURL: false, 
+			opacity: 1, 
+			fixPNG: false, 
+			showBody: " - ",
+			extraClass: "pretty fancy",
+			top: -15,
+			left: 20
+		});*/
+	}
+}
+//-----------------------------------------------------------------------------
+function markErrorField (p_err_field, err_message){
+
+	$(p_err_field).css ('border', '1px solid red');
+	$(p_err_field).css ('background-color', 'rgb(255, 240, 240)');
+	$(p_err_field).attr ('title', err_message);
+
+	/*$(p_err_field).tooltip({
+		track: true, 
+		delay: 0, 
+		showURL: false, 
+		opacity: 1, 
+		fixPNG: false, 
+		showBody: " - ",
+		extraClass: "pretty fancy",
+		top: -15,
+		left: 20
+	});*/	
+	$(p_err_field).qtip({
+      position: {
+         corner: {
+            target: 'topMiddle',
+            tooltip: 'bottomMiddle'
+         }
+      },
+      style: {
+         name: 'red',
+         padding: '7px 13px',
+         width: {
+            max: 210,
+            min: 0
+         },
+         tip: true
+      }
+   });
+
+	
+}
+//-----------------------------------------------------------------------------
+function initError(){
+	//Initialize Error
+	
+}
+//-----------------------------------------------------------------------------
+function displayErrorMessage () {
+	cnt = 0;
+	totalcnt  = 0;
+	var arrErrorCode = new Array();
+	var arrErrorDesc = new Array();
+	var arrWarningCode = new Array();
+	var arrWarningDesc = new Array();
+	var arrInfoCode = new Array();
+	var arrInfoDesc = new Array();
+	var arrSuccessCode = new Array();
+	var arrSuccessDesc = new Array();
+	
+	totalcnt = totalcnt  + cnt;
+	cnt = 0;
+	
+	totalcnt = totalcnt  + cnt;
+}
+//-----------------------------------------------------------------------------
+function displayBulkStatusMessage () {
+
+	return;
+
+}
+//-----------------------------------------------------------------------------
+function Draft (
+	P_idTxn
+,	p_seqNo
+) {
+  
+	if(document.frmmain.fldnextaction.value=='RD'){}
+	else{	
+		document.frmmain.fldnextaction.value ='DF';
+	}
+	document.frmmain.fldauthaction.value ='VO';
+	try {
+		document.frmmain.fldflagdealallowed.value = 'N';//for generic payment only
+	} catch (e) {
+	}
+
+	
+	try {
+		document.frmmain.fldGPRequestId.value = 'RR'+P_idTxn+p_seqNo;
+	} catch (e) {
+	}
+
+	SendTxnRequest('98',P_idTxn);
+}
+//-----------------------------------------------------------------------------
+function Draft(P_idTxn) {
+  
+	if(document.frmmain.fldnextaction.value=='RD'){}
+	else{	
+		document.frmmain.fldnextaction.value ='DF';
+	}
+	document.frmmain.fldauthaction.value ='VO';
+	try {
+		document.frmmain.fldflagdealallowed.value = 'N';//for generic payment only
+	} catch (e) {
+	}
+	
+	try {
+		document.frmmain.fldGPRequestId.value = 'RR'+P_idTxn+'03';
+	} catch (e) {
+	}
+	
+	SendTxnRequest('98',P_idTxn);
+}
+//-----------------------------------------------------------------------------
+function saveTemplate (
+	P_idTxn
+,	p_seqNo
+) {
+  
+	document.frmmain.fldnextaction.value = 'TP';
+	//Set fldauthaction to 'VI' if module and rule chk is required for Templates
+    document.frmmain.fldauthaction.value = 'VO';    
+	
+	try {
+		document.frmmain.fldistemplatetxn.value = 'true';//for generic payment only
+		document.frmmain.fldflagdealallowed.value = 'N';//for generic payment only
+	} catch (e) {
+	}
+	
+	try {
+		document.frmmain.fldGPRequestId.value = 'RR'+P_idTxn+p_seqNo;
+	} catch (e) {
+	}
+
+    SendTxnRequest ('97',P_idTxn);
+}
+//-----------------------------------------------------------------------------
+function saveTemplate (P_idTxn) {
+  
+	document.frmmain.fldnextaction.value = 'TP';
+	//Set fldauthaction to 'VI' if module and rule chk is required for Templates
+    document.frmmain.fldauthaction.value = 'VO';    
+	
+	try {
+		document.frmmain.fldistemplatetxn.value = 'true';//for generic payment only
+		document.frmmain.fldflagdealallowed.value = 'N';//for generic payment only
+	} catch (e) {
+	}
+	
+	try {
+		document.frmmain.fldGPRequestId.value = 'RR'+P_idTxn+'03';
+	} catch (e) {
+	}
+
+    SendTxnRequest ('97',P_idTxn);
+}
+
+//-----------------------------------------------------------------------------
+function PrintPopup(p_request_id , p_section_id, p_form) {
+
+	var features	=	"dependant=no,directories=no,location=no,menubar=no"
+					+	",resizable=yes,scrollbars=yes,titlebar=no,toolbar=no"
+					+	",height=600,width=600,top=0,left=0,status=yes";
+	var addlistWindow = window.open ("", "PrintPopup", features) ;
+	p_form.fldSectionId.value = p_section_id;	
+	
+	p_form.fldRequestId.value = p_request_id;
+	p_form.fldSessionId.value = parent.idsession;
+
+	p_form.target = "PrintPopup";
+	p_form.submit();
+	addlistWindow.focus();
+}
+//------------------------------------------------------------------------------
+function DowloadPopup(p_request_id , p_section_id, p_form) {
+
+	var features	=	"dependant=no,directories=no,location=no,menubar=no"
+					+	",resizable=yes,scrollbars=yes,titlebar=no,toolbar=no"
+					+	",height=600,width=600,top=0,left=0,status=yes";
+	var addlistWindow = window.open ("", "DowloadPopup", features) ;
+	p_form.fldSectionId.value = p_section_id;	
+	
+	p_form.fldRequestId.value = p_request_id;
+	p_form.fldSessionId.value = parent.idsession;
+
+	p_form.target = "DowloadPopup";
+	p_form.submit();
+	addlistWindow.focus();
+}
+//-----------------------------------------------------------------------------
+function getChangeFieldColor(){
+	var arr_fldchanged	= new Array ();
+	var arr_prevval		= new Array ();
+	var arr_idx			= 0;
+	var len = 0;
+	var i;
+	
+	
+	arr_idx = 0;
+	
+	len =arr_fldchanged.length;
+
+
+	for(i=0;i<len;i++){
+		
+		if(document.getElementById(arr_fldchanged[i]) != null && document.getElementById(arr_fldchanged[i]) != "undefined"){
+			
+			document.getElementById(arr_fldchanged[i]).className = "ColHeadingLeftAlignedBold";
+		}
+
+	
+	}
+	
+}
+//--------------------------------------------------------------------------------------
+function defaultfunction(){
+
+return true;
+
+}
+//--------------------------------------------------------------------------------------
+function fnFixDecimalPlaces (
+	p_val
+,	p_places
+) {
+	if ( p_val == '' || isNaN (p_val) || isNaN (p_val) || (p_places != '0' && p_places == '')) {
+		return '';
+	}
+	return (parseFloat (p_val)).toFixed (p_places);
+}
+//--------------------------------------------------------------------------------------
+function fnSubmitForm () {
+	try {
+		if (parent.popupWindow) {
+			parent.popupWindow.top.frames [1].name = 'txn_'+parent.idsession;
+			document.frmmain.target = 'txn_'+parent.idsession;	
+			document.frmmain.fldSessionId.value = parent.idsession;
+			document.frmmain.fldRequestId.value = "RR"+popup_txnid+popup_seq;	
+			document.frmmain.submit ();
+			document.frmmain.target = "";
+		}
+	} catch (e) {
+	}
+}
+//--------------------------------------------------------------------------------------
+function call_Popup (
+	p_feature
+,	p_txnid
+,	p_seqno
+,	p_target
+){
+	try {
+		if (parent.popupWindow) {
+			parent.popupWindow.close();//closing existing pop up window.
+			parent.popupWindow = null;
+		} 
+	} catch (e) {
+	}
+	
+	popup_win_name	= 'popup_'+parent.iduser;
+	popup_txnid		= p_txnid;
+	popup_seq		= p_seqno;
+	parent.popupWindow = window.open ("defaultflexcubepopup.html",popup_win_name, p_feature)
+}
+//--------------------------------------------------------------------------
+function fnOnBodyUnload () {
+	try {
+		if (parent.popupWindow) {
+			parent.popupWindow.close();//closing existing pop up window.
+		} 
+	} catch (e) {
+	}
+}
+
+//--------------------------------------------------------------------------
+ function isTxnInRole (p_txn){
+
+    var p_success = false;
+   for (var i=0;i < arr_grp__txnid.length; i++){ 
+    if (arr_grp__txnid [i] == p_txn) {
+        p_success=true; 
+          
+   }
+      
+  }
+  return p_success;
+}
+
+//------------------------------------------------------------------------------
+function view_attached_docs()
+	{
+		
+		SendTxnRequest('03','VAI');
+	}
+//------------------------------------------------------------------------------
+function fnAttachDocuments(p_tableid,p_rowid,p_buttonid)
+{
+
+	var features	=	"dependant=no,directories=no,location=no,menubar=no"
+						+	",resizable=no,scrollbars=yes,titlebar=no,toolbar=no"
+						+	",height=600,width=600,top=0,left=0,status=yes";
+	document.frmmain.target = "txn";
+	document.frmmain.fldSessionId.value = parent.idsession;
+	//document.frmmain.fldRequestId.value="RRALI02";
+	document.frmmain.fldSectionId.value="RRALI02";
+	document.frmmain.fldServiceType.value="ALI";
+	document.frmmain.fldtableid.value=p_tableid;	
+	document.frmmain.fldrowid.value=p_rowid;	
+	document.frmmain.fldbtnflag.value=p_buttonid;
+	call_Popup (
+		features
+	,	'ALI'
+	,	'02'
+	,	'txn'
+	);
+	document.frmmain.target = "";
+}
+//------------------------------------------------------------------------------
+function fnAttachFilesForMailBox(p_tableid,p_rowid,p_buttonid)
+{
+	var features	=	"dependant=no,directories=no,location=no,menubar=no"
+					+	",resizable=no,scrollbars=yes,titlebar=no,toolbar=no"
+					+	",height=600,width=600,top=0,left=0,status=yes";
+	document.frmmain.target = "txn";
+	document.getElementById('fldSessionId').value = parent.idsession;
+	document.getElementById('fldSectionId').value = "RRIMS92";
+	document.getElementById('fldServiceType').value = "IMS";
+	document.getElementById('fldtableid').value = p_tableid;
+	document.getElementById('fldrowid').value = p_rowid;
+	document.getElementById('fldbtnflag').value = p_buttonid; 
+	call_Popup (
+		features
+	,	'IMS'
+	,	'92'
+	,	'txn'
+	);
+	document.frmmain.target = "";
+}
+//------------------------------------------------------------------------------
+function fnRemove(p_sectionid,p_requestid) {
+
+	document.frmmain.target="";
+	document.frmmain.flddelrefno.value ="";
+	document.frmmain.fldfilerefno.value ="";
+	for (var i=0;i < document.frmmain.elements.length;i++) {
+		if (document.frmmain.elements[i].type=='checkbox' && document.frmmain.elements[i].name=="fldattachedfiles" ) {
+				if(document.frmmain.elements[i].checked==false) {
+				document.frmmain.fldfilerefno.value = document.frmmain.elements[i].value+'~'+document.frmmain.fldfilerefno.value;
+			}
+			if(document.frmmain.elements[i].checked==true) {
+				flgbtn=true;
+				document.frmmain.flddelrefno.value = document.frmmain.elements[i].value+'~'+document.frmmain.flddelrefno.value;
+			}
+		}
+	}
+	if(flgbtn==false){
+		alert("Please select a file to remove");
+		return false;
+	}
+	document.frmmain.fldSectionId.value = p_sectionid ;
+	//document.frmmain.fldPrevRequestId.value = p_prevrequestid;
+	return SendTxnRequest(p_requestid.substring(5,7),p_requestid.substring(2,5));
+	
+  
+}
+//-----------------------------------------------------------------------------------------
+function checkForAuditLogFrame() {
+	var l_auditWindName = self.name;
+	// setting self.name in l_auditWindName
+	// compare it with frame self.name if it matches with SSR or VAL frame name
+	// put modal window.
+	
+	if(l_auditWindName=="frame_audit_txn"){
+		if(document.getElementById("divsession")) {
+			document.getElementById("divsession").style.display = "";
+		}
+	}
+}
+//-----------------------------------------------------------------------------
+function displayBackwardCompatibilityStatusMessage () {
+	return;
+}
+//-----------------------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------------------
+</script><div style="display:none" class="modalWhitebackground" id="divsession"></div><div style="display:none;height:auto;width:100%;cursor:hand" id="errorTab"></div><div class="noPrintWarning" id="printWarning"><div class="warningMsg"></div><div class="alertmsgbox"><ul></ul></div></div><div title="Messages" id="dialog-modal-error"><table cellspacing="1" cellpadding="1" style="width:100%;display:none" id="error-dialog-table"></table></div><script language="JavaScript" src="jsdir/AnchorPosition.js"></script><script language="JavaScript" src="jsdir/PopupWindow.js"></script><script language="JavaScript" src="jsdir/date.js"></script><script language="JavaScript" src="jsdir/CalendarPopup.js"></script><script type="text/JavaScript" language="JavaScript">
+var cal = new CalendarPopup('testdiv1');
+cal.setCssPrefix("TEST");
+cal.showNavigationDropdowns (true);
+
+var l_entity = '';
+
+
+
+var test = '05-04-2020 00:00:00';	
+
+	
+		var day				= parseInt('05',10);
+		var mon				= parseInt('04',10);
+		var year			= parseInt('2020',10);
+		var cal_date		= new Date (cal_year, cal_mon, cal_day);
+		var cal_dat			= '05-04-2020';
+		var cal_day			= '05';
+		var cal_month		= '04';
+		var cal_mon			= parseFloat (cal_month) - 1 ;
+		var cal_year		= '2020';
+		var cal_todaymonth	= cal_mon +1;
+        cal_todaymonth = (cal_todaymonth < 10 ? '0' : '') + cal_todaymonth; 
+		var cal_date		= new Date (cal_year, cal_mon, cal_day);
+		var cal_todaydate	= cal_day + "-" + cal_todaymonth + "-" + cal_year ;
+		
+
+var hostdate				= '2020-04-05';
+
+var now						= new Date();
+
+now.setDate(day);
+now.setMonth(mon-1);
+now.setYear(year);
+
+cal.todaydate = new Date();
+cal.serverdate = now;  
+
+/**
+global variables for selecting the date fields
+**/
+var l_fldyr="",l_fldmon="",l_flddate="";
+
+/**
+function   fnCalendar_business(anchor,p_flddate,p_fldmon,p_fldyear)
+anchor : to show div relative to anchor (calendar image)
+p_flddate : id for select field where calendar date will be stored 
+p_fldmon : id for select field where calendar month will be stored 
+p_fldyear :id for select field where calendar year will be stored 
+Added check for p_flddate: If the text field for the date picker is disabled then return without initializing the calendar.
+**/
+function fnCalendar_business (anchor, p_flddate, p_fldmon, p_fldyear) {
+	var cal					= new CalendarPopup("testdiv1");
+	if (p_flddate.disabled) {
+		return; 
+	} 
+	cal.setCssPrefix("TEST");
+	cal.showNavigationDropdowns (true);
+	l_flddate				= document.getElementById(p_flddate);
+	l_fldmon				= document.getElementById(p_fldmon);
+	l_fldyear				= document.getElementById(p_fldyear);
+
+	
+	
+	var test				= '05-04-2020 00:00:00';	
+
+	
+					
+	var hostdate			= '2020-04-05';
+
+	var now					= new Date(); 
+
+	var val				= "";
+	/********* to create argument list for weekly offs  **********/
+	
+	
+
+	var st_day				= "";
+
+	
+
+	var weekly_off			= ""; 
+
+	
+
+	cal.setReturnFunction("setMultipleValues3"); 
+	cal.showCalendar(anchor);
+}
+//------------------------------------------------------------------------------
+//Function sets the entity to cahnge the calendar
+function setl_entity (p_entity){
+	try {
+		if(p_entity!='')
+		   l_entity			= p_entity;
+	} catch (e) {
+		l_entity			= 'B001';
+	}
+}
+//------------------------------------------------------------------------------
+/**
+function   fnCalendar_business2(anchor,p_flddate,p_fldmon,p_fldyear)
+  anchor : to show div relative to anchor (calendar image)
+  p_flddate : id for select field where calendar date will be stored 
+  p_fldmon : id for select field where calendar month will be stored 
+  p_fldyear :id for select field where calendar year will be stored 
+  Added check for p_flddate: If the text field for the date picker is disabled then return without initializing the calendar.
+**/
+function fnCalendar_business2 (anchor, p_flddate, p_fldmon, p_fldyear) {
+
+	if (p_flddate.disabled) {
+		return; 
+	} 
+	var anchorid			= "#" + anchor;
+	var caldate				= p_flddate;
+	
+	var yrstart				= year - 50;
+	var yrend				= year + 50;
+	var l_yrrange			= yrstart + ":" + yrend;
+
+	if (p_flddate.id == null || p_flddate.id == "" ) {
+		caldate.setAttribute("id",p_flddate.name);
+	} else {
+		caldate.setAttribute("id",p_flddate.id);
+	}
+
+	$("#" + caldate.id).datepicker({ 
+		
+		yearRange: l_yrrange,
+		showButtonPanel: true,
+		changeMonth: true,
+		changeYear: true,
+		defaultDate: cal_date
+	}).show();
+
+	if ($.datepicker._datepickerShowing && $.datepicker._lastInput == caldate)
+		$.datepicker._hideDatepicker();
+	else
+		$.datepicker._showDatepicker(caldate);
+		$("#" + caldate.id).removeClass("hasDatepicker");
+		$("#" + caldate.id).unbind();
+}
+//------------------------------------------------------------------------------
+/**
+function   fnCalendar_normal2(anchor,p_flddate,p_fldmon,p_fldyear)
+anchor : to show div relative to anchor (calendar image)
+p_flddate : id for select field where calendar date will be stored 
+p_fldmon : id for select fieldt where calendar month will be stored 
+p_fldyear : id for select field where calendar year will be stored 
+Added check for p_flddate: If the text field for the date picker is disabled then return without initializing the calendar.
+**/
+function fnCalendar_normal2 (anchor, p_flddate, p_fldmon, p_fldyear) {
+	if (p_flddate.disabled) { 
+		return; 
+	} 
+	var anchorid			= "#" + anchor;
+	var caldate				= p_flddate;
+	var yrstart				= year - 50;
+	var yrend				= year + 50;
+	var l_yrrange			= yrstart + ":" + yrend;
+
+	if (p_flddate.id == null || p_flddate.id == "") {
+		caldate.setAttribute("id",p_flddate.name);
+	} else {
+		caldate.setAttribute("id",p_flddate.id);
+	}
+
+	$("#" + caldate.id).datepicker({ 
+		
+		yearRange: l_yrrange,
+		showButtonPanel: true,
+		changeMonth: true,
+		changeYear: true,
+		defaultDate: cal_date
+	}).show();
+
+	if ($.datepicker._datepickerShowing && $.datepicker._lastInput == caldate)
+		$.datepicker._hideDatepicker();
+	else
+		$.datepicker._showDatepicker(caldate);
+        $("#" + caldate.id).removeClass("hasDatepicker");
+		$("#" + caldate.id).unbind();    
+}
+//------------------------------------------------------------------------------
+/**
+function   fnCalendar_normal(anchor,p_flddate,p_fldmon,p_fldyear)
+anchor : to show div relative to anchor (calendar image)
+p_flddate : id for select field where calendar date will be stored 
+p_fldmon : id for select fieldt where calendar month will be stored 
+p_fldyear : id for select field where calendar year will be stored 
+Added check for p_flddate: If the text field for the date picker is disabled then return without initializing the calendar.
+**/
+function fnCalendar_normal (anchor, p_flddate, p_fldmon, p_fldyear) {
+	if (p_flddate.disabled) { 
+		return; 
+	} 
+	var anchorid			= "#" + anchor;
+	var caldate				= p_flddate;
+	var yrstart				= year - 50;
+	var yrend				= year + 50;
+	var l_yrrange			= yrstart + ":" + yrend;
+
+	if (p_flddate.id == null || p_flddate.id == "" ) {
+		caldate.setAttribute("id",p_flddate.name);
+	} else {
+		caldate.setAttribute("id",p_flddate.id);
+	}
+
+	$("#" + caldate.id).datepicker({ 
+		
+		yearRange: l_yrrange,
+		showButtonPanel: true,
+		changeMonth: true,
+		changeYear: true,
+		defaultDate: cal_date
+	}).show();
+
+	if ($.datepicker._datepickerShowing && $.datepicker._lastInput == caldate)
+		$.datepicker._hideDatepicker();
+	else
+		$.datepicker._showDatepicker(caldate);
+        $("#" + caldate.id).removeClass("hasDatepicker");
+		$("#" + caldate.id).unbind();
+
+}
+//------------------------------------------------------------------------------
+/**
+function   calendarsetup_business(flddat, anchor ,format)
+flddat : field name where calendar date will be stored 
+anchor : to show div relative to anchor (calendar image)
+format : date format
+Added check for flddate: If the text field for the date picker is disabled then return without initializing the calendar.
+**/
+function calendarsetup_business (flddat, anchor, format) {
+	if (flddat.disabled) { 
+		return; 
+	}
+
+	var anchorid			= "#" + anchor;
+	var caldate				= flddat;
+	var yrstart				= year - 50;
+	var yrend				= year + 50;
+	var l_yrrange			= yrstart + ":" + yrend;
+
+	if (flddat.id == null || flddat.id == "" ) {
+		caldate.setAttribute("id",flddat.name);
+	} else {
+		caldate.setAttribute("id",flddat.id);
+	}
+
+	$("#" + caldate.id).datepicker({ 
+		
+		yearRange: l_yrrange,
+		showButtonPanel: true,
+		changeMonth: true,
+		changeYear: true,
+		defaultDate: cal_date
+	}).show();
+
+	if ($.datepicker._datepickerShowing && $.datepicker._lastInput == caldate)
+		$.datepicker._hideDatepicker();
+	else
+		$.datepicker._showDatepicker(caldate);
+     	$("#" + caldate.id).removeClass("hasDatepicker");
+		$("#" + caldate.id).unbind();
+}
+//------------------------------------------------------------------------------
+/**
+function   calendarsetup(flddat, anchor ,format, flag)
+flddat : field name where calendar date will be stored 
+anchor : to show div relative to anchor (calendar image)
+format : date format
+Added check for flddate: If the text field for the date picker is disabled then return without initializing the calendar.
+**/
+function calendarsetup (flddat, anchor, format) {
+	if (flddat.disabled) { 
+		return; 
+	}
+
+	var anchorid			= "#" + anchor;
+	var caldate				= flddat;
+	var yrstart				= year - 100;
+	var yrend				= year + 0;
+	var l_yrrange			= yrstart + ":" + yrend;
+
+	if (flddat.id == null || flddat.id == "" ) {
+		caldate.setAttribute("id",flddat.name);
+	} else {
+		caldate.setAttribute("id",flddat.id);
+	}
+
+	$("#" + caldate.id).datepicker({ 
+		
+		yearRange: l_yrrange,
+		showButtonPanel: true,
+		changeMonth: true,
+		changeYear: true,
+		defaultDate: cal_date
+	}).show();
+
+	if ($.datepicker._datepickerShowing && $.datepicker._lastInput == caldate)
+		$.datepicker._hideDatepicker();
+	else
+		$.datepicker._showDatepicker(caldate);
+        $("#" + caldate.id).removeClass("hasDatepicker");
+		$("#" + caldate.id).unbind();
+
+}
+//------------------------------------------------------------------------------
+/**
+function   calendarsetup(flddat, anchor ,format, offsetyrs)
+flddat : field name where calendar date will be stored 
+anchor : to show div relative to anchor (calendar image)
+format : date format
+prevyrs : number of previous years  to display
+nextyrs : number of next years  to display
+Added check for flddate: If the text field for the date picker is disabled then return without initializing the calendar.
+**/
+function calendarsetup (flddat, anchor, format, prevyrs, nextyrs) {
+	if (flddat.disabled) { 
+		return; 
+	}
+
+	var anchorid			= "#" + anchor;
+	var caldate				= flddat;
+	var prevyear			= prevyrs;
+	var nextyear			= nextyrs;
+	var yrstart, yrend, l_yrrange;
+
+	if (flddat.id == null || flddat.id == "") {
+		caldate.setAttribute("id",flddat.name);
+	} else {
+		caldate.setAttribute("id",flddat.id);
+	}
+
+	if (prevyrs == undefined  || nextyrs == undefined ) {
+		yrstart				= year - 20;
+		yrend				= year + 20;
+		l_yrrange			= yrstart + ":" + yrend;
+	} else {
+		yrstart				= year - prevyear;
+		yrend				= year + nextyear;
+		l_yrrange			= yrstart + ":" + yrend;
+	}
+
+	$("#" + caldate.id).datepicker({ 
+		
+		yearRange: l_yrrange,
+		showButtonPanel: true,
+		changeMonth: true,
+		changeYear: true,
+		defaultDate: cal_date
+	}).show();
+
+	if ($.datepicker._datepickerShowing && $.datepicker._lastInput == caldate)
+		$.datepicker._hideDatepicker();
+	else
+		$.datepicker._showDatepicker(caldate);
+	    $("#" + caldate.id).removeClass("hasDatepicker");
+		$("#" + caldate.id).unbind();
+
+}
+//------------------------------------------------------------------------------
+/**
+function   fnCalendar_business_futureDatesDisabled(anchor,p_flddate,p_fldmon,p_fldyear)
+anchor : to show div relative to anchor (calendar image)
+p_flddate : id for select field where calendar date will be stored 
+p_fldmon : id for select field where calendar month will be stored 
+p_fldyear :id for select field where calendar year will be stored 
+Added check for p_flddate: If the text field for the date picker is disabled then return without initializing the calendar.
+**/
+function fnCalendar_business_futureDatesDisabled (anchor, p_flddate, p_fldmon, p_fldyear) {
+	if (p_flddate.disabled) { 
+		return; 
+	} 
+	var anchorid			= "#" + anchor;
+	var caldate				= p_flddate;
+	var yrstart				= year - 50;
+	var yrend				= year + 0;
+	var l_yrrange			= yrstart + ":" + yrend;
+
+	if (p_flddate.id == null || p_flddate.id == "" ) {
+		caldate.setAttribute("id",p_flddate.name);
+	} else {
+		caldate.setAttribute("id",p_flddate.id);
+	}
+
+	$("#" + caldate.id).datepicker({ 
+		
+		yearRange: l_yrrange,
+		showButtonPanel: true,
+		changeMonth: true,
+		beforeShowDay: updateWeekends, 
+		changeYear: true,
+		defaultDate: cal_date
+	}).show();
+
+	if ($.datepicker._datepickerShowing && $.datepicker._lastInput == caldate)
+		$.datepicker._hideDatepicker();
+	else
+		$.datepicker._showDatepicker(caldate);
+	    $("#" + caldate.id).removeClass("hasDatepicker");
+		$("#" + caldate.id).unbind();
+
+}
+//------------------------------------------------------------------------------
+function getNumber (dat) {
+	if(trim(dat) == "" )
+		return "";
+	else	
+		return parseInt(dat,10);
+}
+//------------------------------------------------------------------------------
+/*code added to disable specific dates*/
+var disabledDays			= new Array (), 
+	day_count				= 0;
+
+
+//------------------------------------------------------------------------------
+function nationalDays(date) {
+	var m					= date.getMonth();
+	var d					= date.getDate();
+	var y					= date.getFullYear();
+
+	for (i = 0; i < disabledDays.length; i++) {
+		if ($.inArray((m + 1) + '-' + d + '-' + y,disabledDays) != -1 || new Date() > date) {
+			return [false];
+		}
+	}
+	return [true];
+}
+//------------------------------------------------------------------------------
+function noWeekendsOrHolidays(date) {
+	var noWeekend			= updateWeekends(date);
+	return noWeekend[0] ? nationalDays(date) : noWeekend;
+}
+//------------------------------------------------------------------------------
+/**
+function   fnCalendar_business2(anchor,p_flddate,p_fldmon,p_fldyear)
+anchor : to show div relative to anchor (calendar image)
+p_flddate : id for select field where calendar date will be stored 
+p_fldmon : id for select field where calendar month will be stored 
+p_fldyear :id for select field where calendar year will be stored 
+Added check for p_flddate: If the text field for the date picker is disabled then return without initializing the calendar.
+**/
+function fnCalendar_business2_textbox (anchor, p_flddate, p_format) {
+	if (p_flddate.disabled) { 
+		return; 
+	}  
+
+	var hostDate			= '2020-04-05 08:36:20';
+	var anchorid			="#" + anchor;
+	var caldate				= p_flddate;
+	var yrstart				= year - 0;
+	var yrend				= year + 20;
+	var l_yrrange			= yrstart + ":" + yrend;
+
+	if (p_flddate.id == null || p_flddate.id == "" ) {
+		caldate.setAttribute("id",p_flddate.name);
+	} else {
+		caldate.setAttribute("id",p_flddate.id);
+	}
+
+	$("#" + caldate.id).datepicker({ 
+		
+		yearRange: l_yrrange ,
+		showButtonPanel: true,
+		changeMonth: true,
+		minDate: new Date (cal_year, cal_mon, parseFloat (cal_day) + 1),
+		beforeShowDay: noWeekendsOrHolidays,
+		altField: '#alternate', 
+		changeYear: true,
+		defaultDate: cal_date
+	}).show();
+			   
+	if ($.datepicker._datepickerShowing && $.datepicker._lastInput == caldate)
+		$.datepicker._hideDatepicker();
+	else
+		$.datepicker._showDatepicker(caldate);
+    	$("#" + caldate.id).removeClass("hasDatepicker");
+		$("#" + caldate.id).unbind();
+}
+//------------------------------------------------------------------------------
+/**
+function   fnCalendar_Entity_textbox (anchor, p_flddate, p_format,l_check)
+anchor : to show div relative to anchor (calendar image)
+p_flddate : id for select field where calendar date will be stored 
+p_fldmon : id for select field where calendar month will be stored 
+p_fldyear :id for select field where calendar year will be stored 
+Added check for p_flddate: If the text field for the date picker is disabled then return without initializing the calendar.
+l_check : flag for checking current date or next date to be enabled in calender.
+			Y : current Day +1
+			N : current Day
+**/
+function fnCalendar_Entity_textbox (anchor, p_flddate, p_format,l_check) {
+	if (p_flddate.disabled) { 
+		return; 
+	}
+	var p_timezone		= '05-04-2020';	
+	var day				= parseInt('05',10);
+	var mon				= parseInt('04',10);
+	var year			= parseInt('2020',10);
+	
+	var l_check;	
+	var cal_day			= day;
+	var cal_month		= mon;
+	var cal_year		= year;	
+	var cal_mon			= parseFloat (cal_month) - 1 ;	
+	var cal_todaymonth	= cal_mon + 1;
+	cal_todaymonth 		= (cal_todaymonth < 10 ? '0' : '') + cal_todaymonth;  
+	var cal_date		= new Date (cal_year, cal_mon, cal_day);
+	var cal_todaydate	= cal_day + "-" + cal_todaymonth + "-" + cal_year;
+	
+    var temp_day;
+	var anchorid			="#" + anchor;
+	var caldate				= p_flddate;
+	var yrstart				= year - 0;
+	var yrend				= year + 20;
+	var l_yrrange			= yrstart + ":" + yrend;
+
+	if (p_flddate.id == null || p_flddate.id == "" ) {
+		caldate.setAttribute("id",p_flddate.name);
+	} else {
+		caldate.setAttribute("id",p_flddate.id);
+	}
+
+if(l_check=='Y'){
+  temp_day = parseFloat (cal_day)+1;
+}
+if(l_check=='N'){
+  temp_day = parseFloat (cal_day);
+}
+	$("#" + caldate.id).datepicker({ 
+		
+		yearRange: l_yrrange ,
+		showButtonPanel: true,
+		changeMonth: true,
+		minDate: new Date (cal_year, cal_mon, temp_day),
+		beforeShowDay: noWeekendsOrHolidays,
+		altField: '#alternate', 
+		changeYear: true,
+		defaultDate: cal_date
+	}).show();
+				   
+	if ($.datepicker._datepickerShowing && $.datepicker._lastInput == caldate)
+		$.datepicker._hideDatepicker();
+	else
+		$.datepicker._showDatepicker(caldate);
+	    $("#" + caldate.id).removeClass("hasDatepicker");
+		$("#" + caldate.id).unbind();
+}
+//------------------------------------------------------------------------------
+/**
+This function is same as of fnCalendar_business2_textbox but 
+includes the range of prev and next years
+**/
+function fnCalendar_business2_textbox_range (anchor, p_flddate, p_format,p_prevyears,p_nextyears) {
+	if (p_flddate.disabled) { 
+		return; 
+	}  
+
+	var hostDate			= '2020-04-05 08:36:20';
+	var anchorid			="#" + anchor;
+	var caldate				= p_flddate;
+	var yrstart				= year - p_prevyears;
+	var yrend				= year + p_nextyears;
+	var l_yrrange			= yrstart + ":" + yrend;
+
+	if (p_flddate.id == null || p_flddate.id == "" ) {
+		caldate.setAttribute("id",p_flddate.name);
+	} else {
+		caldate.setAttribute("id",p_flddate.id);
+	}
+
+	$("#" + caldate.id).datepicker({ 
+		
+		yearRange: l_yrrange ,
+		showButtonPanel: true,
+		changeMonth: true,
+		minDate: new Date (cal_year, cal_mon, parseFloat (cal_day) + 1),
+		beforeShowDay: noWeekendsOrHolidays,
+		altField: '#alternate', 
+		changeYear: true,
+		defaultDate: cal_date
+	}).show();
+			   
+	if ($.datepicker._datepickerShowing && $.datepicker._lastInput == caldate)
+		$.datepicker._hideDatepicker();
+	else
+		$.datepicker._showDatepicker(caldate);
+	    $("#" + caldate.id).removeClass("hasDatepicker");
+		$("#" + caldate.id).unbind();
+}
+//------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------
+//steps need to be done
+//-->need to use setdate method for serverdate
+//------------------------------------------------------------------------------
+/**
+Function fnFutureCalendar
+
+Returns the future dated calendar with previous days disabled.
+No of future years to be displayed can be set by yearsFromNow parameter.
+
+**/
+function fnFutureCalendar (anchor, p_flddate, p_format, yearsFromNow) {
+	if (p_flddate.disabled) { 
+		return; 
+	}  
+
+	var hostDate			= '2020-04-05 08:36:20';
+	var anchorid			= "#" + anchor;
+	var caldate				= p_flddate;
+	var yrfromnow			= yearsFromNow;
+	var yrstart				= year - 0;
+	var yrend				= year + yrfromnow;
+	var l_yrrange			= yrstart + ":" + yrend;
+
+	if (p_flddate.id == null ) {
+		caldate.setAttribute("id",p_flddate.name);
+	} else {
+		caldate.setAttribute("id",p_flddate.id);
+	}
+
+	$("#" + caldate.id).datepicker({ 
+		
+		yearRange: l_yrrange ,
+		showButtonPanel: true,
+		changeMonth: true,
+		minDate: new Date (cal_year, cal_mon, parseFloat (cal_day) + 0),
+		altField: '#alternate', 
+		changeYear: true,
+		defaultDate: cal_date
+	}).show();
+
+	if ($.datepicker._datepickerShowing && $.datepicker._lastInput == caldate)
+		$.datepicker._hideDatepicker();
+	else
+		$.datepicker._showDatepicker(caldate);
+	    $("#" + caldate.id).removeClass("hasDatepicker");
+		$("#" + caldate.id).unbind();
+}
+//------------------------------------------------------------------------------
+function calendarsetup_FromNextBusinessDate (flddat, anchor, format, prevyrs, nextyrs) {
+	if (flddat.disabled) { 
+		return; 
+	}
+
+	var anchorid			= "#" + anchor;
+	var caldate				= flddat;
+	var prevyear			= prevyrs;
+	var nextyear			= nextyrs;
+	var yrstart				= year - prevyear;
+	var yrend				= year + nextyear;
+	var l_yrrange			= yrstart + ":" + yrend;
+
+	if (flddat.id == null || flddat.id == "") {
+		caldate.setAttribute("id",flddat.name);
+	} else {
+		caldate.setAttribute("id",flddat.id);
+	}
+
+	$("#" + caldate.id).datepicker({ 
+		
+		yearRange: l_yrrange ,
+		showButtonPanel: true,
+		minDate: new Date (cal_year, cal_mon, parseFloat (cal_day) + 1),
+		changeMonth: true,
+		changeYear: true,
+		defaultDate: cal_date
+	}).show();
+
+	if ($.datepicker._datepickerShowing && $.datepicker._lastInput == caldate)
+		$.datepicker._hideDatepicker();
+	else
+		$.datepicker._showDatepicker(caldate);
+	    $("#" + caldate.id).removeClass("hasDatepicker");
+		$("#" + caldate.id).unbind();
+
+}
+//------------------------------------------------------------------------------
+/**
+Function calendarsetup_uptotodayDate
+Returns the past dated calendar with future days disabled.
+**/
+function calendarsetup_maxtoday (flddat, anchor, format, prevyear) {
+	if (flddat.disabled) { 
+		return; 
+	}
+
+	var anchorid			= "#" + anchor;
+	var caldate				= flddat;
+	var prevyr				= prevyear;
+	var yrstart				= year - prevyr;
+	var yrend				= year + 0;
+	var l_yrrange			= yrstart + ":" + yrend;
+
+	if (flddat.id == null || flddat.id == "") {
+		caldate.setAttribute("id",flddat.name);
+	} else {
+		caldate.setAttribute("id",flddat.id);
+	}
+
+	$("#" + caldate.id).datepicker({ 
+		
+		yearRange: l_yrrange,
+		showButtonPanel: true,
+		maxDate:new Date (cal_year, cal_mon, parseFloat (cal_day) + 0),
+		changeMonth: true,
+		changeYear: true,
+		defaultDate: cal_date
+	}).show();
+
+	if ($.datepicker._datepickerShowing && $.datepicker._lastInput == caldate)
+		$.datepicker._hideDatepicker();
+	else
+		$.datepicker._showDatepicker(caldate);
+        $("#" + caldate.id).removeClass("hasDatepicker");
+		$("#" + caldate.id).unbind();
+
+}
+//------------------------------------------------------------------------------
+function updateWeekends (date) {
+	var str                 = "";
+	var day					= date.getDay();
+	var weekly_off;
+	
+
+	if (str.indexOf (",") > 0) {
+		weekly_off			    = str.split (",");
+	} else {
+		weekly_off			    = new Array ();
+	}
+	for (l_i = 0; l_i < weekly_off.length; l_i++) {
+		if (day == weekly_off [l_i]) {
+			return [false, ''];
+		}
+	}
+
+	return [true, ''];
+}
+//------------------------------------------------------------------------------
+/**
+function		fnCalendar_business2_entityDate_textbox 
+				Input format for p_entityHostDate should be dd-MM-yyyy.
+
+p_anchor			:	to show div relative to anchor (calendar image).
+p_flddate			:	field where calendar date will be stored. 
+p_format			:	output format.
+p_entityHostDate	:	calendar starting date.  
+**/
+function fnCalendar_business2_entityDate_textbox (
+	p_anchor
+,	p_flddate
+,	p_format
+,	p_entityHostDate
+) {
+	if (	p_flddate.disabled 
+		||	p_entityHostDate	==	'' 
+		||  p_entityHostDate	==	'undefined'
+	) { 
+		return; 
+	}  
+		
+	var anchorid			=	"#" + p_anchor;
+	var caldate				=	p_flddate;
+	var	local_day			=	p_entityHostDate.substr (0,2);
+		local_month			=	parseInt(p_entityHostDate.substr (3,2),10) - 1;
+		local_year			=	p_entityHostDate.substr (6,4);
+	var l_yrRange			=	local_year + ":" + (parseInt(local_year)+20);
+	var l_EntityHostDate 	=	new Date (
+									local_year
+								,	local_month
+								,	parseInt (local_day) + 1
+							);		
+
+	if (p_flddate.id == null || p_flddate.id == "" ) {
+		caldate.setAttribute("id",p_flddate.name);
+	} else {
+		caldate.setAttribute("id",p_flddate.id);
+	}
+				 
+	$("#" + caldate.id).datepicker({ 
+		
+		yearRange: l_yrRange ,
+		showButtonPanel: true,
+		changeMonth: true,
+		minDate: l_EntityHostDate,
+		beforeShowDay: noWeekendsOrHolidays,
+		altField: '#alternate', 
+		changeYear: true,
+		defaultDate: l_EntityHostDate
+	}).show();
+			   
+	if ($.datepicker._datepickerShowing && $.datepicker._lastInput == caldate)
+		$.datepicker._hideDatepicker();
+	else
+		$.datepicker._showDatepicker(caldate);
+	    $("#" + caldate.id).removeClass("hasDatepicker");
+		$("#" + caldate.id).unbind();
+}
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+/**
+Function fnFixedDateCalendar_local
+pavan
+Returns the future dated calendar with all days disabled except April 1st .
+No of future years to be displayed can be set by yearsFromNow parameter.
+
+**/
+
+function fnFixedDateCalendar_local (flddat, anchor, format, prevyear) {
+	if (flddat.disabled) { 
+		return; 
+	}
+ 
+	var anchorid			= "#" + anchor;
+	var caldate				= flddat;
+	var prevyr				= prevyear;
+	var yrstart				= year - prevyr;
+	var yrend				= year + 0;
+	var l_yrrange			= yrstart + ":" + yrend;
+     cal_day			= '01';
+	cal_month		= '04';
+	cal_year		= '2020';
+	cal_mon			= parseFloat (cal_month)  ;
+	cal_date		= new Date (cal_year, cal_mon, cal_day);
+	if (flddat.id == null || flddat.id == "") {
+		caldate.setAttribute("id",flddat.name);
+	} else {
+		caldate.setAttribute("id",flddat.id);
+	
+	}
+
+	$("#" + caldate.id).datepicker({ 
+		
+		yearRange: l_yrrange,
+		showButtonPanel: true,
+		maxDate:new Date (cal_year, cal_mon, parseFloat (cal_day) - 1),
+		changeMonth: false,
+		changeYear: true,
+		defaultDate: cal_date,
+		beforeShowDay: function (minDate) {
+        if (minDate.getDate() == 1) {
+            return [true, ''];
+        }
+        return [false, ''];
+       }
+	}).focus(function() {
+    $(".ui-datepicker-prev, .ui-datepicker-next").remove();
+});
+
+	if ($.datepicker._datepickerShowing && $.datepicker._lastInput == caldate)
+		$.datepicker._hideDatepicker();
+	else
+		$.datepicker._showDatepicker(caldate);
+
+}
+/**
+Function fnFutureCalendar
+
+Returns the future dated calendar with previous days disabled.
+No of future years to be displayed can be set by yearsFromNow parameter.
+
+**/
+
+function fnSpecificCalendarMonths (anchor, p_flddate, p_fldmon, p_fldyear) {
+	if (p_flddate.disabled) { 
+		return; 
+	} 
+	var anchorid			= "#" + anchor;
+	var caldate				= p_flddate;
+	var yrstart				= p_fldyear ;
+	var yrend				= parseInt (p_fldyear) + 1;
+	var l_yrrange			= yrstart + ":" + yrend;
+	
+	var parts = p_fldmon.toString().split("-");
+	var l_defaultDate = new Date(parts[2], parts[1] - 1, parts[0]);
+    
+	
+	if (p_flddate.id == null || p_flddate.id == "" ) {
+		caldate.setAttribute("id",p_flddate.name);
+	} else {
+		caldate.setAttribute("id",p_flddate.id);
+	}
+  
+	$("#" + caldate.id).datepicker({ 
+		
+		yearRange: l_yrrange,
+		showButtonPanel: true,
+		changeMonth: true,
+		changeYear: true,
+		defaultDate: l_defaultDate
+	}).show();
+
+	if ($.datepicker._datepickerShowing && $.datepicker._lastInput == caldate)
+		$.datepicker._hideDatepicker();
+	else
+		$.datepicker._showDatepicker(caldate);
+
+}
+//------------------------------------------------------------------------------
+/**
+Function calendarsetup_maxtoLastday
+Returns the past dated calendar with future days disabled.
+**/
+function calendarsetup_maxtoLastday (flddat, anchor, format, prevyear, plastdate) {
+	if (flddat.disabled) { 
+		return; 
+	}
+ 
+	var anchorid			= "#" + anchor;
+	var caldate				= flddat;
+	var prevyr				= prevyear;
+	var yrstart				= year - prevyr;
+	var yrend				= year + 0;
+	var l_yrrange			= yrstart + ":" + yrend;
+	
+	var parts = plastdate.toString().split("-");
+	var l_defaultDate = new Date(parts[2], parts[1] - 1, parts[0]);
+    
+	if (flddat.id == null || flddat.id == "") {
+		caldate.setAttribute("id",flddat.name);
+	} else {
+		caldate.setAttribute("id",flddat.id);
+	
+	}
+	
+  	$("#" + caldate.id).datepicker({ 
+		
+		yearRange: l_yrrange,
+		showButtonPanel: true,
+		maxDate:l_defaultDate,
+		changeMonth: true,
+		changeYear: true,
+		defaultDate: cal_date
+	}).show();
+
+	if ($.datepicker._datepickerShowing && $.datepicker._lastInput == caldate)
+		$.datepicker._hideDatepicker();
+	else
+		$.datepicker._showDatepicker(caldate);
+
+}
+
+</script><script src="jsdir/common.js" type="text/JavaScript" language="JavaScript"></script><script src="jsdir/Ajax.js" type="text/JavaScript" language="JavaScript"></script><script type="text/JavaScript" language="JavaScript">
+//----------------------------------------------------------------------------
+var l_loadFlag = 1;
+function sorttxndate(p_sortby){
+disableField();
+
+	document.frmmain.fldsortby.value=p_sortby;
+	var v=document.frmmain.fldsortorder.value;
+	if(v==0){ 		
+			document.frmmain.fldsortorder.value="1";			
+		}
+		else{												
+			document.frmmain.fldsortorder.value="0";			
+		}											
+	
+	SendRequest ('02');
+}
+function sortvaluedate(p_sortby){
+disableField();
+
+ document.frmmain.fldsortby.value=p_sortby;			
+	var v=document.frmmain.fldsortorder.value;		
+		if(v==0){
+			document.frmmain.fldsortorder.value="1";
+		}
+		else{
+			document.frmmain.fldsortorder.value="0";
+		}
+		
+	SendRequest ('02');
+}
+//----------------------------------------------------------------------------
+
+function sorttxndate1(nbrcode){
+  
+  if( document.frmmain.fldsearch1.selectedIndex=='0'){
+		alert("Please select search period");
+		return false;
+	}	
+if(document.frmmain.fldtranstype.value=='3') {	
+	if( l_cardLength =='0'){
+		alert("No Debit Card for this Account.");
+		return false;
+	}	
+}
+if(!document.frmmain.fldtodate.disabled)
+  {
+	if(!validateFromdate())
+			{
+				return false;
+			}
+  }
+document.frmmain.fldPageNo.value = '1';
+//document.frmmain.fldacctno[document.frmmain.fldacctno.options.selectedIndex].value += '~'+nbrcode;  
+	if(document.frmmain.fldsearch1.value== "1"
+	|| document.frmmain.fldsearch1.value == "2")
+	{
+
+			document.frmmain.fldfromdate.disabled=true;	  
+			document.frmmain.fldtodate.disabled=true;
+			
+  	}
+// setBranch ();
+document.frmmain.fldsearch.selectedIndex=document.frmmain.fldsearch1.selectedIndex;	
+document.frmmain.fldsearch.value=document.frmmain.fldsearch1.value;	
+//document.frmmain.target="frame_txn";
+
+//Tanmai changes starts 13-07-2018
+
+document.frmmain.fldsearch1name.value = document.frmmain.fldsearch1.options[document.frmmain.fldsearch1.selectedIndex].text;
+
+//Tanmai changes starts 13-07-2018
+SendRequest ('02');
+}
+//----------------------------------------------------------------------------
+function validateFromdate()	{
+
+var cutoff= '180';
+var fromDateStr=document.frmmain.fldfromdate.value;
+var toDateStr = document.frmmain.fldtodate.value;
+var a;
+a=fromDateStr.split("-");
+
+var selectedDate = new Date(a[2], a[1] - 1, a[0], 0, 0, 0, 0); 
+
+var b;
+b=toDateStr.split("-");
+
+var selectedtoDate = new Date(b[2], b[1] - 1, b[0], 0, 0, 0, 0); 
+
+var temp = document.frmmain.fldnooftxn.value;
+
+var date = new Date();
+var newdate = new Date(selectedtoDate);
+newdate.setDate(newdate.getDate() - cutoff);
+var nd = new Date(newdate);
+
+nd.setHours(0);    
+nd.setMinutes(0);
+nd.setSeconds(0);
+nd.setMilliseconds(0);
+var alertmsg='Transactions beyond 6 months cannot be fetched';
+return true;
+}
+
+//----------------------------------------------------------------------------
+
+function SendPageRequest(p_pageno){	 
+  if(l_loadFlag == 1)
+  {
+	 var l_accttype = document.frmmain.fldacctno.options[document.frmmain.fldacctno.options.selectedIndex].value;
+	l_accttype = l_accttype.split ('~');
+
+
+	document.frmmain.fldsearch.selectedIndex=document.frmmain.fldsearch1.selectedIndex;	
+	document.frmmain.fldsearch.value=document.frmmain.fldsearch1.value;	
+	document.frmmain.fldsubmit.disabled = true;
+	document.frmmain.fldPageNo.value = p_pageno;
+	document.frmmain.fldaccttype.value =l_accttype[1];
+	document.frmmain.fldcustid.value=document.frmmain.fldcustid.value;
+	document.frmmain.fldSessionId.value = parent.idsession;
+	document.frmmain.fldRequestId.value = 
+			"RR"+document.frmmain.fldServiceType.value+"03";
+	//document.frmmain.target="frame_txn";
+	l_loadFlag = l_loadFlag +1;
+	document.frmmain.submit ();
+	return false;
+}
+}
+//----------------------------------------------------------------------------
+
+function chooseField(nbrcode)							  
+{	
+if (document.frmmain.fldsearchformat[document.frmmain.fldsearchformat.options.selectedIndex].value=="")  { 
+alert("Please select the download format.");
+	return false;
+}
+
+if(document.frmmain.fldsearch1.value== "1"
+	|| document.frmmain.fldsearch1.value == "2")
+	{
+		document.frmmain.fldfromdate.disabled=true;	  
+		document.frmmain.fldtodate.disabled=true;
+	}
+
+document.frmmain.fldsearch.selectedIndex=document.frmmain.fldsearch1.selectedIndex;	
+document.frmmain.fldsearch.value=document.frmmain.fldsearch1.value;	
+document.frmmain.fldSessionId.value = parent.idsession;
+document.frmmain.fldPageNo.value	= "0";
+//document.frmmain.fldacctno[document.frmmain.fldacctno.options.selectedIndex].value += '~'+nbrcode; 
+
+if(document.frmmain.fldsearchformat[document.frmmain.fldsearchformat.options.selectedIndex].value == '09'){
+	document.frmmain.flddwldtype.value = 'M';
+	document.frmmain.fldsortorder.value="1";
+}
+
+SendRequest (document.frmmain.fldsearchformat[document.frmmain.fldsearchformat.options.selectedIndex].value); 
+enableField ();
+
+}
+//----------------------------------------------------------------------------
+function enableField () {
+	if(document.frmmain.fldsearch1.value== "3"){
+		document.frmmain.fldfromdate.disabled=false;
+		document.frmmain.fldtodate.disabled=false;
+	}
+	document.frmmain.fldtoamount.disabled=false;
+	document.frmmain.fldfromamount.disabled=false;
+	document.frmmain.fldsubmit.disabled=false;
+	document.frmmain.fldsearch1.disabled=false;
+	document.frmmain.fldacctno.disabled=false;
+	document.frmmain.fldtranstype.disabled=false;
+	document.frmmain.fldsortorder.disabled=false;		
+	document.frmmain.fldsortby.disabled=false;
+	//document.frmmain.flddebitcard.disabled=false;
+	document.frmmain.fldsearchformat.disabled=false;
+	document.frmmain.flddownload.disabled=false;
+}
+//-----------------------------------------------------------------------------
+function disableField()
+{
+	
+	document.frmmain.fldfromdate.disabled=true;
+	document.frmmain.fldtodate.disabled=true;
+	document.frmmain.fldfromdate.value="";
+	document.frmmain.fldtodate.value="";
+	document.frmmain.fldfromamount.disabled=false;
+	document.frmmain.fldtoamount.disabled=false;
+
+	if(document.frmmain.fldsearch1.value== "1"
+	|| document.frmmain.fldsearch1.value == "2")
+	{
+		document.frmmain.fldfromdate.disabled=true;
+		document.frmmain.fldtodate.disabled=true;
+		document.getElementById("tdnooftxn").style.display="none";
+		document.getElementById("labelnooftxn").style.display="none";
+		document.getElementById("labelnoofdays").style.display="none";
+		//document.frmdownload.flddownload.disabled=false;
+	}
+	else if(document.frmmain.fldsearch1.value == "3")
+	{
+		
+		document.frmmain.fldfromdate.disabled=false;
+		document.frmmain.fldtodate.disabled=false;
+
+		document.getElementById("tdnooftxn").style.display="none";
+		document.getElementById("labelnooftxn").style.display="none";
+		document.getElementById("labelnoofdays").style.display="none";
+		document.frmmain.fldfromdate.id='fldfromdateid';
+		document.frmmain.fldtodate.id= 'fldtodateid';
+		//document.frmdownload.flddownload.disabled=false;
+	}
+	else if(document.frmmain.fldsearch1.options[document.frmmain.fldsearch1.options.selectedIndex].value == "4")
+	{
+		document.frmmain.fldfromdate.disabled=true;
+		document.frmmain.fldtodate.disabled=true;
+		document.getElementById("tdnooftxn").style.display="";
+		document.getElementById("labelnooftxn").style.display="none";
+		document.getElementById("labelnoofdays").style.display="";
+		document.frmmain.fldnooftxn.value="";
+	}
+	else if(document.frmmain.fldsearch1.options[document.frmmain.fldsearch1.options.selectedIndex].value == "5"){
+		document.getElementById("tdnooftxn").style.display="";
+		document.getElementById("labelnooftxn").style.display="";
+		document.getElementById("labelnoofdays").style.display="none";
+		document.frmmain.fldnooftxn.value="";
+		document.frmmain.fldfromdate.disabled=true;
+		document.frmmain.fldtodate.disabled=true;
+		document.frmmain.fldfromamount.disabled=true;
+		document.frmmain.fldtoamount.disabled=true;
+		document.frmmain.fldfromamount.value="";
+		document.frmmain.fldtoamount.value="";
+    }
+	else {
+		document.getElementById("tdnooftxn").style.display="none";
+		document.getElementById("labelnooftxn").style.display="none";
+		document.getElementById("labelnoofdays").style.display="none";
+		document.frmmain.fldfromdate.disabled=true;
+		document.frmmain.fldtodate.disabled=true;
+	}	
+}
+//----------------------------------------------------------------------------
+function disable() {
+
+	if(document.frmmain.fldsearch1.options[document.frmmain.fldsearch1.options.selectedIndex].value == "5" 
+			|| (document.frmmain.fldtranstype.value !="" && document.frmmain.fldtranstype.value !="0" )
+			|| document.frmmain.fldfromamount.value !="" 
+			|| document.frmmain.fldtoamount.value !=""){
+
+		var l_dwld_format = document.getElementById("fldsearchformat");
+
+		if(l_dwld_format != null){
+			for(var i=0;i <l_dwld_format.options.length;i++){
+				if(l_dwld_format.options[i].value == "09"){
+					l_dwld_format.removeChild(l_dwld_format.options[i]);
+				}
+			}
+		}
+	}
+
+
+	document.frmmain.fldfromdate.disabled=true;
+	document.frmmain.fldtodate.disabled=true;
+
+	//document.frmmain.fldacctno.value = '1222101103944   ~C~1222~71204880';
+    if(document.frmmain.fldsearch1.value== "1"
+	|| document.frmmain.fldsearch1.value == "2")
+	{
+	document.frmmain.fldfromdate.disabled=true;
+	document.frmmain.fldtodate.disabled=true;
+	}
+
+	 if(document.frmmain.fldsearch1.options[document.frmmain.fldsearch1.options.selectedIndex].value == "5"){
+		document.getElementById("tdnooftxn").style.display="";
+		document.getElementById("labelnooftxn").style.display="";
+		document.getElementById("labelnoofdays").style.display="none";
+		document.frmmain.fldfromamount.disabled=true;
+		document.frmmain.fldtoamount.disabled=true;
+		document.frmmain.fldfromamount.value="";
+		document.frmmain.fldtoamount.value="";	
+    } 
+	
+	else if(document.frmmain.fldsearch1.options[document.frmmain.fldsearch1.options.selectedIndex].value == "4"){
+		document.getElementById("tdnooftxn").style.display="";
+		document.getElementById("labelnooftxn").style.display="none";
+		document.getElementById("labelnoofdays").style.display="";
+		}  if(document.frmmain.fldsearch1.options[document.frmmain.fldsearch1.options.selectedIndex].value == "3"){
+		document.frmmain.fldfromdate.disabled=false;
+		document.frmmain.fldtodate.disabled=false;
+		}
+		
+		else{
+		//document.getElementById("tdnooftxn").style.display="none";
+		//document.getElementById("labelnooftxn").style.display="none";
+		//document.getElementById("labelnoofdays").style.display="none";
+		document.frmmain.fldfromdate.disabled=true;
+		document.frmmain.fldtodate.disabled=true;
+
+	
+		} 
+
+	if(document.frmmain.fldsearch1.value =='') {
+		document.frmmain.fldsearch1.value= "1"
+		document.frmmain.fldsearch1.selected= true;
+
+		document.frmmain.fldtranstype.value= "0"
+		document.frmmain.fldtranstype.selected= true;
+
+		document.frmmain.fldsortby.value= "0"
+		document.frmmain.fldsortby.selected= true;
+
+		document.frmmain.fldsortorder.value= "0"
+		document.frmmain.fldsortorder.selected= true;
+
+		document.frmmain.fldfromdate.disabled=true;
+		document.frmmain.fldtodate.disabled=true;
+
+	}
+
+	if(('01-01-2020'=='') & ('30-03-2020'=='')) {	
+	
+		var l_frmdate = '01-01-2020';
+		var l_todate = '30-03-2020';
+		document.frmmain.fldfromdate.value = l_frmdate;
+		document.frmmain.fldtodate.value = l_todate;
+		document.frmmain.fromdate1.value = l_frmdate;
+		document.frmmain.todate1.value = l_todate;	
+		
+		if(l_frmdate=='' & l_todate=='')
+		{
+			document.frmmain.fldfromdate.value = '05-02-2020';
+			document.frmmain.fldtodate.value ='05-04-2020';
+			document.frmmain.fromdate1.value = '05-02-2020';
+			document.frmmain.todate1.value = '05-04-2020';
+		}	
+		
+	} else {
+		document.frmmain.fldfromdate.disabled=false;
+		document.frmmain.fldtodate.disabled=false;
+	}
+		
+
+	displayStatusMessage();
+	populateDebitcards() ;
+}
+//------------------------------------------------------------------------------
+function setBranch () {
+var l_val = document.frmmain.fldacctno.options[document.frmmain.fldacctno.options.selectedIndex].value;
+var l_arr  = new Array ();
+l_arr = l_val.split ('~');
+
+	/*	
+			selectedAccNbr		= '1222101103944   ';
+			if(selectedAccNbr == l_arr [0])
+			{
+				document.frmmain.fldBranch.value = '1222';
+				document.frmmain.fldcustid.value = '71204880';
+			}
+				*/
+	document.frmmain.fldBranch.value = l_arr [2];
+	document.frmmain.fldcustid.value = l_arr [3];
+	//document.frmmain.fldacctno.value = l_arr [0];
+return false;
+}
+//-----------------------------------------------------------------------------
+
+	function fnCreateDebitCardDropDown(p_xml){
+	try{
+		var creditcards	= document.getElementById("flddebitcard");	
+		var carddetailsdto	= p_xml.getElementsByTagName("carddetailsdto");
+	
+		if(carddetailsdto.length == 0){			
+			document.frmmain.flddebitcard.disabled=true;
+			displayUIDownloadErrorMessage (p_xml);
+		}
+		l_cardLength = carddetailsdto.length;
+		option = document.createElement("option");
+		option.value="";
+		//option.appendChild(document.createTextNode('All'));
+		//creditcards.appendChild(option);
+
+		for(var i=0; i<carddetailsdto.length; i++){
+			opt = document.createElement("option");
+			
+			opt.value	=	carddetailsdto[i].getElementsByTagName("cardno")[0].childNodes[0].nodeValue;
+			opt.appendChild(document.createTextNode(carddetailsdto[i].getElementsByTagName("cardno")[0].childNodes[0].nodeValue));
+			creditcards.appendChild(opt);
+		}
+		setTimeout ("document.frmmain.flddebitcard.value= ''", 100);
+	}catch(exp){
+		displayUIDownloadErrorMessage ();
+	}
+}
+//--------------------------------------------------------------------------------------------
+function fnClearDebitCardDropDown(){
+		var creditcards	= document.getElementById("flddebitcard");	
+	while(creditcards.childNodes.length>0){
+		creditcards.removeChild(creditcards.childNodes[0]);
+	}
+}
+//--------------------------------------------------------------------------------------------
+ function updateBrowser(p_xml,p_text){
+	try {
+		if(document.frmmain.flddebitcard.options.length !='0'){
+			fnClearDebitCardDropDown();
+		}
+		fnCreateDebitCardDropDown(p_xml);
+	
+		if(''!=''){ 
+			document.frmmain.flddebitcard.value= '';
+		}
+	}catch(exp){
+		displayUIDownloadErrorMessage ();
+	}
+}
+
+//------------------------------------------------------------------------------	
+	
+	function populateDebitcards() {
+	if(document.frmmain.fldtranstype.value=='3' && document.frmmain.fldacctno.selectedIndex =='0'){
+		alert("Please Select Account Number.");
+		return false;
+	}
+	if(document.frmmain.fldtranstype.value=='3') {
+	
+	 var l_reqarr = new Array();
+	//document.frmmain.flddebitcard.disabled=false;
+	l_reqarr.push('fldtranstype='+ document.frmmain.fldtranstype.value);
+	l_reqarr.push('fldacctno='+ document.frmmain.fldacctno.value);
+   		
+		SendAjaxRequest(l_reqarr,'RRAAC08');
+
+	} else {
+		//document.frmmain.flddebitcard.disabled=true;
+	}
+
+  }	
+//-----------------------------------------------------------------------------
+function displayUIDownloadErrorMessage (p_xml) {
+	cnt = 0;
+	totalcnt  = 0;
+	var arrErrorDesc = new Array();
+	var arrEmpty	= new Array();
+
+	var errmsg		= p_xml.getElementsByTagName("errormsg");
+	for(var i=0; i<errmsg.length; i++){
+
+		arrErrorDesc[i] = errmsg[i].firstChild.nodeValue;
+
+	}	
+}  
+//------------------------------------------------------------------------------		
+// function for scroll into View
+function scrollToResults(){
+var resdiv=document.getElementById("box table-style");
+if(resdiv!=null)
+{
+	resdiv.scrollIntoView();
+}
+}
+
+</script><form name="frmmain" method="post" action="internet" autocomplete="off"><input type="hidden" name="idsequence" value="nwiTRQxiarQlM8f9uHgUUJmBTplIYrGdPptm0XSUJMw="><table class="mainbox" id="mainbox" border="0" cellspacing="0" cellpadding="0"><tbody><tr><td><div class="toppanel"><ul><li></li></ul></div><div class="middlepanel"><table class="maintable" id="maintable" border="0" cellpadding="0" cellspacing="0"><tbody><tr><td valign="top"><div id="pageheadingpanel"><div nowrap="true" id="pageheading">Account Statement</div><div id="pageheadingdate">05-04-2020 08:36:20 GMT +0530</div></div></td></tr><tr><td valign="top" height="100%"><div id="contentarea" class="y_scroll"><div class="contentarea"><div class="wrapperbg"><span class="box" id="box"><div class="toppanel"><ul><li></li></ul></div><div class="dunstmiddlepanel"><table class="formtable" cellpadding="1" cellspacing="1" border="0"><tbody><tr><td class="labeltext col1"><label for="fldacctno">Select Account*:</label></td><td class="col80"><div class="wrap-select"><select onchange="setBranch();" class="objselect selectAcc" name="fldacctno" id=" Account Number #[^ ]" type="select-one"><option selected="true" value="">Select</option><optgroup label="71204880"></optgroup><optgroup label="&nbsp;&nbsp;&nbsp;Conventional"><option selected="true" value="1222101103944   ~C~1222~71204880">&nbsp;&nbsp;&nbsp;MySavings</option></optgroup></select></div></td></tr></tbody></table></div><div class="bottompanel"><ul><li></li></ul></div></span><span class="box" id="box"><div class="toppanel"><ul><li></li></ul></div><div class="dunstmiddlepanel"><table class="formtable" cellpadding="1" cellspacing="1" border="0"><tbody><tr><td class="labeltext col1"><label for="fldsearch">Search By*:</label></td><td class="col2"><div class="wrap-select"><select onchange="disableField()" name="fldsearch1" class="objselect" id="fldsearch1" type="select-one"><option value="">Select</option><option value="1">Current Period</option><option selected="true" value="3">Specify Period</option><option value="5">Last 'n' Transactions</option><option value="10">Today's Transactions</option><option value="9">Yesterday's Transactions</option><option value="4">Last 'n' Days</option><option value="11">Previous Fortnight</option><option value="6">Previous Month</option><option value="7">Previous Quarter</option><option value="8">Previous 6 Months</option><option value="2">Previous Period</option></select></div></td><script>
+						document.frmmain.fldsearch1.value='3';
+					</script><td id="labelnooftxn" style="display:none" class="labeltext col1"><label for="fldsearch" id="labelnooftxn">No of Transactions**:</label></td><td id="labelnoofdays" style="display:none" class="labeltext col1"><label for="fldsearch">No of Days**:</label></td><td style="display:none" id="tdnooftxn" class="col2"><input value="" class="objinputtext" id="fldnooftxn" type="text" name="fldnooftxn" maxlength="15" onfocus=""></td></tr><tr><td class="labeltext col3"><label for="fldtranstype">Transaction Type*:</label></td><td class="col4"><div class="wrap-select"><select onchange="populateDebitcards();" name="fldtranstype" class="objselect" id="fldtranstype" type="select-one"><option value="0">Both Debit and Credit Transactions</option><option value="2">Debit Transactions</option><option value="1">Credit Transactions</option></select></div></td><script>
+						document.frmmain.fldtranstype.value='0';
+					</script></tr><tr><td class="labeltext"><label for="fldfromdate">From Date**:</label></td><td><input placeholder="Select From Date" contenteditable="false" id="fldfromdate" class="objinputtext" type="text" maxlength="11" size="11" value="01-01-2020" name="fldfromdate"><img onclick="calendarsetup(document.frmmain.fldfromdate, 'anchor' ,'dd-MM-yyyy',10,0);;return;" align="absMiddle" id="anchor" src="images/eng/calander.gif" name="anchor"></td><td class="labeltext"><label for="fldtodate">To Date**:</label></td><td><input placeholder="Select To Date" contenteditable="false" class="objinputtext" id="fldtodate" type="text" maxlength="11" size="11" value="30-03-2020" name="fldtodate"><img onclick="calendarsetup(document.frmmain.fldtodate, 'anchor1' ,'dd-MM-yyyy',10,0);;return;" align="absMiddle" id="anchor1" src="images/eng/calander.gif" name="anchor1"></td></tr><tr><td class="labeltext"><label for="fldfromamount">From Amount**:</label></td><td><input placeholder="Enter From Amount" value="" class="objinputtext" id="fldfromamount" type="text" name="fldfromamount" maxlength="15" onfocus=""></td><td class="labeltext"><label for="fldtoamount">To Amount**:</label></td><td><input placeholder="Enter To Amount" value="" id="fldtoamount" class="objinputtext" type="text" name="fldtoamount" maxlength="15" onfocus=""></td></tr></tbody></table></div><div class="bottompanel"><ul><li></li></ul></div></span><span class="box" id="box wdth-prblm"><div class="toppanel"><ul><li></li></ul></div><div class="dunstmiddlepanel"><table class="formtable" cellpadding="1" cellspacing="1" border="0"><tbody><tr><td class="labeltext col1"><label for="fldsortby">Sort By*:</label></td><td class="col2"><div class="wrap-select"><select name="fldsortby" class="objselect" id="an option #[^ ]" type="select-one"><option selected="true" value="0">Transaction Date</option><option value="1">Amount</option><option value="2">Value Date</option></select></div></td><td class="labeltext col3"><label for="fldsortorder">Sort Order*:</label></td><td class="col4"><div class="wrap-select"><select id="an option #[^ ]" class="objselect" name="fldsortorder" type="select-one"><option value="0">Descending</option><option value="1">Ascending</option></select></div></td></tr></tbody></table></div><div class="bottompanel"><ul><li></li></ul></div></span><div class="notes"><p> *:Indicates mandatory field.  </p><p>**:Indicates mandatory if particular option is enabled. </p><p>Disclaimer : Closing Balance does not have future dated transactions accounted.</p><p></p><p>For Statements with search period of 1 year use Historical Account Statement under Services--&gt;Others.</p></div><div class="buttonarea"><ul><script>var code = '1222';</script><li><input type="button" class="Buttons" value="Submit" onclick="return sorttxndate1(code)" name="fldsubmit" tabindex="20"></li></ul></div><br><br><input value="0" name="fldignoredate" type="hidden"><input value="1" name="fldPageNo" type="hidden"><input value="" name="fldaccttype" type="hidden"><input value="RRAAC02" name="fldRequestId" type="hidden"><input value="n2jLJznjBuUPnfakxDwUqKg2ig7htDCGsgCHLzuPwT4=" name="fldSessionId" type="hidden"><input value="RRAAC01" name="fldSectionId" type="hidden"><input value="/AbbuPs2VV9WRYpMaP3y+J5udodwMp89+cQ4cQiEC38=" name="fldDataId" type="hidden"><input value="AAC" name="fldServiceType" type="hidden"><input value="AAC" name="flddwldtype" type="hidden"><input value="testflag" name="fldacctactinquireflg" type="hidden"><input value="1222" name="fldBranch" type="hidden"><input value="3" name="fldsearch" type="hidden"><input value="Specify Period" name="fldsearch1name" type="hidden"><input value="DHINESH KUMARAN M" name="fldCustShortName" type="hidden"><input value="TRICHY TEPPAKULAM MAIN" name="fldBranchName" type="hidden"><input value="S/O S MOHANA SUNDARAM,
+11 A KEELA THERU
+VERESWARAM SRIRANGAM
+TRICHY" name="fldAddress" type="hidden"><input value="S/O S MOHANA SUNDARAM,
+11 A KEELA THERU
+VERESWARAM SRIRANGAM
+TRICHY" name="fldJointAcctHolder" type="hidden"><input value="eng" name="fldidlang" type="hidden"><input value="INR" name="fldcurr1" type="hidden"><input value="01-01-2020" name="fromdate1" type="hidden"><input value="30-03-2020" name="todate1" type="hidden"><input value="71204880" name="fldcustid" type="hidden"><div class="dunstmiddlepanel"><div class="table-style"><span class="box" id="box table-style"><div class="toppanel"><ul><li></li></ul></div><div class="middlepanel"><table class="graphtable" cellpadding="1" cellspacing="1" border="0"><tbody><tr><td class="headingalign">Account Number</td><td class="headingalign">Account Currency</td><td class="headingalign ccyalign">Balance B/F</td><td class="headingalign ccyalign">Closing Balance</td></tr><tr class="AlterRow2"><td width="25%"><label class="labeltext">1222101103944   </label></td><td width="20%"><label class="labeltext">INR</label></td><td class="ccyalign" width="30%">0.00</td><td class="ccyalign" width="30%">1,087.00</td></tr></tbody></table></div><div class="bottompanel"><ul><li></li></ul></div></span><table class="standardtable" cellpadding="1" cellspacing="1" border="0"><tbody><tr><td class="labeltext col1">
+						Pages :  (1 )
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1</td></tr></tbody></table><span class="box" id="box bottom-infm"><div class="toppanel"><ul><li></li></ul></div><div class="middlepanel"><table class="graphtable" cellpadding="1" cellspacing="1" border="0"><tbody><tr><td class="headingalign">
+					Transaction Date												
+				</td><td class="headingalign">
+					Value Date												
+				</td><td class="headingalign">
+					Cheque No.
+				</td><td class="headingalign">		   		
+					Description		   	
+				</td><td class="headingalign">		   		
+					Branch Code		   	
+				</td><td class="headingalign ccyalign">		   		
+						Debit		   	
+					</td><td class="headingalign ccyalign">		   		
+						Credit		   	
+					</td><td class="headingalign ccyalign">		   		
+					Balance		   	
+
+				</td></tr><tr class="AlterRow2"><td>30-03-2020 11:43:27</td><td nowrap="nowrap">30-03-2020</td><td>009011947720</td><td>UPI/009011947720/AXI848d6b59450a45768283222a259a0400/30/03/2020 11:43:27/dhineshmohan07-1@okaxis/1222101103944@cnrb00012</td><td>33</td><td class="ccyalign"></td><td class="ccyalign">600.00</td><td class="ccyalign">1,087.00</td></tr><tr class="AlterRow2"><td>28-03-2020 04:08:35</td><td nowrap="nowrap">27-03-2020</td><td></td><td>SMS ALERT CHARGES NEW</td><td>1222</td><td class="ccyalign">18.00</td><td class="ccyalign"></td><td class="ccyalign">487.00</td></tr><tr class="AlterRow2"><td>02-03-2020 02:03:48</td><td nowrap="nowrap">01-03-2020</td><td></td><td>SLABWISE NMMB CHARGES</td><td>1222</td><td class="ccyalign">53.00</td><td class="ccyalign"></td><td class="ccyalign">505.00</td></tr><tr class="AlterRow2"><td>05-02-2020 03:11:02</td><td nowrap="nowrap">05-02-2020</td><td></td><td>DEBIT CARD ANNUAL CHARGES Due Dt :20/12/2019</td><td>1222</td><td class="ccyalign">142.00</td><td class="ccyalign"></td><td class="ccyalign">558.00</td></tr><tr class="AlterRow2"><td>04-02-2020 11:29:14</td><td nowrap="nowrap">04-02-2020</td><td>003511676535</td><td>UPI/003511676535/AXIa8c2baf2ab3e4adb9f78db7b49ad4c89/04/02/2020 11:29:14/dhineshmohan07-1@okaxis/1222101103944@cnrb00012</td><td>33</td><td class="ccyalign"></td><td class="ccyalign">700.00</td><td class="ccyalign">700.00</td></tr></tbody></table></div><div class="bottompanel"><ul><li></li></ul></div></span><div class="event download-btm-btn"><table cellspacing="1" cellpadding="1" border="0" class="eventtable"><tbody><tr class="alterrow2"><td class="labeltext"><label for="fldsearch1">Select Download Format:</label></td><td><select class="form-control" name="fldsearchformat" id="fldsearchformat" type="select-one"><option selected="true" value="">---Select Download Format---</option><option value="05">CSV/Excel Format</option><option value="04">PDF Format</option><option value="12">Text Format</option></select><div class="buttonarea"><ul style="margin:0px !important;"><li><input onclick="return chooseField(code)" maxlength="16" size="16" class="buttons" value="Download" id="flddownload" name="flddownload" type="button" alt="Download"></li></ul></div></td></tr></tbody></table></div></div></div></div><script language="JavaScript">
+	 document.frmmain.fldsortorder.value='0';
+	 document.frmmain.fldsortby.value='0';
+	 document.frmmain.fldsearch.value='3';
+</script></div></div></td></tr></tbody></table></div><div class="bottompanel"><ul><li></li></ul></div></td></tr></tbody></table><input type="hidden" name="as_ffc_field" value="AAAAAAURvAvLRTA4fQkzJKBAkW3vAs26Q9L9N5bvEWbcvDlXz4zOs8f3hIx1rkIKSEbRbPHVV5JBYasbPQ_4LlRj5v3irYZvUVPVNvZ711OhGYNKSnr5kWQOmILDHMQ72K9NVQloenklYqgLLm_yh1kQFMN7NyK1C_TqQiMBqOLLzfkdH5MTE58zDIB3PTD0h6pz9Omf3tYxTFwxQaelOW2R1kspYDMVPiWzLN0oXVnhkqbjI-v3_J5KCUofAMPzI1bfdSYMEu9epOxBKNWfI5_bL7xOiyeHklCjNZfSioaAofCin2EPg3tDllyq3ln1M66QwqhxfmgFQJfqvojUQO2flVkYcZUTzYGtbsU0UvT5CVV9NU5AIE5pyGInjA2oXAfjhUW7-jgYghpx-lqDOggthjIdUNelmcNipNZd7u2rmOtMy4eQj722QKMNM-PXAOrcT6RAgdo2ZSRdYalr4KHUo_ws7S0hO8PiEHcMcXJt1xYkDZRb5vhcs7WjB9grPlfHp0-EVyy18PXK8a5RBUwNwyBzL2vrAnPqL9IuPURjNHkBFXo71iey6quCs3f9uDVwR4z5bfcU5EXHOTuMlSm_b5KpHbr4XCc_Gco3gLgZpYuYdwbE-Sosj_PS-m5j1TEBObcPYU10nFP_264USUKfq0Yv3lMpN6D-UstGhR-dunwg2b5wZ4SdrKZDL-vF0uXdccRI7JRz3dqelCPtmCxJkbo64jX3lOS0ItBJKLcKgSQwNTngTeUcRdLGEZnNDK9TqdG0lRfsQ0ww4l1Gu-7rrUMaBVdbpeROzrGf-UaqvMWJaHWN1O9N7HOC_eAzkEAQM1CI1ZVAu2PCoT2yBu76XYV25G2OPny5618ePgIVJx87retVv9ascPOoMSf1EF0dNQUwK-8QnxlXiTEWBV2nqtFzn2gRbEOupi9USqKcaqxxDYY5D1ftI_7_1abqYBddANYtGu9W_1A1-0_EyAyvuYK9UGBnFdZhz_1P6Qfuv04iroEOJWCx1iS4zFC8Y7fUPNr5hpFKO8MD2nuXvwj9gmF8mp5ptFGegmbeuDmLzmpIafej4KqCOFAIJ0ka6zmgxTM9_sXp4d_OsL749RLUpFFFZZMVf4TjgcyR3tRG4kAMHHJ0TDcbHh6KJ3XMsFJsbU6eR98xfgH1GZ2CtgwS4BUlus6XvB66fDCPYPaIvVYN1ujfl6ljTSs_PNwbMtrLT4lGZHuuVrb612gnWbKcLgpkN0y5MCZuuRTsn-UhSEVmWrzRFD-0Rkb3F3aGPLp0_0SPirroLQbrILsD1eb6mSXgJhn3-TM8849enresI4pHR95ufWjt1B3wS0fzUCDHxKguq3w6JbC1o-L9gXFI4l61DDuJliVxenh8VA8nAZElUFKlVqCveF-MXcx22ob4EzFJkpMekO7xrnh0COSGei1As2L0lYD2-q_QOq6DBwp1ysySXdJXkMKMCggzuaRqVi9YM8vCbGkgYpvzTkKldNzbjvt6xUS6BbGzEXbcBmRY7zlsOuBi70wTWaDMl0qleP5Ra6ugpCFpR3ABNf4-w0CgLJ0mREiktGHp9yoltd81jvNZ_GBeUNRNrZnTwFXsmcugil9D9FI2_HJda9JT5nChghAhDn1cJxR49Bg3m4qn6FaDKulN19q_8YnGygt58JQRDFAXtEWKeJeeOIf2dgAFqXW2ozLuU75dT7bjtaBfCmS-BFAy0cEKYMwA5XyPWZsYSGoN091YptuQCuGM9MWRcL3JPCbEa03tzBs_RLSSc8m0izQnM68T7jpR-GhlcPqkRFSq_qqzhyFwyatahN951v4nScM60KojSsCYVo5gRaOwKLWNz8-Tsi1k6OAp8LzNu3rYunbSZ1y1LnwSHJ9ewBVoD-d5yMVkgfGE8FezT1vY4NfFiVpQ_32ZPPU3wfgwXjyIYqsE5cVlbB_Bsaj2IEggT0YOThoqNNhGdQ454cUjlRRZvdlq2KNjkjL2L0aA-9nPpB0HqUveiUs2Zf8O8ks81Me9dYHdR5pWB3eoMuJT-enhCr8PT8Ztnm-ADQp2sabJeZrrYB0UWt-Tk1pKHDaGC7BqXj5DK06xPOl7DYv4OhoY92zR7EVmPY_XPNol-cBivL3ZoL2Em931eEPx2Jzgh866d0eutEA7o8fY8-OvLAj-WuV1asF1Cl9R3NK7meNkTKQQDFCpMX2PRrn0gIEfL769ej8m-_4q-CshQJw7yXBV6-muVQeyAgoVyg5D9P4mLzmnSR2eUKdUoyn5VAY6SokbtvQTJG0S9HOcmDbfB6AIEl_C6pRips0AnDucXsIQsFsVgXE_y_zi049QaWbu339scTQlAhkv1qhyLqcPhAgZmNuHXoXDmpHjM39ceJHsyj0fFY_7Bj8ZYGmVG81oi6BKc6ur-wbIKJGooH7MnEk6CWJ2zt2xHr_eX_1BnXPlpbpVpa4qSFoygF7NZ0lO6_Zn0g5nCXgFQlFLNmSMacUBUJGu7nxbIUYnPNRWjwnTq8NZEA989J3R22rfXQ-CQ1N3jzjJqDqkJflLFc3Hr3iEbgPWeRzT_qO4DYm44q9PtXqvMX18qefmlvyp6Z-W5EWsynVNN0dEB1mpZg8saugOAu4yEXqh2xAlggUEXFO2U0iWC6XQdUjYXgDe7oZpV1a1o2X6Bze87p5Jw3pF2_Xp2WIVqfULWG-d-9hw-XXxg0USFA5vvQeg-44TQDToxUaDdN-y9jqcSFaBCuaWAvR_Xqqy4SKNG_72Rq0Y5w6J1GEdvD-xGWRqJ6Wld_MxIvrrpsVLuteRXpURS53wXJfNsqcWUAtndK9yCkZe_m5Rm1Hlx99rS99E9cdqF_Fi9qiEL_AXzHi3kei_EnU87nxtqjvoj0l918UvGygSmmPHK24LJzj5_qHgIstwS5P5hTNb2YfWObkT8ROKYJJC_wUA_qKSwlADdN30Q3C4ZXaHNqPG5rK3VKLFjIse807A6BKucopswqmDhxKu5dj-FdReiM8cep4gAn4EF7U4GhpPYyBdxXZb9I-mgQWC-InzqXE5NOlmisCsJB-HvkAM_C7yxbSYb2p0v_0yMu7jBFrBVM4Dq6stwA6r-3ZTj_tfg2OFZNelBktTvW0LPkxnMuLzVFyT66wOU0-J0wWUgfTDFyjmIymfVDCbKMmmq69WwdlGKUlECg8DpDBC59U_K8irbvpwSzDtpaDlyiKdw8jXQudmaq8almcqU5PBn_Nx4CVzYDlJK0E-d8itpKnf4-U6Ip6S5wP4B8ACvZpBt93tRNAGM6ZIW83wgS5cgJBhwTs99eJAtW8Ayq1i4tTqhIHTH8Y68ab60UMxz5BMzmUqmbaTfGZo4pV63eOMi81Gw35d5PoOcD6XX-Q6rW3bJDWRHX8WgJgaJ6CSr9AFRhEsIMxNqjfAcGV2H3GkcBRZy2-r5g4E8uUHPSsO-TPq8GBOvi4Nr_CQGRcjGz-VGbADJW9RnL29aEPMIUvhEbNUvP2iwTdH61vL0QkEkoy8DJxjVD_AMkiU22LmmFrYjQR6wlm_zGytYuOqa6QbwnK_ScqjZmjftx5qRl4vozS9MCu3aHDlGg6ySB_xJJB77BBRPSk3RAseHyDwFTUyuevB42A64jpqvgJmsR0x_oqRH9dorIqOZNZgKRt-i3PZh0kVTOVTHx1uABJN2-RCFVuNFEsYA9QDI1sZPS_Hs9UwxtHkYJGY63gAZYGW2mvr5CAJnIvjxsqYl29fV2oUMLT7_eelzjNJd9B8pNkj6y9rLU2ieARe4O6rnMbdF6r5M6aDKuQoS1xTp6vrdSa97SGgmWAJUVV11LaWgSOozGbXjSqT2jL98DV9a5LQgmb7eNIhEaOPaw71wirlABltJ3aSDWp2st6VZukW30jmOzVqWhVqzPf08SMBNBp1xb9iYG02MaeJzU3GFLhcY26b1WHFTV6p3-K0V1QTtpKeq-Yxouaz_d4eN5l3EdK_C2NlGFY29WKKXiVNweGfY8z080PAddYpln4G4DgcBrZlG5UdhE956h4yVgRe0ePU3hhORQiOlqi5zJnHwOkFbWWIO6vCrZ_yDD6zo9up-eSau_M81nL998TcAFHBzc8h5HNlETIN3bN8opc9dPQiV6-aBsMc8UiJ0RmzqZ89CSsOdX5aSnlMxz3Q3Ad6Y1ZZSemXvBKH6562DQ7omauaxo3kpCHyDtVTfOoxgYoQBQVLurSwMY06czCdZBmWG2OvzS1Hyizx7KdKs6d5tcURlGhLP1-gM9xAyCxSCLkjqgKDxI5aHEp0_6z2bMhh3Z5hOJXQ--RgmLlPAr6G4NmSUOcM"><input type="hidden" name="as_sfid" value="AAAAAAVycu2EfMAdC3IWYa9huiulgsYlvp46N5ONhu8WZDjdXGNkQXrWKnNJjQMCY1884yj8NQQq00zCtxZ91ri8DJGA49eeH6slpNHD8ac8DEFQOKqq-8qxrdBPqbRjKLsvWGE="><input type="hidden" name="as_fid" value="feb121e4cc1eb53ffdcc2f14b44931a8728255cc"></form><span id="VBar" style="position: absolute; top: 0px; left: 0px; height: 0px; width: 2px; background: silver; border-left: 1px dotted black; display: none;"></span></body></html>

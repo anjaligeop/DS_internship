@@ -1,0 +1,20 @@
+[
+{"date" : "2020-01-31",
+"cheque_num" :"",
+"description" : "RDY CR AC SWEEP Cr.CA of Rs.0.69 for monthly principal Payment",
+"withdraw": "",
+"deposit" : "0.69",
+"balance" : "-13.07"},
+{"date" : "2020-02-28",
+"cheque_num" :"",
+"description" : "RDY CR AC SWEEP Cr.CA of Rs.0.65 for monthly principal Payment",
+"withdraw": "",
+"deposit" : "0.65",
+"balance" : "-12.42"},
+{"date" : "2020-03-30",
+"cheque_num" :"",
+"description" : "RDY CR AC SWEEP Cr.CA of Rs.0.62 for monthly principal Payment",
+"withdraw": "",
+"deposit" : "0.62",
+"balance" : "-11.8"}
+]

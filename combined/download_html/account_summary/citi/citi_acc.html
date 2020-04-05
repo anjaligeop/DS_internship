@@ -1,0 +1,883 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Citibank Online</title>
+<script language="javascript">
+    if(self.location.protocol == "https:" || self.location.protocol == "http:"){
+        if (top.CONTROL){
+            if (top.CONTROL.cbol){    
+                if (top.CONTROL.cbol.loaded){    
+					cbolFunctions()
+                }
+             }
+        }
+    }
+    function cbolFunctions(){
+            window.top.CONTROL.cbol.resetcboltimer();  
+            window.top.CONTROL.cbol.setFsCbolCookietoActive(); 
+	}
+</script>
+
+<script>
+function OnClickHandler()
+{
+var el=null;
+var flag=true;
+el=event.srcElement;
+while (flag && el)
+{
+if (el.tagName=="A")
+{
+flag=false;
+if (el.protocol=="javascript:")
+{
+execScript(el.href,"javascript");
+window.event.returnValue=false;
+}
+}
+else
+el=el.parentElement;
+}
+}
+
+if ((navigator.appName.indexOf("Microsoft")!=-1) &&
+(navigator.appVersion.substring(0,1)>"3"))
+if (navigator.userAgent.indexOf('Mac') == -1)
+document.onclick=OnClickHandler;
+</script>
+
+<link href="/cssfiles/accstyle.css" rel="stylesheet" type="text/css">
+<style type="text/css"> 
+     body { margin: 0;width: 98%; padding: 0; }
+	
+	.box_b2{
+	font-size:11px;
+	color:#333333;
+	font-family:Arial, Helvetica, sans-serif; 
+	}
+</style> 
+<script language="Javascript" src="/jsfiles/alertMsg.js"></script>
+<script type="text/javascript">
+
+function showBox(Num) {
+	makeboldto(Num);
+  	var on  = "/images/misign.gif";
+	var off = "/images/plussign.gif";
+	if(document.getElementById('box0'+Num).style.display=="none"){
+		document.getElementById('box0'+Num).style.display = "block";
+		document.getElementById('img0'+Num).src = on;
+	}else if(document.getElementById('box0'+Num).style.display=="block"){
+		document.getElementById('box0'+Num).style.display = "none";
+		document.getElementById('img0'+Num).src = off;
+	}
+  }
+var x=0;
+function showBox1() {
+	if(document.getElementById('box0101').style.display=="none" && x==0){
+		x=1;
+		document.getElementById('box0101').style.display="block";
+		document.getElementById('box01011').style.display="none";
+		document.getElementById('box01012').style.display="block";
+
+	}else{
+		x=0;
+		document.getElementById('box0101').style.display="none";
+		document.getElementById('box01011').style.display="block";
+		document.getElementById('box01012').style.display="none";
+	}
+}
+var y=0;
+function showBox2() {
+
+	if(document.getElementById('box0102').style.display=="none" && y==0){
+		y=1;
+		document.getElementById('box0102').style.display="block";
+		document.getElementById('box01021').style.display="none";
+		document.getElementById('box01022').style.display="block";
+
+	  }else{
+		y=0;
+		document.getElementById('box0102').style.display="none";
+		document.getElementById('box01021').style.display="block";
+		document.getElementById('box01022').style.display="none";
+	}
+}
+
+
+ function icgscallinter(branch,categ,subcateg,loanno,loanpos,cifno) { 
+ 
+    document.forms[0].branchcd.value= branch;
+	document.forms[0].category.value= categ;
+	document.forms[0].subcategory.value= subcateg;
+	document.forms[0].loanorrefno1.value= loanno;
+	document.forms[0].loannoposs.value= loanpos;
+	document.forms[0].cifnumber.value= cifno;
+	document.forms[0].codeType.value="ICGS_D1";
+	document.forms[0].action="/IbsJsps/BusinessLoanInter.jsp";
+	document.forms[0].method="post";
+	document.forms[0].submit();
+ 
+ }
+function showBoxExpand(Num) {
+	makeboldtoexpand(Num);
+  	var on  = "/images/misign.gif";
+	var off = "/images/plussign.gif";
+	if(document.getElementById('box0'+Num).style.display=="none" && document.getElementById('boxexpand1').style.display=="none"){
+		document.getElementById('box0'+Num).style.display = "block";
+		document.getElementById('img0'+Num).src = on;
+	}else if(document.getElementById('box0'+Num).style.display=="block" && document.getElementById('boxexpand1').style.display=="block"){
+		document.getElementById('box0'+Num).style.display = "none";
+		document.getElementById('img0'+Num).src = off;
+	}
+  }
+  
+  function showBoxExpandCollapse() {
+   
+   var on  = "/images/misign.gif";
+   var off = "/images/plussign.gif";
+  
+   if(document.getElementById('boxexpand1').style.display=="none"){
+   
+   if(document.getElementById('box01')!=null){showBoxExpand('1');}
+   if(document.getElementById('box02')!=null){showBoxExpand('2');}
+   if(document.getElementById('box03')!=null){showBoxExpand('3');}
+   if(document.getElementById('box04')!=null){showBoxExpand('4');}
+   if(document.getElementById('box05')!=null){showBoxExpand('5');}
+   if(document.getElementById('box06')!=null){showBoxExpand('6');}
+   if(document.getElementById('box08')!=null){showBoxExpand('8');}
+   if(document.getElementById('box09')!=null){showBoxExpand('9');}
+     document.getElementById('boxexpand1').style.display = "block";
+     document.getElementById('imgexpand').src = on;
+   }else{
+   if(document.getElementById('box01')!=null){showBoxExpand('1');}
+   if(document.getElementById('box02')!=null){showBoxExpand('2');}
+   if(document.getElementById('box03')!=null){showBoxExpand('3');}
+   if(document.getElementById('box04')!=null){showBoxExpand('4');}
+   if(document.getElementById('box05')!=null){showBoxExpand('5');}
+   if(document.getElementById('box06')!=null){showBoxExpand('6');}
+   if(document.getElementById('box08')!=null){showBoxExpand('8');}
+   if(document.getElementById('box09')!=null){showBoxExpand('9');}
+     document.getElementById('boxexpand1').style.display = "none";
+     document.getElementById('imgexpand').src = off;
+	}
+  }
+
+  function makeboldtoexpand(Num) {
+	 if(document.getElementById) {
+		if(document.getElementById('im01'+Num).style.fontWeight == 'bold') {
+			if(document.getElementById('boxexpand1').style.display=="block"){
+			document.getElementById('im01'+Num).style.fontWeight = '';}
+		} else {
+			if(document.getElementById('boxexpand1').style.display=="none"){
+			document.getElementById('im01'+Num).style.fontWeight = 'bold'; }
+		}
+	 }
+}
+
+function makeboldto(Num) {
+	 if(document.getElementById) {
+		if(document.getElementById('im01'+Num).style.fontWeight == 'bold') {
+			document.getElementById('im01'+Num).style.fontWeight = '';
+		} else {
+			document.getElementById('im01'+Num).style.fontWeight = 'bold'; 
+		}
+	 }
+}
+
+ function topRightnavchange(rootid) {
+	 try {
+			 var obj = parent.frames[0].document;
+			 if(!obj.getElementById(rootid))
+				parent.top.frames[0].hidefunction(2,"");
+			 else
+				parent.top.frames[0].hidefunction(rootid,"");
+			return;
+		}catch(e){}
+ }
+
+function onlineWindow()
+{
+	window.open("http://www.online.citibank.co.in/portal/citi_home_center.jsp?frameset=centerFramesetVis&frameval1=cardshotoffersWID&framevar1=workID&eOfferCode=CBOLRIGHT");
+}
+
+function offermessage(){
+	document.frmAccountSummary.action = "/IbsJsps/CDS_CENTER_middle.jsp";
+	document.frmAccountSummary.method="post";
+	document.frmAccountSummary.submit(); 
+}
+
+function cgbusiness()
+{
+var totalprod=document.forms[0].rq.value;
+var custname=document.forms[0].customername.value;
+window.open("https://www.online.citibank.co.in/portal/citi_home_center.jsp?frameset=formFrameset&AccNo="+totalprod+"&AccName="+custname+"&framevar1=workID&frameval1=CitiINForms&form_id=frmCitiCbc");
+
+}
+function RealEstate()
+{
+var totalprod=document.forms[0].rq.value;
+var custname=document.forms[0].customername.value;
+window.open("https://www.online.citibank.co.in/portal/citi_home_center.jsp?frameset=formFrameset&AccNo="+totalprod+"&AccName="+custname+"&framevar1=workID&frameval1=CitiINForms&form_id=frmCitiReal");
+}
+
+function onClickingPrecard(){
+	document.forms[0].action = "/IbsJsps/crossredirect.jsp?linkselected=CREDITCARDCROSSSELL&pagename=tabdtls";
+	document.forms[0].method="post";
+	document.forms[0].submit(); 
+}
+
+function TaxAdv()
+{
+var totalprod=document.forms[0].rq.value;
+var custname=document.forms[0].customername.value;
+window.open("https://www.online.citibank.co.in/portal/citi_home_center.jsp?frameset=formFrameset&AccNo="+totalprod+"&AccName="+custname+"&framevar1=workID&frameval1=CitiINForms&form_id=frmCitiTax");
+}
+
+function TajEpic()
+{
+var totalprod=document.forms[0].rq.value;
+var custname=document.forms[0].customername.value;
+window.open("https://www.online.citibank.co.in/portal/citi_home_center.jsp?frameset=formFrameset&AccNo="+totalprod+"&AccName="+custname+"&framevar1=workID&frameval1=CitiINForms&form_id=frmCitiGoldTaj");
+}
+
+function NextWMCard()
+{
+var totalprod=document.forms[0].rq.value;
+var custname=document.forms[0].customername.value;
+window.open("https://www.online.citibank.co.in/portal/citi_home_center.jsp?frameset=centerFrameset&framevar1=workID&frameval1=CitiINForms&framevar2=navID&frameval2=cbCrecardsNCProsNID&framevar3=brandID&frameval3=cbCrecardsBID&form_id=frmWMC");
+}
+function resourceLocator(){
+      document.forms[0].action="/servlet/EMIServlet";
+      document.forms[0].submit();
+}
+
+function whatLeft(arg1){
+ 
+if(arg1=="IOC"){
+			document.forms[0].action="/IbsJsps/familyIOCAtm.jsp"
+   document.forms[0].method="get"
+ }
+ if(arg1=="APC"){
+			document.forms[0].action="/IbsJsps/first.jsp"
+   document.forms[0].method="get"
+ }
+	if(arg1=="BIL"){
+        document.forms[0].action="/infojsp/viewandpay/viewandpay.jsp";
+							 document.forms[0].method="POST";
+	}
+ if(arg1=="CRD"){
+	  document.forms[0].codeType.value="CSSC_D1"
+   document.forms[0].action="/servlets/DCGOutputServlet"
+   document.forms[0].method="post"
+	}
+ if(arg1=="SLS"){
+        document.forms[0].action="/servlets/DCGInputServlet?Key=CSAC_S1";
+ }else if(arg1=="DAD"){
+  document.forms[0].action="/IbsJsps/familyatm.jsp";
+ }else if(arg1=="ODD"){
+	if(strUserClass=="5213")
+		document.forms[0].action="/infojsp/payanyone/demanddraft/ccdemanddraftrequest.jsp";
+	else if(strUserClass=="5218"){
+		document.forms[0].action="/servlets/DCGInputServlet";
+		document.forms[0].Key.value="PTDR_AC";
+	}
+	else
+		document.forms[0].action="/infojsp/payanyone/demanddraft/demanddraftrequest.jsp";
+ }else if(arg1=="GYA"){
+  document.forms[0].action="/IbsJsps/redirect.jsp?codeType=CSSC_D2"
+ }else if(arg1=="GLO"){
+        document.forms[0].action="/servlets/DCGInputServlet?Key=CSAC_S1";
+ }else if(arg1=="ODS"){
+        document.forms[0].Key.value="CS_DS";
+        document.forms[0].action="/servlets/DCGInputServlet";
+ }else if(arg1=="MSP"){
+        document.forms[0].Key.value="CS_SP";
+        document.forms[0].action="/servlets/DCGInputServlet";
+  }else if(arg1=="UEM"){
+		      document.forms[0].accinfo.value=document.forms[0].acno.value;	
+        document.forms[0].codeType.value="CHAD_D1";
+        document.forms[0].action="/servlets/DCGOutputServlet";
+  }
+  else if(arg1=="UEI"){
+        document.forms[0].Key.value="CSAD_S1";
+        document.forms[0].action="/servlets/DCGInputServlet";
+  }
+  else if(arg1=="CQP"){
+   document.forms[0].Key.value="CS_CQ";
+        document.forms[0].action="/servlets/DCGInputServlet";
+  }else if(arg1=="LUA"){
+        document.forms[0].action="/servlets/DCGInputServlet?Key=CSLN_S1";
+  }else if(arg1=="GAC"){
+        document.forms[0].Key.value="CSAC_S1"
+        document.forms[0].action="/IbsJsps/familyatm.jsp"
+  }else if(arg1=="GAS"){
+        document.forms[0].action="/IbsJsps/ston.jsp";
+  }else if(arg1=="BCA"){
+         document.forms[0].action="/servlet/IntelliServlet";
+  }
+	 document.forms[0].submit();
+}
+
+function onClickInstitution(paramAcctType,paramAcctId,paramBankId,paramLocn,paramCurdef,paramAccDesc,paramBranchCode){
+	document.frmAccountSummary.AcctType.value = paramAccDesc;
+	document.frmAccountSummary.AcctId.value = paramAcctId;
+	document.frmAccountSummary.BankId.value = paramBankId;
+	document.frmAccountSummary.Locn.value = paramLocn;
+	document.frmAccountSummary.Curdef.value = paramCurdef;
+	document.frmAccountSummary.hidaccinfo.value = paramAcctId;
+	document.frmAccountSummary.ProdCode.value = paramAcctType;
+if ((paramAcctType=="H")){ 
+		document.frmAccountSummary.codeType.value = "HBAS_D1";
+        document.frmAccountSummary.homeacno.value=paramAcctId;
+		document.frmAccountSummary.action = "/servlets/DCGOutputServlet";
+		document.frmAccountSummary.method="post";
+		document.frmAccountSummary.submit();
+ } else if ((paramAcctType=="L")){ 
+		document.frmAccountSummary.hidaccinfo.value = paramAcctId;
+		document.frmAccountSummary.codeType.value = "GL04_DD";
+		document.frmAccountSummary.action = "/servlets/DCGOutputServlet";
+		document.frmAccountSummary.submit();
+ } else if(paramAcctType=="7") {
+	document.frmAccountSummary.action = "/IbsJsps/NRInsure.jsp";
+	document.frmAccountSummary.submit();	 	
+} else if ((paramAcctType=="6")){ 
+      var invstnumber=paramAcctId.substring(eval(paramAcctId.indexOf("/")+1))
+	  document.frmAccountSummary.invstacno.value=invstnumber.substring(0,1)+invstnumber.substring(2,8)+invstnumber.substring(9,12);
+	  document.frmAccountSummary.action = "/servlets/DCGOutputServlet";
+	  document.frmAccountSummary.method="post";
+      document.frmAccountSummary.codeType.value = "NRBK_D1";
+    document.frmAccountSummary.submit();
+ } else if ((paramAcctType=="5")){ 
+      document.frmAccountSummary.branchCode.value=paramBranchCode;
+	  document.frmAccountSummary.InsureAcc.value=paramAcctId.substring(eval(paramAcctId.indexOf("/")+1));
+	  document.frmAccountSummary.action = "/servlets/DCGOutputServlet";
+      document.frmAccountSummary.method="post";
+      document.frmAccountSummary.codeType.value = "INSU_D1";
+ } else if ((paramAcctType=="U")){ 
+		document.frmAccountSummary.codeType.value = "SUFD_D1";
+		accountid=paramAcctId.substring(eval(paramAcctId.indexOf("/")+1))
+		accountid1=accountid.substring(0,accountid.indexOf("-"))
+		accountid2=accountid.substring(eval(accountid.indexOf("-")+1))
+		ind=accountid2.indexOf("-")
+		accountid3=accountid2.substring(0,accountid2.indexOf("-"))
+		accountid4=accountid2.substring(eval(ind+1))
+		accountid=accountid1+accountid3+accountid4
+			CBOL_CHK_top.unfixedaccno=paramAcctId;
+			document.frmAccountSummary.action = "/servlets/DCGOutputServlet";
+			document.frmAccountSummary.accinfo.value = accountid
+			document.frmAccountSummary.baseno.value = paramAcctId;
+			document.frmAccountSummary.todate.value = "";
+ } else if((paramAcctType=="E") || (paramAcctType=="O") || (paramAcctType=="J")){ 
+	      document.frmAccountSummary.action="/infojsp/citilogo.htm"
+	      document.frmAccountSummary.method="get"
+ } else if((paramAcctType=="M")||(paramAcctType=="9")||(paramAcctType=="{")||(paramAcctType=="}")){ 
+	 document.frmAccountSummary.action="/servlets/DCGOutputServlet"
+	 document.frmAccountSummary.codeType.value="DEDE_D1"
+     document.forms[0].depFlag.value = "I";
+	 document.forms[0].depBase.value = paramAcctId;
+ } else if((paramAcctType=="F") || (paramAcctType=="G")){ 
+        document.frmAccountSummary.codeType.value = "NNT6_D1";
+		document.frmAccountSummary.action="/servlets/DCGOutputServlet";
+	  accoutid0=paramAcctId.substring(0,eval(paramAcctId.indexOf("/")))
+	  accountid=paramAcctId.substring(eval(paramAcctId.indexOf("/")+1))
+	  accountid1=accountid.substring(0,accountid.indexOf("-"))
+	  accountid2=accountid.substring(eval(accountid.indexOf("-")+1))
+	  ind=accountid2.indexOf("-")
+	  accountid3=accountid2.substring(0,accountid2.indexOf("-"))
+	  accountid4=accountid2.substring(eval(ind+1))
+	  accountid=accoutid0+"/"+accountid1+accountid3+accountid4
+	  document.frmAccountSummary.accinfo.value = accountid;
+
+         mfac.accinfo=accountid;
+         mfac.prodcode=paramAcctType;
+  }
+else if((paramAcctType=="N") ){ 
+        document.frmAccountSummary.codeType.value = "DEM5_D1";
+		document.frmAccountSummary.action="/servlets/DCGOutputServlet";
+	  accoutid0=paramAcctId.substring(0,eval(paramAcctId.indexOf("/")))
+	  accountid=paramAcctId.substring(eval(paramAcctId.indexOf("/")+1))
+	 document.frmAccountSummary.accno.value=accountid;
+	  document.frmAccountSummary.dematacno.value = accoutid0;
+  }
+  else
+		{
+		if ((paramAcctType=="C")||(paramAcctType=="S") || (paramAcctType=="$")){
+                CBOL_CHK_top.acctno_4vps=paramAcctId;
+		}
+		document.frmAccountSummary.action = "/servlet/AccountDetailsServlet";
+  }
+		document.frmAccountSummary.submit();
+}
+function viewprop(){
+ 
+    document.forms[0].codeType.value="PROV_D1";
+  
+       document.forms[0].action="/servlets/DCGOutputServlet"
+          document.forms[0].method="post";
+             document.forms[0].submit();
+    }
+
+function refreshAcct(val){
+	 if(val==1){
+	  document.forms[0].action="/servlets/DCGOutputServlet";
+	  document.forms[0].codeType.value="TDAZ_D1";
+	 }else{
+ 		document.forms[0].action="/servlet/AccountSummaryServlet";
+		} 
+        document.forms[0].submit();
+}
+function forexSumm()
+{
+	document.forms[0].method="post";
+	document.forms[0].codeType.value = "CAFX_Z1";
+	document.forms[0].action="/IbsJsps/redirect.jsp";
+	document.forms[0].submit();
+	return;
+}
+function showPage()
+{
+if(self.location.host==top.location.host){
+  document.getElementById('errorpage').style.display='none';
+ document.getElementById('errorpage').style.visibility='hidden';
+ document.getElementById('realpage').style.display='block';
+  document.getElementById('realpage').style.visibility='visible';
+}else{
+top.location=self.location;
+}
+}
+</script>
+</head>
+
+<body onload="showPage();">
+<form name="frmAccountSummary" method="post" autocomplete="OFF">
+<div id="errorpage" style="display: none; visibility: hidden;">
+</div>
+<div id="realpage" style="visibility: visible; display: block;">
+
+
+
+
+
+
+	
+		<table width="610" border="0" align="left" cellpadding="0" cellspacing="0">
+		 <tbody><tr>
+          <td align="left" valign="top">
+		  <table width="470" border="0" align="left" cellpadding="0" cellspacing="0"> 
+			<tbody><tr>
+				<td width="4" align="left" valign="top"><img src="/images/leftBox_leftTop.gif" alt="" width="4" height="4"></td>              
+				<td align="left" valign="top" class="boxTop"><img src="/images/spacer.gif" alt="" width="1" height="1"></td>
+				<td width="4" align="left" valign="top"><img src="/images/leftBox_rightTop.gif" alt="" width="4" height="4"></td> 
+			</tr>
+			<tr> 
+				<td align="left" valign="top" class="boxLeft">&nbsp;</td>                
+				<td align="left" valign="top" style="padding:5px 10px 5px 10px;">
+				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				  <tbody><tr>
+					<td>
+					
+									
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+						
+							<tbody><tr>
+								<td colspan="2" align="left">Net Relationship Value for  MAR-20<a href="https://www.online.citibank.co.in/products-services/banking/mar15/nrv-faq.pdf" target="_blank"><img src="/IbsImages/question_m_icon1.gif"></a></td>
+								<td align="right" valign="bottom" class="title2">7,096.21(INR)</td>
+						    </tr>
+							<tr><td>&nbsp;</td></tr>
+						
+						
+						<tr><td>
+					<div class="cbox"><a id="collapse" href="javascript:showBoxExpandCollapse();">
+		    		<img src="/images/plussign.gif" name="img01" width="11" height="11" border="0" id="imgexpand"></a>
+        			</div>
+					<div id="boxexpand1" style="padding-left:15px; padding-top:10px; display:none;">
+				  </div></td>
+						 <td><a id="collapse" href="javascript:showBoxExpandCollapse();"><img src="/images/account_sam_blue.gif" width="134" height="15"></a></td>
+						 <td align="right"><p class="pad5 ligt_grey" nowrap="">Summary as on 
+									05/04/2020
+&nbsp;</p>
+						 </td>
+						</tr>
+						</tbody></table>
+					</td>
+				  </tr>
+				  
+				 
+				  <tr>
+					<td align="left" valign="top" class="padt10">
+						<div class="dbfl" style="width:370px;">
+							<p class="dbfl title2" style="width:140px;">Balance Summary</p>
+							<p class="dbfl title2" style="width:70px; text-align:center;">Currency</p>
+							<p class="dbfl title2" style="width:80px; text-align:right;">Assets</p>
+							<p class="dbfl title2" style="width:80px; text-align:right;">Liabilities</p>
+						</div>		
+					</td>
+				 </tr>
+
+
+
+<!--  1. Current Accounts --->
+
+ 
+	<tr>
+		<td align="left" valign="top">
+			<div class="minbox02" style="padding-top:5px;">
+			<div class="cbox"><a href="javascript:showBox(1);">
+				<img src="/images/misign.gif" name="img01" width="11" height="11" border="0" id="img01"></a>
+			</div>
+			  <a href="javascript:showBox(1);"><p class="dbfl box_b1" style="width:120px;"><span id="im011" style="font-weight: bold;">Current Accounts</span></p></a>
+			  <p class="dbfl box_b1" style="width:70px;" align="center">INR</p>
+			 
+			
+			  
+				<p class="box_b1" style="width:80px; text-align:right;">-</p>
+				<p class="box_b1" style="width:80px; text-align:right;"><font color="#000000">
+				11.80</font></p>
+			 
+					   
+			  <br class="clear">
+			<div id="box01" style="padding-left: 15px; padding-top: 10px; display: block;">
+	
+		
+			<input type="hidden" name="brcd" value="008001"> 
+
+		
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+				
+
+				  <tbody><tr style="background:#F2F3F4;">
+					<td align="left" valign="top" class="pad5 ligt_grey" width="63%"><font color="black">Current Account</font></td>
+					<td align="left" valign="top" class="pad5 ligt_grey" width="8%"><font color="black">Location</font></td>
+					<td align="right" valign="top" class="pad5 ligt_grey" width="29%"><font color="black">Balance</font></td>
+				  </tr>
+				  
+				  <tr>
+					<td align="left" valign="top" class="pad5 ligt_grey"><a href="/infojsp/GenException/enablescript.htm" onclick="javascript:topRightnavchange('3');onClickInstitution('B','0-4XX6XX-X18','CITIBANK','BANGALORE','INR','Ready Credit','008001');return false"><font color="#000000">
+					
+					Ready Credit
+&nbsp;a/c no.&nbsp;
+&nbsp;0-4XX6XX-X18
+</font>
+					</a></td>
+					<td align="left" valign="top" class="pad5 ligt_grey"><font color="#000000">BANGALORE
+</font> </td>
+					<td align="right" valign="top" class="pad5 ligt_grey"><font color="#000000">
+						-11.80
+
+						
+						</font>
+					</td>
+				  </tr>
+			
+			</tbody></table>
+			</div>
+			</div>
+	    </td>
+	</tr>
+
+
+
+<!--  2. Saving Accounts --->
+
+ 
+	<tr>
+		<td align="left" valign="top">
+			<div class="minbox02" style="padding-top:5px;">
+			<div class="cbox"><a href="javascript:showBox(2);">
+				<img src="/images/misign.gif" name="img02" width="11" height="11" border="0" id="img02" value="off"></a>
+			</div>
+			  <a href="javascript:showBox(2);"><p class="dbfl box_b1" style="width:120px;"><span id="im012" style="font-weight: bold;">Savings Accounts</span></p></a>
+			  <p class="dbfl box_b1" style="width:70px;" align="center">INR</p>
+
+			 
+				<p class="box_b1" style="width:80px; text-align:right;"><font color="#000000">6,501.68</font></p>
+				<p class="box_b1" style="width:80px; text-align:right;">-</p>
+			 
+			  <br class="clear">
+			<div id="box02" style="padding-left: 15px; padding-top: 10px; display: block;">
+	
+		
+				<input type="hidden" name="brcd" value="008001"> 
+		
+				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+				 
+				  <tbody><tr style="background:#F2F3F4;">
+					<td align="left" valign="top" class="pad5 ligt_grey" width="63%"><font color="black">Savings Account</font></td>
+					<td align="left" valign="top" class="pad5 ligt_grey" width="8%"><font color="black">Location</font></td>
+					<td align="right" valign="top" class="pad5 ligt_grey" width="29%"><font color="black">Balance</font></td>
+				  </tr>
+				  
+				  <tr>
+					<td align="left" valign="top" class="pad5 ligt_grey"><a href="/infojsp/GenException/enablescript.htm" onclick="javascript:topRightnavchange('3');onClickInstitution('S','5-4XX8XX-X15','CITIBANK','BANGALORE','INR','Savings','008001');return false"><font color="#000000">			
+					
+							Savings
+&nbsp;a/c	no.&nbsp;
+&nbsp;5-4XX8XX-X15
+
+						</font></a></td>
+					<td align="left" valign="top" class="pad5 ligt_grey"><font color="#000000">BANGALORE
+</font> </td>
+					<td align="right" valign="top" class="pad5 ligt_grey"><font color="#000000">
+						6,501.68
+
+						</font>
+					</td>
+				  </tr>
+			
+			</tbody></table>
+			</div>
+			</div>
+	    </td>
+	</tr>
+
+
+
+
+<!--  3. Brokerage Accounts --->
+
+ 
+
+
+
+<!--  4. Investment Accounts --->
+
+ 
+
+
+
+<!--  5. Insurance Accounts --->
+
+ 
+
+
+<!-- 6. Credit Cards Accounts --->
+
+
+ 
+	<tr>
+		<td align="left" valign="top">
+			<div class="minbox02" style="padding-top:5px;">
+			<div class="cbox"><a href="javascript:showBox(6);">
+				<img src="/images/misign.gif" name="img06" width="11" height="11" border="0" id="img06"></a>
+			</div>
+			  <a href="javascript:showBox(6);"><p class="dbfl box_b1" style="width:120px;"> <span id="im016" style="font-weight: bold;"> Credit Cards </span></p></a>
+			  <p class="dbfl box_b1" style="width:70px;" align="center">INR</p>
+
+			  
+			    <p class="box_b1" style="width:80px; text-align:right;">-</p>
+				<p class="box_b1" style="width:80px; text-align:right;"><font color="#000000">672.73</font></p>
+			  
+			  <br class="clear">
+			<div id="box06" style="padding-left: 15px; padding-top: 10px; display: block;">
+	
+		
+			
+				<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				  <tbody><tr style="background:#F2F3F4;">
+					<td align="left" valign="top" class="pad5 ligt_grey" width="63%"><font color="black">Credit Card</font></td>
+					<td align="left" valign="top" class="pad5 ligt_grey" width="8%"><font color="black">Location</font></td>
+					<td align="right" valign="top" class="pad5 ligt_grey" width="29%"><font color="black">Balance</font></td>
+				  </tr>
+				  
+				  <tr>
+					<td align="left" valign="top" class="pad5 ligt_grey"><a href="/infojsp/GenException/enablescript.htm" onclick="javascript:topRightnavchange('4');onClickInstitution('W','4386 XXX5 XXXX 8636','CITIBANK','INDIA','INR','IndianOil Citi Credit Card');return false" class="light_grey_clr"><font color="#000000">
+					&nbsp;IndianOil Citi Credit Card
+ &nbsp;4386 XXX5 XXXX 8636
+
+					</font></a></td>
+					<td align="left" valign="top" class="pad5 ligt_grey"><font color="#000000">INDIA
+</font></td>
+					<td align="right" valign="top" class="pad5 ligt_grey"><font color="#000000">
+						
+						   -672.73
+
+						    
+							</font>
+					</td>
+				  </tr>
+	
+			</tbody></table>
+			</div>
+			</div>
+	    </td>
+	</tr>
+
+
+
+
+<!-- 8. Personal Loans --->
+
+ 
+
+<!-- 9. Home Loans --->
+
+ 
+
+
+
+
+	<tr>
+        <td align="left" valign="top" class="padT5">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tbody><tr style="background:#F2F3F4;">
+            <td width="47%" align="left" valign="top" class="pad5 font11" style="border-top:1px solid #D7D8D8;"><strong>Total </strong></td>
+            <td width="18%" align="right" valign="top" class="pad5 font11" style="border-top:1px solid #D7D8D8;">6,501.68</td>
+			
+			
+				 <td width="17%" align="right" valign="top" class="pad5 font11" style="border-top:1px solid #D7D8D8;">684.53</td>
+			
+			
+			<td valign="top" align="right" class="pad5 font11" style="border-top:1px solid #D7D8D8;"><img src="/images/spacer.gif" alt="" width="1" height="1"></td>
+          </tr>
+        </tbody></table>
+		</td>
+      </tr>
+	 
+	
+
+	
+
+
+
+	<!-- Corporate Accounts -->
+
+
+
+<!-- Corporate Accounts Ends here -->
+
+
+<!-- Business funds starts here -->
+
+
+
+<!-- Business funds Ends here -->
+
+	<tr>
+		  <td align="left" valign="top"><img src="/images/spacer.gif" alt="" width="0" height="15"></td> 
+	</tr>
+
+	<tr>
+		<td align="left">
+		
+		</td>
+	</tr>
+
+   </tbody></table></td>
+    <td align="left" valign="top" class="boxRight">&nbsp;</td> 
+	<td><img src="/images/spacer.gif" alt="" width="2" height="1"> </td>
+  </tr>   
+  
+<tr>              
+ <td align="left" valign="top"><img src="/images/leftBox_leftBottm.gif" alt="" width="4" height="4"></td> 
+ <td align="left" valign="top" class="boxBottom"><img src="/images/spacer.gif" alt="" width="1" height="1"></td> 
+ <td align="left" valign="top"><img src="/images/leftBox_rightBottm.gif" alt="" width="4" height="4"></td>
+ </tr>   
+</tbody></table>
+</td>
+
+        <td width="100" align="left" valign="top">
+			<table width="" border="0" align="left" cellpadding="0" cellspacing="0">
+
+					  
+					
+
+                    
+
+				
+          </table>
+		</td>
+
+
+        </tr>
+      </tbody></table>
+</div>
+	
+	<input type="hidden" name="cifno" value="8154718261">
+	<input type="hidden" name="cifnumber" value="">
+	<input type="hidden" name="branchcd" value="">
+	<input type="hidden" name="category" value="">
+	<input type="hidden" name="subcategory" value="">
+	<input type="hidden" name="loanorrefno1" value="">
+	<input type="hidden" name="loannoposs" value="">
+	
+	<input type="hidden" name="Orderby" value="F">
+	<input type="hidden" name="refresh" value="R">
+	<input type="hidden" name="AcctType" value="">
+	<input type="hidden" name="AcctId" value="">
+	<input type="hidden" name="BankId" value="">
+	<input type="hidden" name="Locn" value="">
+	<input type="hidden" name="Curdef" value="">
+	<input type="hidden" name="codeType" value="">
+	<input type="hidden" name="Key" value="">
+	<input type="hidden" name="hidaccinfo" value="">
+	<input type="hidden" name="accinfo" value="5497XXX0XXXX9807
+">
+	<input type="hidden" name="flag" value="">
+	<input type="hidden" name="baseno" value="">
+	<input type="hidden" name="todate" value="">
+	<input type="hidden" name="invstacno" value="">
+	<input type="hidden" name="homeacno" value="">
+	<input type="hidden" name="ProdCode" value="">
+	<input type="hidden" name="eaccno" value="4386XXX5XXXX8636">
+	<input name="ProfileID" type="hidden" value="5203
+">
+	<input type="hidden" name="acno" value="5497XXX0XXXX9807
+">
+	<input type="hidden" value="5497XXX0XXXX9807" name="rq">
+	<input type="hidden" value=" DHINESH KUMARAN M" name="customername">
+	<input type="hidden" value="" name="branchCode">
+	<input type="hidden" value="" name="InsureAcc">
+	<input type="hidden" name="cardno" value="5497XXX0XXXX9807">
+	<input type="hidden" value="" name="depFlag">
+	<input type="hidden" value="" name="depBase">
+	<input type="hidden" name="accno" value="">
+<input type="hidden" name="dematacno" value="">
+
+
+</form>
+
+<script language="JavaScript" type="text/javascript" src="/jsfiles/s_code.js"></script>
+<script language="JavaScript" type="text/javascript">
+s.pageName="BANKINGACCSUM | Banking Account Summary Landing Page";
+s.events="event6";
+s.channel="BANKINGACCSUM";
+var s_code=s.t();if(s_code)document.write(s_code)
+</script>
+<script language="JavaScript" type="text/javascript">
+if(navigator.appVersion.indexOf('MSIE')>=0)document.write(unescape('%3C')+'\!-'+'-')
+</script>
+
+
+<script language="JavaScript" type="text/javascript" src="/jsfiles/s_code.js"></script>
+<script language="JavaScript" type="text/javascript">
+s.pageName="CREDITACCSUM | Credit Card Account Summary Landing Page";
+s.events="event6";
+s.channel="CREDITACCSUM";
+var s_code=s.t();if(s_code)document.write(s_code)
+</script>
+<script language="JavaScript" type="text/javascript">
+
+s.manageVars("clearVars");
+s.pageName='IN|cbol|account summary';
+s.channel='IN|CBOL|';
+s.hier1='IN|CBOL|';
+s.prop11='cbol account details';
+s.prop5='5666e5a2f969aa3dc3a3f3108a665b88b4b19a50f63b6ca352a70aa8396ba156';
+s.prop6='Customer';
+s.eVar5='5666e5a2f969aa3dc3a3f3108a665b88b4b19a50f63b6ca352a70aa8396ba156';
+s.eVar6='Customer';
+void(s.t());
+</script>
+<script language="JavaScript" type="text/javascript">
+if(navigator.appVersion.indexOf('MSIE')>=0)document.write(unescape('%3C')+'\!-'+'-')
+</script>
+
+
+
+
+
+
+
+
+</body></html>

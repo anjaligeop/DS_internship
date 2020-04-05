@@ -1,0 +1,1116 @@
+<html><head><!--[if lte IE 7]><link rel="stylesheet" href="css/THMSEABLUE/eng_01.css" type="text/css" /><![endif]--><!--[if (!IE) | (gte IE 8)]--><link rel="stylesheet" href="css/THMSEABLUE/eng_01.uri.css" type="text/css"><!--[endif]--><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta http-equiv="no-cache"><title>Account Details</title><style type="text/css">@import url("css/dunstcss/style.css");</style><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="HandheldFriendly" content="true"><meta name="MobileOptimized" content="width"><meta http-equiv="cache-control" content="no-cache"><meta http-equiv="cache-control" content="no-store"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"> 
+
+		<!--[if lte IE 7]>
+			<style type="text/css" >
+				@import url("css/cmn/theme.css");
+			</style>
+		<![endif]-->
+        <!--[if (!IE) | (gte IE 8)]-->
+			<style type="text/css">
+				@import url("css/cmn/theme.uri.css");
+			</style>			
+		<!--[endif]-->
+		<style type="text/css">
+				@import url("css/cmn/theme.uri.css");
+			</style><style type="text/css">
+				@import url("css/bootstrap_3/css/bootstrap.css");
+			</style><script type="text/JavaScript" src="JS/combined/jquery-includes.js"></script><style type="text/css">
+
+.favadded {
+		background:  url(images/star.gif) no-repeat center left; 
+        alt:Add to Favorites;
+	}
+	
+ .favremoved {
+    background:  url(images/CLA.gif) no-repeat center left; 
+    alt:Remove from Favorites;
+  }
+</style><script>
+var globalcnt = 1;
+var useragent = "";
+
+var MaxOpenWndCnt = 3;
+var openWindowArray = new Array();
+var message = new Object ();
+var isHelp= 'Y';
+message.maxopen = "Maximum limit reached for number of open windows. Please close a window to open new Transaction.";
+message.alreadyopen = "Window already Open.";
+message.addfav = "Add to Favourites";
+message.alertstr = "Alert";
+function SendNewWindowRequest (p_txn, p_desc){
+    var features	=	"dependant=no,directories=no,location=no,menubar=no"
+					+	",resizable=yes,scrollbars=yes,titlebar=no,toolbar=no"
+					+	",height=710,width=990,top=0,left=0,status=yes";
+     if(txn_initreq[p_txn]) {
+        document.frmext.fldRequestId.value	= txn_initreq[p_txn];
+    } else {
+        document.frmext.fldRequestId.value   = defAppId + p_txn + "01";
+    } 
+    
+    var newwin  =   window.open("",p_txn,features);
+    document.frmext.target	= p_txn;
+    document.frmext.submit();
+    newwin.focus();
+    
+}
+/*
+This function would open the transaction in a new window.
+*/
+function SendDashboardRequest(p_txn, p_desc, p_seq) {
+	if (p_seq == null || p_seq == '') {
+    if(txn_initreq[p_txn]) {
+        document.frmtp.fldRequestId.value	= txn_initreq[p_txn];
+    } else {
+        document.frmtp.fldRequestId.value   = defAppId + p_txn + "01";
+    } 
+	} else {
+	    document.frmtp.fldRequestId.value   = defAppId + p_txn + p_seq;
+	}
+	var windowobj = openWindow(p_txn, unescape(p_desc));
+    if(windowobj) {
+        document.frmtp.fldServiceType.value	= p_txn;
+        document.frmtp.target	= windowobj.getFrameName();
+        document.frmtp.submit();
+    }
+}
+
+function SendDashboardFormRequest (p_frm,p_desc,p_currtxn,p_nosubmitForm) {
+    try{
+    
+        var windowobj = openWindow(p_frm.fldServiceType.value, p_desc);
+        if(p_nosubmitForm) {
+            return windowobj;
+        }
+        //document.frmtp.fldRequestId.value	= defAppId+p_frm.fldServiceType.value+requestId;
+        //document.frmtp.fldServiceType.value	= p_frm.fldServiceType.value;
+        if(windowobj) {
+            p_frm.target	= windowobj.getFrameName();
+            p_frm.submit();
+        }
+    } catch(e) {
+        
+    }
+}
+function openWindow(p_txn, p_desc) {
+	var count = globalcnt;
+	var frame_name = "frame_" + p_txn + count;
+	var fav_btn_id = "btn_fav_" + p_txn + count;
+	var print_btn_id = "btn_print_" + p_txn + count;
+	var btn_help_id = "btn_help_" + p_txn + count;
+
+    if($.window.getCount() == MaxOpenWndCnt) {
+        var title = '<div width="100%"  style="display:inline" ><span class="ui-icon ui-icon-info"  style="float:left" ></span>'+message.alertstr+'</div>';
+        var content = message.maxopen;
+        callDialog(title, content, 400, 120, true);
+        return;
+    }
+    var winTitle = '<img src="images/menuicons/txn_bullet.gif"  class="menuIcons" ></img> '
+                    + p_desc;
+
+    var myButtons = [
+       // facebook button
+       {
+       id: fav_btn_id,           // required, it must be unique in this array data
+       title:"",                       // optional, it will popup a tooltip by browser while mouse cursor over it
+       clazz: "my_button",             // optional, don't set border, padding, margin or any style which will change element position or size
+       style: "",                      // optional, don't set border, padding, margin or any style which will change element position or size
+       image: "",                      // required, the url of button icon(16x16 pixels)
+       callback:                       // required, the callback function while click it
+          function(btn, wnd) {
+            toggleimg(p_txn, "#" + fav_btn_id, p_desc);
+
+          }
+       },
+       {
+       id: print_btn_id,
+       title: "Print this page",
+       clazz: "my_button",
+       style: "",
+       image: "images/print.gif",
+       callback:
+          function(btn, wnd) {
+          fireprint (frame_name);
+
+          }
+       }
+    ];
+		
+	if(isHelp=='Y'){
+	var helpbtn = new Object(
+	 {
+       id: btn_help_id,
+       title: "Help",
+       clazz: "my_button",
+       style: "",
+       image: "images/help.gif",
+       callback:
+          function(btn, wnd) {
+          fireMenuHelp(p_txn);
+		  }
+       });
+	myButtons.push(helpbtn);
+	}
+
+    //var txninit = '//faml/response/loginresponsedto/menu/menuresponsedto/menu/menudto[generate-id () = generate-id (key ('submenu', idtxn)) and tabdescription = $tab]'
+    var windowobj = $("#ApplicationLayout").window({
+               title: winTitle,
+               url: "images/loading.gif",
+               frameName: frame_name,
+               minimizable: true,
+               showRoundCorner: false,
+               checkBoundary: true,
+               bookmarkable:false,
+               resizable:true,
+               width: 775,
+               height: 500,
+               y: $("#txnbodyLayout").offset().top,
+               x: $("#txnbodyLayout").offset().left,
+               z: 200,
+               custBtns: myButtons,
+               showFooter: false,
+			   frameClass: "dashboardWindowFrame",
+			   maximizeText : "maximize window",
+			   cascadeText : "cascade window",
+			   minimizeText : "minimize window",
+			   closeText : "close window",
+			   bookmarkText : "bookmark this",
+               onClose: function(wnd) { // a callback function while user click close button
+					removeFromArray(openWindowArray, p_txn);
+					try {
+						if (parent.popupWindow) {
+							//closing existing pop up window if any.
+							//to do - should close respective pop up only.
+							parent.popupWindow.close();
+						} 
+					} catch (e) {}
+					return;
+               },
+               onOpen: function(wnd) { // a callback function while user click close button
+                  addIntoArray(openWindowArray, p_txn);
+                  return;
+               }
+            });
+    getimg(p_txn, "#" + fav_btn_id);   
+    globalcnt++;
+    return windowobj;
+}
+function getPosition(arr,val) {
+    if(arr != null && arr.length > 0) {
+        for(var cnt = 0;cnt < arr.length; cnt++ ) {
+            if(arr[cnt] == val) {
+                return cnt;
+            }
+        }
+    }
+    return -1;
+}
+function getPresentWindow(arr,val) {
+var count=0;
+    if(arr != null && arr.length > 0) {
+        for(var cnt1 = 0;cnt1 < arr.length; cnt1++ ) {
+            if(arr[cnt1] == val) {
+                count++;
+            }
+        }
+    }
+    return count;
+}
+function addIntoArray(p_array, p_txn) {
+    p_array.push(p_txn);
+}
+function removeFromArray(p_array, p_txn) {
+    var index_value = getPosition(p_array,p_txn);
+    var range = 1;
+    p_array.splice(index_value,range);
+}
+
+function callDialog(ptitle, contentString, w, h, modal) {
+    
+    $('#dialog').dialog('option','height',h);
+    $('#dialog').dialog('option','width',w);
+    $('#dialog').dialog('option','modal',modal);
+    $('#dialog').dialog('option','title',ptitle);
+	$('#dialog').dialog('option','bgiframe',true);
+    if(typeof contentString == 'string') {
+        $('#dialog').html(contentString);
+    } else {
+        $('#dialog').append(contentString);
+    }
+    $('#dialog').dialog('open');
+}
+function fireMenuHelp(p_txn){
+		 var l_idtxn= "/help/HTMLS/eng/"+ p_txn + ".htm";
+		 var l_default= "/help/HTMLS/eng/"+ p_txn + ".htm";
+		 var features = "directories=no,location=no,menubar=no,status=no,scrollbars=yes,"
+				+	"toolbar=no,dependant=no,resizable=no,top=75,left=750,"
+				+	"scrollbars=yes,width=400,height=500";
+		addlistWindow = window.open ("static/help.jsp?REFIDTXN="+l_idtxn+"&DEFPATH="+l_default, "details", features);
+		//addlistWindow.moveTo(700,80);
+}
+
+$(document).ready(function() {
+
+if(useragent=="ipad"){
+	if (!parent.isMenuClassic()) 
+	{
+		if (parent.frames.length > 0) 
+		{
+			var heightDiv = $('form[name="frmmain"]').height() + $(window).height() - 200;
+			$('.contentarea').css({height:heightDiv});
+			$('body').addClass("mainFrame");
+			$('form[name="frmmain"]').addClass("mainscroll");
+			try
+			{
+				$('form[name="frmmain"]').touchScroll({elastic: true, momentum: false});
+				touchTableScroll('displayTable');
+				function loaded() 
+				{
+					document.addEventListener('touchmove', function(e){ e.preventDefault(); });
+					myScroll = new iScroll('displayTable', {elastic: false, momentum: false});
+				}
+
+			document.addEventListener('DOMContentLoaded', loaded);
+	
+			}
+			catch(e){
+			}
+		}
+	}
+	
+}});
+
+
+</script><style>
+
+
+.calMask
+{
+	position: absolute;
+	z-index:1000;
+	background:#FFFFFF;
+	border:0px solid;
+	
+}
+.calContainer
+{
+	position: relative;
+	background:#FFFFFF;
+	z-index:1007;
+	border-bottom-color:#FFFFFF;
+	border-color:#FFFFFF;
+	border-left-color:#FFFFFF;
+	border-top-color:#FFFFFF;
+	border-right-color:#FFFFFF;
+	font-color:#6677DD;
+}
+.screenMask
+{
+	position: absolute;
+	height:1000%;
+	width: 1000%;
+	left:0px;
+	top:0px;
+	z-index:1005;
+	background: url('images/transparent.gif');
+}
+.calContent
+{
+	position: relative;
+	z-index:1010;
+	background:#FFFFFF;
+	border:2px inset;
+	padding: 5px;
+	
+}	
+	.TESTcpYearNavigation,
+	.TESTcpMonthNavigation
+			{
+			background-color:#6677DD;
+			text-align:center;
+			vertical-align:center;
+			text-decoration:none;
+			color:#FFFFFF;
+			font-weight:bold;
+			}
+	.TESTcpDayColumnHeader,
+	.TESTcpYearNavigation,
+	.TESTcpMonthNavigation,
+	.TESTcpCurrentMonthDate,
+	.TESTcpCurrentMonthDateDisabled,
+	.TESTcpOtherMonthDate,
+	.TESTcpOtherMonthDateDisabled,
+	.TESTcpCurrentDate,
+	.TESTcpCurrentDateDisabled,
+	.TESTcpTodayText,
+	.TESTcpTodayTextDisabled,
+	.TESTcpText
+			{
+			font-family:arial;
+			font-size:8pt;
+			}
+	TD.TESTcpDayColumnHeader
+			{
+			text-align:right;
+			border:solid thin #6677DD;
+			border-width:0 0 1 0;
+			}
+	.TESTcpCurrentMonthDate,
+	.TESTcpOtherMonthDate,
+	.TESTcpCurrentDate
+			{
+			text-align:right;
+			text-decoration:none;
+			}
+	.TESTcpCurrentMonthDateDisabled,
+	.TESTcpOtherMonthDateDisabled,
+	.TESTcpCurrentDateDisabled
+			{
+			color:#D0D0D0;
+			text-align:right;
+			text-decoration:line-through;
+			}
+	.TESTcpCurrentMonthDate
+			{
+			color:#6677DD;
+			font-weight:bold;
+			}
+	.TESTcpCurrentDate
+			{
+			color: #FFFFFF;
+			font-weight:bold;
+			}
+	.TESTcpOtherMonthDate
+			{
+			color:#808080;
+			}
+	TD.TESTcpCurrentDate
+			{
+			color:#FFFFFF;
+			background-color: #6677DD;
+			border-width:1;
+			border:solid thin #000000;
+			}
+	TD.TESTcpCurrentDateDisabled
+			{
+			border-width:1;
+			border:solid thin #FFAAAA;
+			}
+	TD.TESTcpTodayText,
+	TD.TESTcpTodayTextDisabled
+			{
+			border:solid thin #6677DD;
+			border-width:1 0 0 0;
+			}
+	A.TESTcpTodayText,
+	SPAN.TESTcpTodayTextDisabled
+			{
+			height:20px;
+			}
+	A.TESTcpTodayText
+			{
+			color:#6677DD;
+			font-weight:bold;
+			}
+	SPAN.TESTcpTodayTextDisabled
+			{
+			color:#D0D0D0;
+			}
+	.TESTcpBorder
+			{
+			border:solid thin #6677DD;
+			}
+	.printWarning {
+		display:none;
+	}
+	.noPrintWarning {
+		display:none;
+	}
+	</style><style media="print">
+	.printWarning {
+		display:block;
+	}
+	.noPrintWarning {
+		display:none;
+	}
+</style><meta name="format-detection" content="telephone=no"><meta name="format-detection" content="telephone=no"></head><body marginwidth="0" marginheight="0" id="dunst" onload="displayErrorMessage();displayStatusMessage();"><div id="testdiv1" style="position:absolute;visibility:hidden;background-color:white;layer-background-color:white;z-index:10005"></div><div class="screenMask" id="calenderMask" style="position:absolute;display:none;background-color:white" onclick="hide_Cal();"></div><script type="text/javascript" src="jsdir/common.js"></script><script language="JavaScript" type="text/JavaScript">
+try{
+    if(!top.isMenuClassic()){
+        $(document).ready(function() {
+            var winTitle = '<img src="images/menuicons/txn_bullet.png"  class="menuIcons"  align="absMiddle" ></img> '
+                + $("#pageheading").html();
+            $("#"+window.name,parent.$("#ApplicationLayout")).closest("div.window_panel").find("div.window_title_text").html(winTitle);
+        });
+    }
+} catch(e) {
+}
+var popup_txnid="";
+var popup_seq="";
+var popup_target="";
+var popup_win_name="";
+var flgbtn=false;
+var highlightedTabs = new Array ();
+var helptxn='ADT';
+//-----------------------------------------------------------------------------
+function displayStatusMessage () {
+
+    var idtxn = 'RRADT02';
+    if(idtxn) {
+        idtxn = idtxn.substring(2,5);
+    }
+
+	
+
+	var totalcnt	= 0
+					+ 0;
+					//+ 0;
+
+	if(totalcnt == 0) {
+		if (window.parent.frames['messageFrame']) {
+			window.parent.frames['messageFrame'].resetErrors();		
+		} else if (window.top.frames['messageFrame']) {
+			window.top.frames['messageFrame'].resetErrors();		
+		}
+	}
+
+	checkForAuditLogFrame();
+	
+}
+//-----------------------------------------------------------------------------
+$(function () {
+	var count	=	0
+				+	0
+				+	0;
+
+	
+
+	if (count > 0) {
+		$('#dialog-modal-error').dialog (
+			{
+				autoOpen: true,
+				position : 'center',
+				modal : false,
+				bgiframe : true,
+				close : minimizeMessages,
+				resizable : false,
+				draggable : false
+			}
+		);
+		$("#dialog-modal-error").css("min-height", "");
+		$("#error-dialog-table").css("display", "block");
+	}
+	
+
+})
+//-----------------------------------------------------------------------------
+function minimizeMessages () {
+	var msgFrame;
+	var msg_text = "Click here to view messages..."
+
+	var l_footer_content = '<div id="msg_' + document.frmmain.fldServiceType.value + '" class="msgFrame">';
+
+	l_footer_content += '<img src="images/list_errors.gif" align="abdMiddle" title="' + msg_text +'" id="msg_' + document.frmmain.fldServiceType.value + '_img" >';
+	//l_footer_content += '&nbsp;' + msg_text
+	l_footer_content += '</div>';
+
+	if (window.top.frames ["messageFrame"]) {
+		//msgFrame = $("#errorTab", window.top.frames ["messageFrame"].document);
+
+		//parent.document.getElementById('dataframe').rows = "25,*";
+		msgFrame = $("#errorTab");
+		msgFrame.show();
+	} else {
+		msgFrame = $("#errorTab");
+		msgFrame.show();
+	}
+
+	msgFrame.html (l_footer_content);
+	
+	msgFrame.click (
+		function () {
+		$('#dialog-modal-error').dialog ('open');
+		$("#dialog-modal-error").css("min-height", "");
+		/*$('#dialog-modal-error').parent().css(
+			{
+				position:'absolute !important',
+				left:'auto !important',
+				right:'0px !important',
+				top:'24px!important'
+			});*/
+		}
+	);
+}
+//-----------------------------------------------------------------------------
+function highlightTab (p_tab_id) {
+	var l_tab_obj, imageid, test, image1;
+
+	if (highlightedTabs.length > 0 && highlightedTabs.contains (p_tab_id)) {
+
+		l_tab_obj = document.getElementById (p_tab_id);
+		imageid = l_tab_obj.id + "image";
+		test = l_tab_obj;
+		image1 = document.createElement("img");
+
+		image1.setAttribute('id',imageid);
+		image1.setAttribute('src','images/red_error.gif');
+		image1.setAttribute('align','absMiddle');
+		image1.className='errorImg';
+		test.childNodes [0].insertBefore(image1);	
+		
+		addIntoArray (highlightedTabs, p_tab_id);
+
+		/*$("#"+imageid).tooltip({
+			track: true, 
+			delay: 0, 
+			showURL: false, 
+			opacity: 1, 
+			fixPNG: false, 
+			showBody: " - ",
+			extraClass: "pretty fancy",
+			top: -15,
+			left: 20
+		});*/
+	}
+}
+//-----------------------------------------------------------------------------
+function markErrorField (p_err_field, err_message){
+
+	$(p_err_field).css ('border', '1px solid red');
+	$(p_err_field).css ('background-color', 'rgb(255, 240, 240)');
+	$(p_err_field).attr ('title', err_message);
+
+	/*$(p_err_field).tooltip({
+		track: true, 
+		delay: 0, 
+		showURL: false, 
+		opacity: 1, 
+		fixPNG: false, 
+		showBody: " - ",
+		extraClass: "pretty fancy",
+		top: -15,
+		left: 20
+	});*/	
+	$(p_err_field).qtip({
+      position: {
+         corner: {
+            target: 'topMiddle',
+            tooltip: 'bottomMiddle'
+         }
+      },
+      style: {
+         name: 'red',
+         padding: '7px 13px',
+         width: {
+            max: 210,
+            min: 0
+         },
+         tip: true
+      }
+   });
+
+	
+}
+//-----------------------------------------------------------------------------
+function initError(){
+	//Initialize Error
+	
+}
+//-----------------------------------------------------------------------------
+function displayErrorMessage () {
+	cnt = 0;
+	totalcnt  = 0;
+	var arrErrorCode = new Array();
+	var arrErrorDesc = new Array();
+	var arrWarningCode = new Array();
+	var arrWarningDesc = new Array();
+	var arrInfoCode = new Array();
+	var arrInfoDesc = new Array();
+	var arrSuccessCode = new Array();
+	var arrSuccessDesc = new Array();
+	
+	totalcnt = totalcnt  + cnt;
+	cnt = 0;
+	
+	totalcnt = totalcnt  + cnt;
+}
+//-----------------------------------------------------------------------------
+function displayBulkStatusMessage () {
+
+	return;
+
+}
+//-----------------------------------------------------------------------------
+function Draft (
+	P_idTxn
+,	p_seqNo
+) {
+  
+	if(document.frmmain.fldnextaction.value=='RD'){}
+	else{	
+		document.frmmain.fldnextaction.value ='DF';
+	}
+	document.frmmain.fldauthaction.value ='VO';
+	try {
+		document.frmmain.fldflagdealallowed.value = 'N';//for generic payment only
+	} catch (e) {
+	}
+
+	
+	try {
+		document.frmmain.fldGPRequestId.value = 'RR'+P_idTxn+p_seqNo;
+	} catch (e) {
+	}
+
+	SendTxnRequest('98',P_idTxn);
+}
+//-----------------------------------------------------------------------------
+function Draft(P_idTxn) {
+  
+	if(document.frmmain.fldnextaction.value=='RD'){}
+	else{	
+		document.frmmain.fldnextaction.value ='DF';
+	}
+	document.frmmain.fldauthaction.value ='VO';
+	try {
+		document.frmmain.fldflagdealallowed.value = 'N';//for generic payment only
+	} catch (e) {
+	}
+	
+	try {
+		document.frmmain.fldGPRequestId.value = 'RR'+P_idTxn+'03';
+	} catch (e) {
+	}
+	
+	SendTxnRequest('98',P_idTxn);
+}
+//-----------------------------------------------------------------------------
+function saveTemplate (
+	P_idTxn
+,	p_seqNo
+) {
+  
+	document.frmmain.fldnextaction.value = 'TP';
+	//Set fldauthaction to 'VI' if module and rule chk is required for Templates
+    document.frmmain.fldauthaction.value = 'VO';    
+	
+	try {
+		document.frmmain.fldistemplatetxn.value = 'true';//for generic payment only
+		document.frmmain.fldflagdealallowed.value = 'N';//for generic payment only
+	} catch (e) {
+	}
+	
+	try {
+		document.frmmain.fldGPRequestId.value = 'RR'+P_idTxn+p_seqNo;
+	} catch (e) {
+	}
+
+    SendTxnRequest ('97',P_idTxn);
+}
+//-----------------------------------------------------------------------------
+function saveTemplate (P_idTxn) {
+  
+	document.frmmain.fldnextaction.value = 'TP';
+	//Set fldauthaction to 'VI' if module and rule chk is required for Templates
+    document.frmmain.fldauthaction.value = 'VO';    
+	
+	try {
+		document.frmmain.fldistemplatetxn.value = 'true';//for generic payment only
+		document.frmmain.fldflagdealallowed.value = 'N';//for generic payment only
+	} catch (e) {
+	}
+	
+	try {
+		document.frmmain.fldGPRequestId.value = 'RR'+P_idTxn+'03';
+	} catch (e) {
+	}
+
+    SendTxnRequest ('97',P_idTxn);
+}
+
+//-----------------------------------------------------------------------------
+function PrintPopup(p_request_id , p_section_id, p_form) {
+
+	var features	=	"dependant=no,directories=no,location=no,menubar=no"
+					+	",resizable=yes,scrollbars=yes,titlebar=no,toolbar=no"
+					+	",height=600,width=600,top=0,left=0,status=yes";
+	var addlistWindow = window.open ("", "PrintPopup", features) ;
+	p_form.fldSectionId.value = p_section_id;	
+	
+	p_form.fldRequestId.value = p_request_id;
+	p_form.fldSessionId.value = parent.idsession;
+
+	p_form.target = "PrintPopup";
+	p_form.submit();
+	addlistWindow.focus();
+}
+//------------------------------------------------------------------------------
+function DowloadPopup(p_request_id , p_section_id, p_form) {
+
+	var features	=	"dependant=no,directories=no,location=no,menubar=no"
+					+	",resizable=yes,scrollbars=yes,titlebar=no,toolbar=no"
+					+	",height=600,width=600,top=0,left=0,status=yes";
+	var addlistWindow = window.open ("", "DowloadPopup", features) ;
+	p_form.fldSectionId.value = p_section_id;	
+	
+	p_form.fldRequestId.value = p_request_id;
+	p_form.fldSessionId.value = parent.idsession;
+
+	p_form.target = "DowloadPopup";
+	p_form.submit();
+	addlistWindow.focus();
+}
+//-----------------------------------------------------------------------------
+function getChangeFieldColor(){
+	var arr_fldchanged	= new Array ();
+	var arr_prevval		= new Array ();
+	var arr_idx			= 0;
+	var len = 0;
+	var i;
+	
+	
+	arr_idx = 0;
+	
+	len =arr_fldchanged.length;
+
+
+	for(i=0;i<len;i++){
+		
+		if(document.getElementById(arr_fldchanged[i]) != null && document.getElementById(arr_fldchanged[i]) != "undefined"){
+			
+			document.getElementById(arr_fldchanged[i]).className = "ColHeadingLeftAlignedBold";
+		}
+
+	
+	}
+	
+}
+//--------------------------------------------------------------------------------------
+function defaultfunction(){
+
+return true;
+
+}
+//--------------------------------------------------------------------------------------
+function fnFixDecimalPlaces (
+	p_val
+,	p_places
+) {
+	if ( p_val == '' || isNaN (p_val) || isNaN (p_val) || (p_places != '0' && p_places == '')) {
+		return '';
+	}
+	return (parseFloat (p_val)).toFixed (p_places);
+}
+//--------------------------------------------------------------------------------------
+function fnSubmitForm () {
+	try {
+		if (parent.popupWindow) {
+			parent.popupWindow.top.frames [1].name = 'txn_'+parent.idsession;
+			document.frmmain.target = 'txn_'+parent.idsession;	
+			document.frmmain.fldSessionId.value = parent.idsession;
+			document.frmmain.fldRequestId.value = "RR"+popup_txnid+popup_seq;	
+			document.frmmain.submit ();
+			document.frmmain.target = "";
+		}
+	} catch (e) {
+	}
+}
+//--------------------------------------------------------------------------------------
+function call_Popup (
+	p_feature
+,	p_txnid
+,	p_seqno
+,	p_target
+){
+	try {
+		if (parent.popupWindow) {
+			parent.popupWindow.close();//closing existing pop up window.
+			parent.popupWindow = null;
+		} 
+	} catch (e) {
+	}
+	
+	popup_win_name	= 'popup_'+parent.iduser;
+	popup_txnid		= p_txnid;
+	popup_seq		= p_seqno;
+	parent.popupWindow = window.open ("defaultflexcubepopup.html",popup_win_name, p_feature)
+}
+//--------------------------------------------------------------------------
+function fnOnBodyUnload () {
+	try {
+		if (parent.popupWindow) {
+			parent.popupWindow.close();//closing existing pop up window.
+		} 
+	} catch (e) {
+	}
+}
+
+//--------------------------------------------------------------------------
+ function isTxnInRole (p_txn){
+
+    var p_success = false;
+   for (var i=0;i < arr_grp__txnid.length; i++){ 
+    if (arr_grp__txnid [i] == p_txn) {
+        p_success=true; 
+          
+   }
+      
+  }
+  return p_success;
+}
+
+//------------------------------------------------------------------------------
+function view_attached_docs()
+	{
+		
+		SendTxnRequest('03','VAI');
+	}
+//------------------------------------------------------------------------------
+function fnAttachDocuments(p_tableid,p_rowid,p_buttonid)
+{
+
+	var features	=	"dependant=no,directories=no,location=no,menubar=no"
+						+	",resizable=no,scrollbars=yes,titlebar=no,toolbar=no"
+						+	",height=600,width=600,top=0,left=0,status=yes";
+	document.frmmain.target = "txn";
+	document.frmmain.fldSessionId.value = parent.idsession;
+	//document.frmmain.fldRequestId.value="RRALI02";
+	document.frmmain.fldSectionId.value="RRALI02";
+	document.frmmain.fldServiceType.value="ALI";
+	document.frmmain.fldtableid.value=p_tableid;	
+	document.frmmain.fldrowid.value=p_rowid;	
+	document.frmmain.fldbtnflag.value=p_buttonid;
+	call_Popup (
+		features
+	,	'ALI'
+	,	'02'
+	,	'txn'
+	);
+	document.frmmain.target = "";
+}
+//------------------------------------------------------------------------------
+function fnAttachFilesForMailBox(p_tableid,p_rowid,p_buttonid)
+{
+	var features	=	"dependant=no,directories=no,location=no,menubar=no"
+					+	",resizable=no,scrollbars=yes,titlebar=no,toolbar=no"
+					+	",height=600,width=600,top=0,left=0,status=yes";
+	document.frmmain.target = "txn";
+	document.getElementById('fldSessionId').value = parent.idsession;
+	document.getElementById('fldSectionId').value = "RRIMS92";
+	document.getElementById('fldServiceType').value = "IMS";
+	document.getElementById('fldtableid').value = p_tableid;
+	document.getElementById('fldrowid').value = p_rowid;
+	document.getElementById('fldbtnflag').value = p_buttonid; 
+	call_Popup (
+		features
+	,	'IMS'
+	,	'92'
+	,	'txn'
+	);
+	document.frmmain.target = "";
+}
+//------------------------------------------------------------------------------
+function fnRemove(p_sectionid,p_requestid) {
+
+	document.frmmain.target="";
+	document.frmmain.flddelrefno.value ="";
+	document.frmmain.fldfilerefno.value ="";
+	for (var i=0;i < document.frmmain.elements.length;i++) {
+		if (document.frmmain.elements[i].type=='checkbox' && document.frmmain.elements[i].name=="fldattachedfiles" ) {
+				if(document.frmmain.elements[i].checked==false) {
+				document.frmmain.fldfilerefno.value = document.frmmain.elements[i].value+'~'+document.frmmain.fldfilerefno.value;
+			}
+			if(document.frmmain.elements[i].checked==true) {
+				flgbtn=true;
+				document.frmmain.flddelrefno.value = document.frmmain.elements[i].value+'~'+document.frmmain.flddelrefno.value;
+			}
+		}
+	}
+	if(flgbtn==false){
+		alert("Please select a file to remove");
+		return false;
+	}
+	document.frmmain.fldSectionId.value = p_sectionid ;
+	//document.frmmain.fldPrevRequestId.value = p_prevrequestid;
+	return SendTxnRequest(p_requestid.substring(5,7),p_requestid.substring(2,5));
+	
+  
+}
+//-----------------------------------------------------------------------------------------
+function checkForAuditLogFrame() {
+	var l_auditWindName = self.name;
+	// setting self.name in l_auditWindName
+	// compare it with frame self.name if it matches with SSR or VAL frame name
+	// put modal window.
+	
+	if(l_auditWindName=="frame_audit_txn"){
+		if(document.getElementById("divsession")) {
+			document.getElementById("divsession").style.display = "";
+		}
+	}
+}
+//-----------------------------------------------------------------------------
+function displayBackwardCompatibilityStatusMessage () {
+	return;
+}
+//-----------------------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------------------
+</script><div id="divsession" class="modalWhitebackground" style="display:none"></div><div id="errorTab" style="display:none;height:auto;width:100%;cursor:hand"></div><div id="printWarning" class="noPrintWarning"><div class="warningMsg"></div><div class="alertmsgbox"><ul></ul></div></div><div id="dialog-modal-error" title="Messages"><table id="error-dialog-table" style="width:100%;display:none" cellpadding="1" cellspacing="1"></table></div><script language="JavaScript" type="text/JavaScript" src="jsdir/common.js"></script><script language="JavaScript" type="text/JavaScript">
+//------------------------------------------------------------------------------	
+ /* function displayErrorMessage () {
+	cnt = 0;
+	totalcnt  = 0;
+	var arrErrorCode = new Array();
+	var arrErrorDesc = new Array();
+	var arrWarningCode = new Array();
+	var arrWarningDesc = new Array();
+	var arrInfoCode = new Array();
+	var arrInfoDesc = new Array();
+	var arrSuccessCode = new Array();
+	var arrSuccessDesc = new Array();
+	
+	totalcnt = totalcnt  + cnt;
+	cnt = 0;
+	
+	totalcnt = totalcnt  + cnt;
+
+	if(totalcnt > 0) {		
+		window.parent.frames['messageFrame'].displayMessages(arrErrorDesc,arrWarningDesc,arrInfoDesc,arrSuccessDesc);
+	} else {
+		window.parent.frames['messageFrame'].resetErrors();		
+	}	
+
+}*/
+//-----------------------------------------------------------------------------
+	/*function displayStatusMessage () {
+		cnt = 0;
+		var statusType = 'S';
+		var arrErrorCode = new Array();
+		var arrErrorDesc = new Array();
+		
+		if(cnt > 0) {
+			window.parent.frames['messageFrame'].displayErrorsWithType (arrErrorCode, arrErrorDesc,statusType);		
+		} else {
+			window.parent.frames['messageFrame'].resetErrors();				
+		}
+	}*/
+ //------------------------------------------------------------------------------
+/*function setBranch () {
+
+var l_val = document.frmmain.fldacctnodesc.options[document.frmmain.fldacctnodesc.options.selectedIndex].value;
+var l_arr  = new Array ();
+l_arr = l_val.split (',');
+		
+		selectedAccNbr		= '1222101103944   ';
+		if(selectedAccNbr == l_arr [0])
+		{
+			document.frmmain.fldcustid.value = '71204880';
+			
+		}
+		
+			
+document.frmmain.fldacctno.value = l_arr [0];
+document.frmmain.fldBranch.value = l_arr [1];
+return false;
+} */
+//------------------------------------------------------------------------------
+/*function buttondisplay () {
+	if (document.frmmain.fldback) {
+		if(top.isMenuClassic ()) {		
+			document.frmmain.fldback.style.display='';
+		} else {
+			document.frmmain.fldback.style.display='none';
+		}
+	}
+}*/
+//------------------------------------------------------------------------------
+function fnBack () {
+	SendTxnRequest ('03','ACV');
+}
+//------------------------------------------------------------------------------
+function fnGetActivity () {
+	
+	if(!top.isDashboard()){
+			if(menuType == 'TL'){
+				var selectedTab = $('.menuactive', parent.frames['frame_top'].document).attr('id').replace("menutab","");
+				parent.frame_menu.setActiveMenu("RRAAC", selectedTab);
+			}
+	}
+	
+	if (document.frmmain.fldacctnodesc.value == '') {
+		alert ('Please Select Account Number');
+		document.frmmain.fldacctno1.value = '';
+		document.frmmain.fldbranch1.value = '';	
+		document.frmmain.fldacctno.value = '';
+		document.frmmain.fldacctnodesc.focus ();
+		return;
+	}
+	document.frmmain.fldacctno.value  = document.frmmain.fldacctnodesc.value;
+	SendTxnRequest ('01','AAC');
+}
+//------------------------------------------------------------------------------
+function fnSubmit () {
+	if (document.frmmain.fldacctnodesc.value == '') {
+		alert ('Please Select Account Number');
+		document.frmmain.fldacctno1.value = '';
+		document.frmmain.fldbranch1.value = '';	
+		document.frmmain.fldBranch.value = '';
+		document.frmmain.fldacctno.value = '';
+		document.frmmain.fldacctnodesc.focus ();
+		return;
+	}
+	var l_arr = document.frmmain.fldacctnodesc.value.split ('~');
+	document.frmmain.fldacctno1.value	= l_arr [0];
+	document.frmmain.fldbranch1.value	= l_arr [2];
+	document.frmmain.fldBranch.value	= l_arr [2];
+	document.frmmain.fldcustid.value	= l_arr [3];
+	document.frmmain.fldacctno.value	= document.frmmain.fldacctnodesc.value;
+	if(document.frmmain.fldServiceType.value == 'ASM'){
+		document.frmmain.fldServiceType.value = "ADT";
+	}	
+	return SendRequest ('02');
+}
+//------------------------------------------------------------------------------
+</script><form action="internet" method="post" name="frmmain" autocomplete="off"><input type="hidden" name="idsequence" value="ZnsLIrPKP9eoS4GY/daM4JKGWxlTBzr9oo3aQreuIEk="><table cellpadding="0" cellspacing="0" border="0" id="mainbox" class="mainbox"><tbody><tr><td><div class="toppanel"><ul><li></li></ul></div><div class="middlepanel"><table cellspacing="0" cellpadding="0" border="0" id="maintable" class="maintable"><tbody><tr><td valign="top"><div id="pageheadingpanel"><div id="pageheading" nowrap="true">Account Details</div><div id="pageheadingdate">05-04-2020 08:36:00 GMT +0530</div></div></td></tr><tr><td height="100%" valign="top"><div class="y_scroll wrapperbg" id="contentarea"><div class="contentarea"><span id="box" class="box"><div class="toppanel"><ul><li></li></ul></div><div class="dunstmiddlepanel"><table border="0" cellspacing="1" cellpadding="1" class="formtable"><tbody><tr><td class="labeltext col1"><label for="fldacctnodesc">Select Account:</label></td><td class="col80"><select type="select-one" id="fldacctnodesc" name="fldacctnodesc" onchange="" class="objselect  selectAcc"><option value="">Select</option><optgroup label="71204880"></optgroup><optgroup label="&nbsp;&nbsp;&nbsp;Current and Savings Account"><option value="1222101103944   ~C~1222~71204880" selected="true">&nbsp;&nbsp;&nbsp;MySavings</option></optgroup></select></td></tr></tbody></table></div><div class="bottompanel"><ul><li></li></ul></div></span><div class="buttonarea"><ul><li><input tabindex="20" name="fldsubmit" onclick="fnSubmit ();" value="Submit" class="Buttons" type="button"></li></ul></div><br><br><div class="buttonarea"><b><p style="color: red;">Important Announcement:</p><p style="color: red;">Retail Customers can enhance their fund transfer limits up to Rs. 10 Lakh by visiting Services-&gt;Self-Services-&gt;Set Transaction Limits option.</p></b></div><div id="request1" style="display:block;"><span id="box" class="box"><div class="toppanel"><ul><li></li></ul></div><div class="dunstmiddlepanel"><table border="0" cellspacing="1" cellpadding="1" class="infotable2"><caption>Account Details for SB/Current/Recurring Deposits</caption><tbody><tr><td class="labeltext col1">
+							Name:
+						</td><td class="col2">DHINESH KUMARAN M</td><td class="labeltext col3">
+							Opening Date:
+						</td><td class="col4">08-08-2012</td></tr><tr class="alterrow2"><td class="labeltext">
+							Account Number:
+						</td><td>1222101103944   </td><td class="labeltext">
+							Account Type:
+						</td><td>Current and Savings</td></tr><tr><td class="labeltext">
+							Account Relationship: 
+						</td><td>Single</td><td class="labeltext">
+							Account Status:
+						</td><td>Account Enabled</td></tr><tr class="alterrow2"><td class="labeltext">
+							Branch:
+						</td><td>TRICHY TEPPAKULAM MAIN&nbsp;[1222]
+						</td><td class="labeltext">
+							Product Name:
+						</td><td>CANARA SB GENERAL</td></tr><tr><td class="labeltext">
+							Account Currency:
+						</td><td class="col80" colspan="3">INR</td></tr></tbody></table></div><div class="bottompanel"><ul><li></li></ul></div></span><span id="box" class="box"><div class="toppanel"><ul><li></li></ul></div><div class="dunstmiddlepanel"><table border="0" cellspacing="1" cellpadding="1" class="infotable2"><caption>Facilities</caption><tbody><tr class="alterrow2"><td class="labeltext col1">
+						Cheque Book:
+					</td><td class="col2">Yes</td><td></td></tr></tbody></table></div><div class="bottompanel"><ul><li></li></ul></div></span><span id="box" class="box"><div class="toppanel"><ul><li></li></ul></div><div class="dunstmiddlepanel"><table border="0" cellspacing="1" cellpadding="1" class="infotable2"><caption>Balances</caption><tbody><tr class="alterrow2"><td class="labeltext col1">
+							Current Balance:
+						</td><td class="col80" colspan="3">1,087.00</td></tr><tr><td class="labeltext">
+							Amount on Hold:
+						</td><td>0.00</td></tr><tr class="alterrow2"><td class="labeltext">
+							Uncleared Funds:
+						</td><td>0.00</td></tr><tr><td class="labeltext">
+									Overdraft Limit:
+								</td><td>0.00</td></tr><tr><td class="labeltext">
+							Balance Available:
+						</td><td>1,087.00</td></tr><tr class="alterrow2"><td class="labeltext">
+							Minimum Balance Required:
+						</td><td>500.00</td></tr><tr><td class="labeltext">
+							Net Available Balance For Withdrawal:
+						</td><td nowrap="true">587.00</td></tr></tbody></table></div><div class="bottompanel"><ul><li></li></ul></div></span><span id="box" class="box"><div class="toppanel"><ul><li></li></ul></div><div class="dunstmiddlepanel"><table border="0" cellspacing="1" cellpadding="1" class="infotable2"><caption>Minimum Balance Requirement Details</caption><tbody><tr><td class="labeltext col1">
+         Monthly Minimum Balance Required : 
+        </td><td class="col2">30,000.00</td><td class="labeltext col1">
+		 Balance Accumulated : 
+        </td><td class="col4">5,435.00</td></tr><tr><td class="labeltext col1">
+		 Required Balance for rest of the Month : 
+		</td><td class="col2">24,565.00</td><td class="labeltext col1">
+		 Shortfall in Previous Month : 
+		</td><td class="col4">459.00</td></tr></tbody></table></div><div class="bottompanel"><ul><li></li></ul></div></span><table border="0" cellspacing="1" cellpadding="1" class="infotable2"></table></div><div class="buttonarea"><ul><li><input tabindex="20" name="fldacctivity" onclick="fnGetActivity ();" value="Account Statement" class="Buttons" type="button"></li></ul></div></div></div></td></tr></tbody></table><br><br></div><div class="bottompanel"><ul><li></li></ul></div></td></tr></tbody></table><input type="hidden" name="fldRequestId" value="RRADT02"><input type="hidden" name="fldSessionId" value="n2jLJznjBuUPnfakxDwUqKg2ig7htDCGsgCHLzuPwT4="><input type="hidden" name="fldServiceType" value="ADT"><input type="hidden" name="fldSectionId" value=""><input type="hidden" name="fldBranch" value="1222"><input type="hidden" name="fldtest" value=""><input type="hidden" name="fldacctno" value="1222101103944   ~C~1222~71204880"><input type="hidden" name="fldacctno1" value="1222101103944   "><input type="hidden" name="fldbranch1" value="1222"><input type="hidden" name="fldacctype1" value=""><input type="hidden" name="fldaccounttype" value=""><input type="hidden" name="fldcategory" value=""><input id="fldDataId" name="fldDataId" type="hidden" value=""><input type="hidden" name="fldcustid" value="71204880"><input type="hidden" name="as_ffc_field" value="AAAAAAUTgNwIjYVZhjLiUJ4-8P1fI6yg0nVtV4z6oay2BWl-8s1XWQmkkk8U8aWVn2mMMgMSL-d3Xv7ssUOY-9l0-lnkuBuB3CbskkEwBhl6dUeHNmNRHGmxxzXPdH1YvpXe8mO9Zahqci2qxry8ESq44HG-UrbkqnE-HIQ5BwM6a4mHz8UZHI7mer4duT-TW4hfF2zrvHPwiWiIeIvaI1R3JWbkTS1MAt5sQD9_JROfqM18SBgoMSgzLAhvXGfHyv0ourEm0EqRBPf2moN6ZpuM7STWt0z3KpHvZ_hpC6x5oI5rEFXU4A2fgpv2T90zzwFKQ9-lA058wf71cBWKNpHbyqASNTtajp0IVifNVPEdm_Dc584NbFWPbTFy9_TxSVV4X-Cdcl_CU5QYIgO8VqLt0eeMQ_ldxA5eAXvD8CRGey3l4N-PSnTnusCGdk_CVnnERzbh9L93ltdqaLnRQHgKI7Pq0DLeCEQP01WYW6RT8MuZ8HqtdGsbEEGSCO0StqLRVpZeyR4wEg-FfkPVbj8wyZebVR-Ulu838a8SJC7ng_K3ZxMDsvMD-Vm_bhWAUoAIcecSVkOkx_QIK1sHb4CekEB1osva3J1l1nM_Nea4SkGIyV3tAGxitI3JMOwwjxlzKev-BmsHM113aF-HD39RzeCSuWSFmER4vF4iojxb6-Men_lP3uzKx_CmPqfKPh-dTwKXBHFAk6Dt3bBmLCKBpgId__paa9AUyjpuk0KebSoyZTyeIYwfrRHiDJtl_w_dS-PMRlFvhifaT8xJtpm0JpN8GyQyQznQmKj4m4lY9pfuzuTrBimX5-Rde3thZQMCDli8w8do76E5QNN88R4SE0Bqxg0BxI7dqJEMD1es8elU7GI6A2ofqdW9vEFMYfFp0YQCiVGcVvcuqQ2N9ahJZfmvjx5nDJMM_Fxmu9-IdLeyv-LpWhbzyRr0zvsqcjQmUVU49MF8-5wmOK0pEovOZTIaQvOxrQhv8pxnltPZ95LZNtO9xqwqG2Mbx4BAYeLobyOwKpgvIBFNwy84QS3xLrZSN_JEE9JM3VwrPbKP8T5WOkWhIclgq-dZVlOYD1xauZ5teHwa7F1O6XWYlZcoMOEeIXFaej2M-1taj3cqAUotrb2I75rmsFPAyvloh_gXdQEKoCEdSlmB1BEbWsDRyONxsAAQvPjRBinjT-M_-NCE19P2JM6kfiG7BsszVNgGllSzb_aDzmCAorXN0JyWx8WZOdlepLsrziDPI85ZsROyRvQso_-X8zukJMjFMyGV_DLotAz6Vfh72ByUiv4fwe2inuRoEcIeh08O5DLENCKzjUZbn1qDtNL_6DueblhRMsi0CKZJnVLHW7M4QhWJqGvUETyocu-ymPr2WD7B40bV9UCHIshTXZKodpB42AuVWlpU2WCNjIge8d1bAGQKuF00mqma7GAsf9Szil0MyXo8uJkB_wODtICenAoT8Gir5f2qmHnm5Q399E9tDOCEHmgaMRpC2z5UTj06Yu83PQwpeI5Psha-3uF-HPbxyBeHluJj__gQM3kk3zENaJXQsjLJqinyE-NVEluoh2hiSudTOMIWyaOUxoMzVOgEEzj6KwtSb-PpOeaztSHWindUHA7zLPCzZ6RRxuwCXVjuxYiAE8TUJ7dtqdBD4iKCp_Qfcz_ha1hrzq_RI4FNv3D7CU7gAWKUmJ95HHt2cXc_Fjim6CH4nXMzo6QXhUTt-7sfQIEBZw0hNwfdmzE4kwxpp2LM"><input type="hidden" name="as_sfid" value="AAAAAAVQ3Dw2WRT_gOug6MjH6lynXXYckBMOLtadE925J3RNsgYeXowGcCe7g7s9pkOp9clqQgAVqyghhjKSvHnj2V7IJ89PGarfXusSy2cHrcQGdfenJNx5yBUoyQdLY1Rzr8k="><input type="hidden" name="as_fid" value="3d620623d213772bc7a9edb1d18d3deacf40a40e"></form><span id="VBar" style="position: absolute; top: 0px; left: 0px; height: 0px; width: 2px; background: silver; border-left: 1px dotted black; display: none;"></span></body></html>
