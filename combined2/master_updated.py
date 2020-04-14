@@ -32,27 +32,13 @@ def main():
 
     #Discovering accounts
     page_source=nav.navigate_transaction(bnm)   #Navigation
-    if bnm.upper() == "FEDERAL":
-        account_detail.update(asum.acc_fed(page_source))  #account num and balance as Dictionary
-
-    elif bnm.upper() == "CITI":
-        account_detail.update(asum.acc_citi(page_source))
-
-    elif bnm.upper() == "CANARA":
-        account_detail.update(asum.acc_canara(page_source))
-
+    account_detail.update(asum.scrape_summary(bnm, page_source)) #account num and balance as Dictionary
 
 
     #Navigating and parsing transactions
-
     for account in account_detail.keys():
         page_source1=tr.transaction_history(bnm,account)             #transaction
-        if bnm.upper() == "FEDERAL":
-            account_detail[account].append(htmpr.fed_html(form, page_source1))
-        elif bnm.upper() == "CITI":
-            account_detail[account].append(htmpr.citi_html(form, page_source1))
-        elif bnm.upper() == "CANARA":
-            account_detail[account].append(htmpr.canara_html(form, page_source1))
+        account_detail[account].append(htmpr.parse_html(form, page_source1))
 
     #Logging out
     lout.logout(bnm)

@@ -293,7 +293,10 @@ def canara_html(format,page_source1):
     return trans
 #===============================================================================================================================
 
-
-
-
-
+def parse_html(bank_name, form, page_source):
+    if bank_name.upper() == "FEDERAL":
+        return fed_html(form, page_source)
+    elif bank_name.upper() == "CITI":
+        return citi_html(form, page_source)
+    elif bank_name.upper() == "CANARA":
+        return canara_html(form, page_source)

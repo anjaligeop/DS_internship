@@ -114,4 +114,10 @@ def acc_canara(page_source):
 
     return detailsDS
 
-
+def scrape_summary(bank_name, page_source):
+    if bank_name.upper() == "FEDERAL":
+        return acc_fed(page_source)
+    elif bank_name.upper() == "CITI":
+        return acc_citi(page_source)
+    elif bank_name.upper() == "CANARA":
+        return acc_canara(page_source)
