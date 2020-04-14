@@ -106,24 +106,11 @@ class Navigate(Driver_ini):
             time.sleep(10)
             driver.switch_to.frame(1)
             eval(dfr.findElement(cfg.navigate_id[bankname]["click0"])).click()
+            eval(dfr.findElement(cfg.navigate_id[bankname]["click1"])).click()
             driver.switch_to.default_content()
             time.sleep(10)
             driver.switch_to.frame(4)
-            select_box = eval(dfr.findElement(cfg.navigate_id[bankname]["click4"]))
-            options = [x for x in select_box.find_elements_by_tag_name("option")]
-
-            for element in options:
-                # print(element.get_attribute("value"))
-                dropdown.append(element.get_attribute("value"))
-            dropdown = dropdown[1:]
-
-            x = 0
-            for val in dropdown:  # store the page contents for each acc num
-                Select(eval(dfr.findElement(cfg.navigate_id[bankname]["click4"]))).select_by_value(val)
-                eval(dfr.findElement(cfg.navigate_id[bankname]["click5"])).click()
-                time.sleep(2)
-                page_source=driver.page_source
-                x=x+1
+            page_source=driver.page_source
             driver.switch_to.default_content()
 
         return page_source
@@ -158,16 +145,18 @@ class Trans(Driver_ini):
 
         elif bankname.upper() == "CANARA":
             time.sleep(10)
+            driver.switch_to.frame(1)
+            eval(dfr.findElement(cfg.transaction_id[bankname]["clickC"])).click()
+            driver.switch_to.default_content()
+            time.sleep(10)
             driver.switch_to.frame(4)
-
             select = eval(dfr.findElement(cfg.transaction_id[bankname]["click0"]))
             option = select.find_element_by_xpath('.//option[contains(@value, "{}")]'.format(account))
             option.click()
 
-            eval(dfr.findElement(cfg.transaction_id[bankname]["click0"])).click()
-            eval(dfr.findElement(cfg.transaction_id[bankname]["click1"])).click()
-            eval(dfr.findElement(cfg.transaction_id[bankname]["click2"])).click()
-
+            eval(dfr.findElement(cfg.transaction_id[bankname]["clickD"])).click()
+            eval(dfr.findElement(cfg.transaction_id[bankname]["clickE"])).click()
+            time.sleep(3)
             Select(eval(dfr.findElement(cfg.transaction_id[bankname]["click3"]))).select_by_visible_text(
                 "Specify Period")
             # enter date
@@ -211,6 +200,7 @@ class Trans(Driver_ini):
             time.sleep(3)
 
         return  page_source1
+
 
 
 

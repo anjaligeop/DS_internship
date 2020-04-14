@@ -3,13 +3,13 @@ import time
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.chrome.options import Options
 import time
-import driverfile as dfr    #configuration fil
+import driverfile as dfr    #configuration file
 import gen_navigate_class as gnc
 import html_parser as htmpr
 import account_summary as asum
 import validator as vtr
 
-def init_objects(bank_name):
+def init_objects(bnm):
     #declare objects
     lin = gnc.Login(bnm)         #login obj
     nav = gnc.Navigate(bnm)      #navigate obj
@@ -34,17 +34,17 @@ def main():
     page_source=nav.navigate_transaction(bnm)   #Navigation
     if bnm.upper() == "FEDERAL":
         account_detail.update(asum.acc_fed(page_source))  #account num and balance as Dictionary
-        account_num=list(account_detail.keys())   #account number
+
     elif bnm.upper() == "CITI":
         account_detail.update(asum.acc_citi(page_source))
-        account_num = list(account_detail.keys())
+
     elif bnm.upper() == "CANARA":
         account_detail.update(asum.acc_canara(page_source))
-        account_num = list(account_detail.keys())
-    print(account_detail)
+
+
 
     #Navigating and parsing transactions
-    form='csv'
+
     for account in account_detail.keys():
         page_source1=tr.transaction_history(bnm,account)             #transaction
         if bnm.upper() == "FEDERAL":

@@ -6,7 +6,6 @@ def acc_fed(page_source):
     acc_num=[]
     amt = []
     account_type=[]
-    branch=[]
     currency=[]
 
     soup = BeautifulSoup(page_source, 'html.parser')
@@ -15,11 +14,9 @@ def acc_fed(page_source):
         val=val.text[1:]
         acc_num.append(val)
     atype=soup.findAll('td',attrs={'data-label':"Account Type : "})
-    b=soup.findAll('td',attrs={'data-label':"Branch : "})
     c=soup.findAll('td',attrs={'data-label':"Currency : "})
-    for i,j,k in zip(atype,b,c):
+    for i,k in zip(atype,c):
         account_type.append(i.text[1:])
-        branch.append(j.text[1:])
         currency.append(k.text[1:])
 
 
@@ -29,23 +26,13 @@ def acc_fed(page_source):
         val=val.text[:-3].replace(',','')
         amt.append(val[1:])
 
-    fp = open("/home/anjaligeorgep/Desktop/download_html/acc_outputs/account_summary_federal.txt", "w")
-    fp.write("[\n")
-
-    for x,y,z,p,q in zip(acc_num,amt,account_type,branch,currency):
-        detailsDS.update({x:[y,z,p,q]})
-        fp.write('{{"accountNumber" : "{}",\n'.format(x))
-        fp.write('"balance" : "{}",\n'.format(y))
-        fp.write('"accountType":"{}",\n'.format(z))
-        fp.write('"branch":"{}",\n'.format(p))
-        fp.write('"currency":"{}}}",\n'.format(q))
-    fp.write("]")
+    for x,y,z,q in zip(acc_num,amt,account_type,currency):
+        detailsDS.update({x:[y,z,q]})
 
     return detailsDS
 
 def acc_citi(page_source):
     detailsDS={}
-    branch=[]
     currency=[]
     account_type=[]
     acc_num=[]
@@ -54,11 +41,13 @@ def acc_citi(page_source):
     td=soup.findAll('td',attrs={'class': 'pad5 ligt_grey','align':'left'})
     bal=soup.findAll('td', attrs={'class': 'pad5 ligt_grey','align':'right'})
 
-    atype=soup.findAll('p',attrs={'class':'dbfl box_b1'})
-    b=soup.findAll('p',attrs={'class': 'pad5 ligt_grey','align':'top'})
-    c=soup.findAll('p',attrs={'class':'dbfl box_b1','style':'width:70px'})
+    atype = soup.findAll('span', attrs={'style': 'font-weight: bold;'})
+    for x in atype[:-1]:
+        account_type.append(x.text.strip())
 
-    
+    c = soup.findAll('p', attrs={'class': 'dbfl box_b1', 'style': 'width:70px;'})
+    for x in c[:-1]:
+        currency.append(x.text)
 
 
     for x in range(len(td)):
@@ -77,42 +66,53 @@ def acc_citi(page_source):
         if x:
             am.append(x)
 
-    fp = open("/home/anjaligeorgep/Desktop/download_html/acc_outputs/account_summary_citi.txt", "w")
-    fp.write("[\n")
-    for x,y in zip(acc_no,am):
-        detailsDS.update({x:[y]})
-        fp.write('{{"accountNumber" : "{}",\n'.format(x))
-        fp.write('"balance" : "{}"}},\n'.format(y))
-    fp.write("]")
+    for x,y,z,q in zip(acc_no,am,account_type,currency):
+        detailsDS.update({x:[y,z,q]})
+
     return detailsDS
 
 
 
 def acc_canara(page_source):
     detailsDS={}
-    branch=[]
+    balance=[]
+    acct=[]
     currency=[]
     account_type=[]
     acc_num = []
-    amt = []
-    details=[]
+    acc=[]
     soup = BeautifulSoup(page_source,'html.parser')
-    tr = soup.findAll('tr', attrs={'class': 'alterrow2'})
+    td = soup.findAll('td', attrs={'style': 'white-space:nowrap'})
+    for a in td:
+        acc.append(a.text)
+    for a in acc:
+        acc_num.append(a.split("-")[0].strip())
 
-    for x in range(len(tr)):
-        td=tr[x].findAll('td')
-        details.append(td[1].text.strip())
+    acc_ty = soup.findChildren('caption')
+    for x in acc_ty:
+        acct = x.findChildren('span', attrs={'style': 'float:left; width:40%'})
 
-    acc_num.append(details[0])
-    amt.append(details[3].replace(',',''))
+    for x in acct:
+        account_type.append(x.text.strip())
 
-    fp = open("/home/anjaligeorgep/Desktop/download_html/acc_outputs/account_summary_canara.txt", "w")
-    fp.write("[\n")
-    for x, y in zip(acc_num, amt):
-        detailsDS.update({x:[y]})
-        fp.write('{{"accountNumber" : "{}",\n'.format(x))
-        fp.write('"balance" : "{}"}},\n'.format(y))
-    fp.write("]")
+    table = soup.find_all('tbody')[4:]
+    for rows in table:
+        tr = rows.findAll('tr')
+        for data in tr:
+            td = data.find_all('td')[2:3]
+            for x in td:
+                pass
+        currency.append(x.text)
+
+
+
+    bal = soup.findAll('td', attrs={'class': 'ccyalign', 'width': '18%'})
+    for x in bal:
+        balance.append(x.text.replace(',', '').strip())
+
+    for x, y,z,q in zip(acc_num, balance,account_type,currency):
+        detailsDS.update({x:[y,z,q]})
 
     return detailsDS
+
 
