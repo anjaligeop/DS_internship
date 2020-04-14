@@ -27,8 +27,7 @@ def acc_fed(page_source):
         amt.append(val[1:])
 
     for x,y,z,q in zip(acc_num,amt,account_type,currency):
-        detailsDS.update({x:[y,z,q]})
-
+        detailsDS.update({x:[{"balance":y},{"accountType":z},{"currency":q}]})
     return detailsDS
 
 def acc_citi(page_source):
@@ -67,7 +66,7 @@ def acc_citi(page_source):
             am.append(x)
 
     for x,y,z,q in zip(acc_no,am,account_type,currency):
-        detailsDS.update({x:[y,z,q]})
+        detailsDS.update({x:[{"balance":y},{"accountType":z},{"currency":q}]})
 
     return detailsDS
 
@@ -111,7 +110,7 @@ def acc_canara(page_source):
         balance.append(x.text.replace(',', '').strip())
 
     for x, y,z,q in zip(acc_num, balance,account_type,currency):
-        detailsDS.update({x:[y,z,q]})
+        detailsDS.update({x:[{"balance":y},{"accountType":z},{"currency":q}]})
 
     return detailsDS
 
