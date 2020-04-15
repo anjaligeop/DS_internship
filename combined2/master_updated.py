@@ -9,8 +9,7 @@ import html_parser as htmpr
 import account_summary as asum
 import validator as vtr
 
-def init_objects(bnm):
-    #declare objects
+def init_objects(bnm):    
     lin = gnc.Login(bnm)         #login obj
     nav = gnc.Navigate(bnm)      #navigate obj
     tr = gnc.Trans(bnm)            #transaction obj
@@ -32,13 +31,12 @@ def main():
 
     #Discovering accounts
     page_source=nav.navigate_transaction(bnm)   #Navigation
-    account_detail.update(asum.scrape_summary(bnm, page_source)) #account num and balance as Dictionary
-
+    account_detail.update(asum.scrape_summary(bnm, page_source)) #account summary
 
     #Navigating and parsing transactions
     for account in account_detail.keys():
         page_source1=tr.transaction_history(bnm,account)             #transaction
-        account_detail[account].append(htmpr.parse_html(form, page_source1))
+        account_detail[account].append(htmpr.parse_html(bnm,form, page_source1))
 
     #Logging out
     lout.logout(bnm)
