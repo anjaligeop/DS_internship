@@ -8,38 +8,52 @@ import gen_navigate_class as gnc
 import html_parser as htmpr
 import account_summary as asum
 import validator as vtr
+import json
+import sys
 
-def init_objects(bnm):    
+def init_objects(bnm):
+    driver = gnc.Driver_ini.init_driver()    
     lin = gnc.Login(bnm)         #login obj
     nav = gnc.Navigate(bnm)      #navigate obj
     tr = gnc.Trans(bnm)            #transaction obj
     lout = gnc.Logout(bnm)       #logout obj
-    return lin, nav, tr, lout
+    return driver, lin, nav, tr, lout
 
-def main():
-    bnm = input("enter bankname : ")
-    uname = input("enter username : ")
-    pwd = input("enter password : ")
-    form = input("enter format (json, csv, xml) : ")
-    account_detail={}
+def main(argvs):
+    try:
+        jsonParams = argvs[0:]
+        params = json.loads(jsonParams)
+        bnm = params['bankName'] #input("enter bankname : ")
+        uname = params['loginId'] #input("enter username : ")
+        pwd = params['password'] #input("enter password : ")
+        form = 'xml' #input("enter format (json, csv, xml) : ")
+        account_detail={}
 
-    lin, nav, tr, lout = init_objects(bnm) # Getting Login, Navigator, Transaction and Logout objects
+        driver, lin, nav, tr, lout = init_objects(bnm) # Getting Login, Navigator, Transaction and Logout objects
 
-    #Doing Login and Validating it
-    page=lin.login(bnm, uname, pwd)
-    vtr.valid_page(bnm,page)
+        #Doing Login and Validating it
+        page=lin.login(bnm, uname, pwd, driver)
+        vtr.valid_page(bnm,page)
 
-    #Discovering accounts
-    page_source=nav.navigate_transaction(bnm)   #Navigation
-    account_detail.update(asum.scrape_summary(bnm, page_source)) #account summary
+        #Discovering accounts
+        page_source=nav.navigate_transaction(bnm, driver)   #Navigation
+        account_detail.update(asum.scrape_summary(bnm, page_source)) #account summary
 
-    #Navigating and parsing transactions
-    for account in account_detail.keys():
-        page_source1=tr.transaction_history(bnm,account)             #transaction
-        account_detail[account].append(htmpr.parse_html(bnm,form, page_source1))
+        #Navigating and parsing transactions
+        for key in account_detail:
+            account_detail[key]['transactions'] = []
+            page_source1=tr.transaction_history(bnm,account_detail[key]['accountSummary']['accountNumber'],driver)             #transaction
+            account_detail[key]['transactions'] = htmpr.parse_html(bnm,form, page_source1)
 
-    #Logging out
-    lout.logout(bnm)
-    print(account_detail)
+        #Logging out
+        lout.logout(bnm,driver)
+        print(account_detail)
+    except Exception as e:
+        print("Exception occcurred - "+str(e))
+    finally:
+        time.sleep(5)
+        driver.quit()
+        time.sleep(2)
+        sys.exit()
 
-if __name__ == "__main__": main()
+if __name__ == "__main__": main('{"bankName":"citi", "loginId":"DHINESHMOHAN07", "password":"mybd060195"}')

@@ -5,25 +5,27 @@ from selenium.webdriver.chrome.options import Options
 import time
 import driverfile as dfr    #configuration file
 import config as cfg        #configuration file
+import os
 
 
 def download_html(name,driver):
     a = driver.page_source
-    file_nm = open('/home/anjaligeorgep/Desktop/download_html{}'.format(name), 'w')
+    file_nm = open('/home/dhinesh/DailyDumps/DataDir/internScripts/download_html{}'.format(name), 'w')
     file_nm.write(a)
 
 
 class Driver_ini():
+    def init_driver():
         driver = eval(cfg.webdriver_path["chrome"])
-
+        return driver
 
 
 class Login(Driver_ini): #extending Driver_ini class
     def __init__(self,bankname):
         self.bankname = bankname
 
-    def login(self,bankname,uname,pwd):
-        driver = (Driver_ini.driver)
+    def login(self,bankname,uname,pwd,driver):
+        #driver = (Driver_ini.driver)
         driver.get(cfg.bank_url[bankname])
         time.sleep(2)
 
@@ -57,8 +59,8 @@ class Logout(Driver_ini):
     def __init__(self,bankname):
         self.bankname = bankname
 
-    def logout(self,bankname):
-        driver =(Driver_ini.driver)
+    def logout(self,bankname,driver):
+        #driver =(Driver_ini.driver)
         if bankname.upper()=="FEDERAL":
             eval(dfr.findElement(cfg.logout_id[bankname]["logoutnav"])).click()
             eval(dfr.findElement(cfg.logout_id[bankname]["logoutbtn"])).click()
@@ -79,8 +81,8 @@ class Navigate(Driver_ini):
     def __init__(self,bankname):
         self.bankname = bankname
 
-    def navigate_transaction(self,bankname):
-        driver = (Driver_ini.driver)
+    def navigate_transaction(self,bankname,driver):
+        #driver = (Driver_ini.driver)
         dropdown=[]
         if bankname.upper()=="FEDERAL":
             # account summary
@@ -119,8 +121,8 @@ class Navigate(Driver_ini):
 class Trans(Driver_ini):
     def __init__(self,bankname):
         self.bankname=bankname
-    def transaction_history(self,bankname,account):
-        driver = (Driver_ini.driver)
+    def transaction_history(self,bankname,account,driver):
+        #driver = (Driver_ini.driver)
 
         if bankname.upper() == "FEDERAL":
             eval(dfr.findElement(cfg.transaction_id[bankname]["click0"])).click()

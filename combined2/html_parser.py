@@ -53,7 +53,7 @@ def fed_html(format,page_source1):
     if format.upper()=="JSON":
         num=len(tr_dt)
         ind=1
-        temp = open("/home/anjaligeorgep/Desktop/download_html/tr_outputs/federal/federal_json.json", "w")  # store in json format
+        temp = open("federal_json.json", "w")  # store in json format
         temp.write("[\n")
         for a, b, c, d, e in zip(tr_dt,y,z,amt,bal):
             ind=ind+1
@@ -74,12 +74,12 @@ def fed_html(format,page_source1):
         temp.write("]")
 
     if format.upper()=="CSV":
-        temp = open("/home/anjaligeorgep/Desktop/download_html/tr_outputs/federal/federal_csv", "w")  # store in csv format
+        temp = open("federal_csv", "w")  # store in csv format
         for a, b, c, d, e in zip(tr_dt, y, z, amt, bal):
             temp.write(a+",\\N,"+b+","+d+","+e+"\n")
 
     if format.upper()=="XML":
-        temp = open("/home/anjaligeorgep/Desktop/download_html/tr_outputs/federal/federal_xml.xml", "w")  # store in xml format
+        temp = open("federal_xml.xml", "w")  # store in xml format
         temp.write('<?xml version="1.0" encoding="utf-8"?>\n')
         temp.write("<root>\n")
         for a, b, c, d, e in zip(tr_dt, y, z, amt, bal):
@@ -153,18 +153,18 @@ def citi_html(format,page_source1):
         else:
             tr_balance.append(bal - float(i))
             bal = bal - float(i)
-
+    trans_list = []
     for a, b, c, d, e in zip(tr_date, tr_particulars, tr_withdraw, tr_deposit, tr_balance):
         key = "transactions"
         trans.setdefault(key, [])
         ltr=[a,'',b,c,d,e]
-        trans[key].append(ltr)
+        trans_list.append(ltr)
 
 
     if format.upper() == "JSON":
         ind = 0
         num = len(tr_date)
-        temp = open("/home/anjaligeorgep/Desktop/download_html/tr_outputs/citi/citi_json1.json", "w")  # store in json format
+        temp = open("citi_json.json", "w")  # store in json format
 
         temp.write("[\n")
         for a, b, c, d, e in zip(tr_date, tr_particulars,tr_withdraw,tr_deposit, tr_balance):
@@ -182,13 +182,13 @@ def citi_html(format,page_source1):
         temp.write("]")
 
     if format.upper()=="CSV":
-        temp = open("/home/anjaligeorgep/Desktop/download_html/tr_outputs/citi/citi_csv1", "w")  # store in csv format
+        temp = open("citi_csv", "w")  # store in csv format
         for a, b, c, d, e in zip(tr_date, tr_particulars, tr_withdraw, tr_deposit, tr_balance):
             temp.write(a+","+"\\N,"+b.strip()+","+str(c)+","+str(d)+","+str(e)+"\n")
 
 
     if format.upper()=="XML":
-        temp = open("/home/anjaligeorgep/Desktop/download_html/tr_outputs/citi/citi_xml1.xml", "w")  # store in xml format
+        temp = open("citi_xml.xml", "w")  # store in xml format
         temp.write('<?xml version="1.0" encoding="utf-8"?>\n')
         temp.write("<root>\n")
         for a, b, c, d, e in zip(tr_date, tr_particulars, tr_withdraw, tr_deposit, tr_balance):
@@ -200,7 +200,7 @@ def citi_html(format,page_source1):
             temp.write("\t<balance>{}</balance>\n".format(e))
         temp.write("</root>")
 
-    return trans
+    return trans_list
 #===============================================================================================================================
 def canara_html(format,page_source1):
     soup = BeautifulSoup(page_source1,'html.parser')
@@ -243,7 +243,7 @@ def canara_html(format,page_source1):
     if format.upper() == "JSON":
         ind = 0
         num = len(tr_date)
-        temp = open("/home/anjaligeorgep/Desktop/download_html/tr_outputs/canara/canara_json.json", "w")  # store in json format
+        temp = open("canara_json.json", "w")  # store in json format
         temp.write("[\n")
 
 
@@ -264,7 +264,7 @@ def canara_html(format,page_source1):
         temp.write("]")
 
     if format.upper()=="CSV":
-        temp = open("/home/anjaligeorgep/Desktop/download_html/tr_outputs/canara/canara_csv", "w")  # store in csv format
+        temp = open("canara_csv", "w")  # store in csv format
         for a,cnum, b, c, d, e in zip(tr_date,ch_n, tr_particulars, tr_withdraw, tr_deposit, tr_balance):
             if len(cnum) != 0:
                 temp.write(a+","+cnum+","+b+","+c+","+d+","+e+"\n")
@@ -273,7 +273,7 @@ def canara_html(format,page_source1):
 
 
     if format.upper()=="XML":
-        temp = open("/home/anjaligeorgep/Desktop/download_html/tr_outputs/canara/canara_xml.xml", "w")  # store in xml format
+        temp = open("canara_xml.xml", "w")  # store in xml format
         temp.write('<?xml version="1.0" encoding="utf-8"?>\n')
         temp.write("<root>\n")
         for a,cnum, b, c, d, e in zip(tr_date,ch_n, tr_particulars, tr_withdraw, tr_deposit, tr_balance):

@@ -64,9 +64,10 @@ def acc_citi(page_source):
     for x in amt:
         if x:
             am.append(x)
-
+    i = 1
     for x,y,z,q in zip(acc_no,am,account_type,currency):
-        detailsDS.update({x:[{"balance":y},{"accountType":z},{"currency":q}]})
+        detailsDS.update({i:{"accountSummary" :{"balance":y , "accountType":z ,"currency":q, "accountNumber":x}}})
+        i = i+1
 
     return detailsDS
 
