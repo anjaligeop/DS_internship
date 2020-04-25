@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import re
 
-def fed_html(format,page_source1):
+def fed_html(page_source1):
     soup = BeautifulSoup(page_source1,'html.parser')
     tr_d = soup.find_all(title="Transaction Date")
     tr_particular = soup.find_all('td',attrs={'data-label':"Particulars : "})
@@ -35,74 +35,26 @@ def fed_html(format,page_source1):
 
     for val in pat:
         y.append(val[1:])
-
+    trans_list = []
     for a, b, c, d, e in zip(tr_dt, y, z, amt, bal): #store in a dictionary
+        trans_str = ''
         if c.upper() == "DR.":
             key="transactions"
             trans.setdefault(key,[])
             if c.upper() == "DR.":
                 ltr=[a,'',b,'',d,e] #date,chequeNum,particulars,withdraw,deposit,balance
+                trans_str = str(a) + ',NA,' + str(b) + ',' + str(d) + ',' + str(e)
             else:
+                trans_str = str(a) + ',NA,' + str(b) + ',-' + str(d) + ',' + str(e)
                 ltr = [a,'', b,d,'',e]
 
             trans[key].append(ltr)
+            trans_list.append(trans_str)
 
-
-
-
-    if format.upper()=="JSON":
-        num=len(tr_dt)
-        ind=1
-        temp = open("federal_json.json", "w")  # store in json format
-        temp.write("[\n")
-        for a, b, c, d, e in zip(tr_dt,y,z,amt,bal):
-            ind=ind+1
-            temp.write('{{"date" : "{}",\n'.format(a))
-            temp.write('"cheque_num" :"",\n')
-            temp.write('"description" : "{}",\n'.format(b))
-            if c.upper() == "DR.":
-                temp.write('"withdraw" : "{}",\n'.format(d))
-                temp.write('"deposit" : "",\n')
-            else:
-                temp.write('"deposit" : "{}",\n'.format(d))
-                temp.write('"withdraw" : "" ,\n')
-            if ind==num:
-                temp.write('"balance" : "{}"}}\n'.format(e))
-            else:
-                temp.write('"balance" : "{}"}},\n'.format(e))
-
-        temp.write("]")
-
-    if format.upper()=="CSV":
-        temp = open("federal_csv", "w")  # store in csv format
-        for a, b, c, d, e in zip(tr_dt, y, z, amt, bal):
-            temp.write(a+",\\N,"+b+","+d+","+e+"\n")
-
-    if format.upper()=="XML":
-        temp = open("federal_xml.xml", "w")  # store in xml format
-        temp.write('<?xml version="1.0" encoding="utf-8"?>\n')
-        temp.write("<root>\n")
-        for a, b, c, d, e in zip(tr_dt, y, z, amt, bal):
-            temp.write("<transaction>\n")
-            temp.write("\t<date>{}</date>\n".format(a))
-            temp.write("\t<cheque_num>\\N</cheque_num>\n")
-            temp.write("\t<description>{}</description>\n".format(b))
-            if c.upper() == "DR.":
-                temp.write("\t<withdraw>{}</withdraw>\n".format(d))
-                temp.write("\t<deposit></deposit>\n")
-            else:
-                temp.write("\t<deposit>{}</deposit>\n".format(d))
-                temp.write("\t<withdraw></withdraw>\n")
-            temp.write("\t<balance>{}</balance>\n".format(e))
-            temp.write("</transaction>\n")
-        temp.write("</root>")
-
-    return trans
-
-
+    return trans_list
 
 #===============================================================================================================================
-def citi_html(format,page_source1):
+def citi_html(page_source1):
     soup = BeautifulSoup(page_source1,'html.parser')
     rows1 = soup.findAll('table',attrs={'bgcolor':'#A7CBE3','cellpadding':'3'})
     trans={}
@@ -148,61 +100,27 @@ def citi_html(format,page_source1):
 
     for i, j in zip(tr_withdraw, tr_deposit):
         if len(i.strip())==0:
-            tr_balance.append(bal + float(j))
             bal = bal + float(j)
+            tr_balance.append(round(bal, 2))
         else:
-            tr_balance.append(bal - float(i))
             bal = bal - float(i)
+            tr_balance.append(round(bal, 2))
+
     trans_list = []
     for a, b, c, d, e in zip(tr_date, tr_particulars, tr_withdraw, tr_deposit, tr_balance):
         key = "transactions"
         trans.setdefault(key, [])
-        ltr=[a,'',b,c,d,e]
-        trans_list.append(ltr)
-
-
-    if format.upper() == "JSON":
-        ind = 0
-        num = len(tr_date)
-        temp = open("citi_json.json", "w")  # store in json format
-
-        temp.write("[\n")
-        for a, b, c, d, e in zip(tr_date, tr_particulars,tr_withdraw,tr_deposit, tr_balance):
-            ind=ind+1
-            temp.write('{{"date" : "{}",\n'.format(a))
-            temp.write('"cheque_num" :"",\n')
-            temp.write('"description" : "{}",\n'.format(b))
-            temp.write('"withdraw": "{}",\n'.format(c))
-            temp.write('"deposit" : "{}",\n'.format(d))
-
-            if ind == num:
-                temp.write('"balance" : "{}"}}\n'.format(e))
-            else:
-                temp.write('"balance" : "{}"}},\n'.format(e))
-        temp.write("]")
-
-    if format.upper()=="CSV":
-        temp = open("citi_csv", "w")  # store in csv format
-        for a, b, c, d, e in zip(tr_date, tr_particulars, tr_withdraw, tr_deposit, tr_balance):
-            temp.write(a+","+"\\N,"+b.strip()+","+str(c)+","+str(d)+","+str(e)+"\n")
-
-
-    if format.upper()=="XML":
-        temp = open("citi_xml.xml", "w")  # store in xml format
-        temp.write('<?xml version="1.0" encoding="utf-8"?>\n')
-        temp.write("<root>\n")
-        for a, b, c, d, e in zip(tr_date, tr_particulars, tr_withdraw, tr_deposit, tr_balance):
-            temp.write("\t<date>{}</date>\n".format(a))
-            temp.write("\t<cheque_num>\\N</cheque_num>\n")
-            temp.write("\t<description>{}</description>\n".format(b.strip()))
-            temp.write("\t<withdraw>{}</withdraw>\n".format(c))
-            temp.write("\t<deposit>{}</deposit>\n".format(d))
-            temp.write("\t<balance>{}</balance>\n".format(e))
-        temp.write("</root>")
+        amt = str(d)
+        if amt == '':
+            amt = '-' + str(c)
+        b = b.replace(',',' ')
+        ltr=[str(a),'',str(b),str(amt),str(e)]
+        trans_str = str(a)+ ',NA,' +str(b)+ ',' +str(amt)+ ',' +str(e)
+        trans_list.append(trans_str)
 
     return trans_list
 #===============================================================================================================================
-def canara_html(format,page_source1):
+def canara_html(page_source1):
     soup = BeautifulSoup(page_source1,'html.parser')
     trans={}
     tr_date = []
@@ -232,71 +150,25 @@ def canara_html(format,page_source1):
     for v in tr_b:
         v=v.replace(',','')
         tr_balance.append(v)
+    trans_list = []
     for a, cnum, b, c, d, e in zip(tr_date, ch_n, tr_particulars, tr_withdraw, tr_deposit, tr_balance):
         key = "transactions"
         trans.setdefault(key, [])
         ltr = [a, cnum, b, c, d, e]
+        amt = str(d)
+        if amt == '':
+            amt = '-' + str(c)
+        trans_str = str(a) + ',' + str(cnum) + ',' + str(b) + ',' + str(amt) + ',' + str(e)
+        trans_list.append(trans_str)
         trans[key].append(ltr)
 
-
-
-    if format.upper() == "JSON":
-        ind = 0
-        num = len(tr_date)
-        temp = open("canara_json.json", "w")  # store in json format
-        temp.write("[\n")
-
-
-        for a,cnum, b, c, d, e in zip(tr_date, ch_n,tr_particulars, tr_withdraw, tr_deposit, tr_balance):
-            ind=ind+1
-            temp.write('{{"date" : "{}",\n'.format(a))
-            if len(cnum)!=0:
-                temp.write('"cheque_num" : "{}",\n'.format(cnum))
-            else:
-                temp.write('"cheque_num" :"",\n')
-            temp.write('"description" : "{}",\n'.format(b))
-            temp.write('"withdraw": "{}",\n'.format(c))
-            temp.write('"deposit" : "{}",\n'.format(d))
-            if ind == num:
-                temp.write('"balance" : "{}"}}\n'.format(e))
-            else:
-                temp.write('"balance" : "{}"}},\n'.format(e))
-        temp.write("]")
-
-    if format.upper()=="CSV":
-        temp = open("canara_csv", "w")  # store in csv format
-        for a,cnum, b, c, d, e in zip(tr_date,ch_n, tr_particulars, tr_withdraw, tr_deposit, tr_balance):
-            if len(cnum) != 0:
-                temp.write(a+","+cnum+","+b+","+c+","+d+","+e+"\n")
-            else:
-                temp.write(a + ",\\N," + b + "," + c + "," + d + ","+e + "\n")
-
-
-    if format.upper()=="XML":
-        temp = open("canara_xml.xml", "w")  # store in xml format
-        temp.write('<?xml version="1.0" encoding="utf-8"?>\n')
-        temp.write("<root>\n")
-        for a,cnum, b, c, d, e in zip(tr_date,ch_n, tr_particulars, tr_withdraw, tr_deposit, tr_balance):
-            temp.write("<transaction>\n")
-            temp.write("\t<date>{}</date>\n".format(a))
-            if len(cnum) != 0:
-                temp.write("\t<cheque_num>{}</cheque_num>\n".format(cnum))
-            else:
-                temp.write("\t<cheque_num>\\N</cheque_num>\n")
-            temp.write("\t<description>{}</description>\n".format(b))
-            temp.write("\t<withdraw>{}</withdraw>\n".format(c))
-            temp.write("\t<deposit>{}</deposit>\n".format(d))
-            temp.write("\t<balance>{}</balance>\n".format(e))
-            temp.write("</transaction>\n")
-        temp.write("</root>")
-
-    return trans
+    return trans_list
 #===============================================================================================================================
 
-def parse_html(bank_name, form, page_source):
+def parse_html(bank_name, page_source):
     if bank_name.upper() == "FEDERAL":
-        return fed_html(form, page_source)
+        return fed_html(page_source)
     elif bank_name.upper() == "CITI":
-        return citi_html(form, page_source)
+        return citi_html(page_source)
     elif bank_name.upper() == "CANARA":
-        return canara_html(form, page_source)
+        return canara_html(page_source)

@@ -26,8 +26,11 @@ def acc_fed(page_source):
         val=val.text[:-3].replace(',','')
         amt.append(val[1:])
 
+    i = 1
     for x,y,z,q in zip(acc_num,amt,account_type,currency):
-        detailsDS.update({x:[{"balance":y},{"accountType":z},{"currency":q}]})
+        detailsDS.update({str(i):{"accountSummary" :{"balance":y , "accountType":z ,"currency":q, "accountNumber":x}}})
+        i = i+1
+
     return detailsDS
 
 def acc_citi(page_source):
@@ -66,7 +69,7 @@ def acc_citi(page_source):
             am.append(x)
     i = 1
     for x,y,z,q in zip(acc_no,am,account_type,currency):
-        detailsDS.update({i:{"accountSummary" :{"balance":y , "accountType":z ,"currency":q, "accountNumber":x}}})
+        detailsDS.update({str(i):{"accountSummary" :{"balance":y , "accountType":z ,"currency":q, "accountNumber":x}}})
         i = i+1
 
     return detailsDS
@@ -110,8 +113,10 @@ def acc_canara(page_source):
     for x in bal:
         balance.append(x.text.replace(',', '').strip())
 
+    i = 1
     for x, y,z,q in zip(acc_num, balance,account_type,currency):
-        detailsDS.update({x:[{"balance":y},{"accountType":z},{"currency":q}]})
+        detailsDS.update({str(i):{"accountSummary" :{"balance":y , "accountType":z ,"currency":q, "accountNumber":x}}})
+        i = i+1
 
     return detailsDS
 

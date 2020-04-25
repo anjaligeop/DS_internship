@@ -8,6 +8,7 @@ import gen_navigate_class as gnc
 import html_parser as htmpr
 import account_summary as asum
 import validator as vtr
+import output_generator as ogn
 import json
 import sys
 
@@ -43,11 +44,11 @@ def main(argvs):
         for key in account_detail:
             account_detail[key]['transactions'] = []
             page_source1=tr.transaction_history(bnm,account_detail[key]['accountSummary']['accountNumber'],driver)             #transaction
-            account_detail[key]['transactions'] = htmpr.parse_html(bnm,form, page_source1)
+            account_detail[key]['transactions'] = htmpr.parse_html(bnm, page_source1)
 
         #Logging out
         lout.logout(bnm,driver)
-        print(account_detail)
+        ogn.main(account_detail, form)
     except Exception as e:
         print("Exception occcurred - "+str(e))
     finally:
@@ -56,4 +57,4 @@ def main(argvs):
         time.sleep(2)
         sys.exit()
 
-if __name__ == "__main__": main('{"bankName":"citi", "loginId":"DHINESHMOHAN07", "password":"mybd060195"}')
+if __name__ == "__main__": main('{"bankName":"canara", "loginId":"", "password":""}')
