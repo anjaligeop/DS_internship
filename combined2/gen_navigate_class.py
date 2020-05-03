@@ -134,11 +134,11 @@ class Trans(Driver_ini):
             driver.execute_script(
                 'document.getElementById("TransactionHistoryFG.FROM_TXN_DATE").removeAttribute("readonly")')
             eval(dfr.findElement(cfg.transaction_id[bankname]["dateFrom"])).clear()
-            eval(dfr.findElement(cfg.transaction_id[bankname]["dateFrom"])).send_keys("01-12-2019")
+            eval(dfr.findElement(cfg.transaction_id[bankname]["dateFrom"])).send_keys("01-04-2020")
             driver.execute_script(
                 'document.getElementById("TransactionHistoryFG.TO_TXN_DATE").removeAttribute("readonly")')
             eval(dfr.findElement(cfg.transaction_id[bankname]["dateTo"])).clear()
-            eval(dfr.findElement(cfg.transaction_id[bankname]["dateTo"])).send_keys("01-01-2020")
+            eval(dfr.findElement(cfg.transaction_id[bankname]["dateTo"])).send_keys("01-05-2020")
             eval(dfr.findElement(cfg.transaction_id[bankname]["click6"])).click()
             page_source1 = driver.page_source
 

@@ -1,0 +1,10 @@
+#AccountStart 21990100004024,bank
+#BeginResult
+#JSON {'currency': 'INR', 'accountNumber': '21990100004024', 'balance': '37655.26 ', 'accountType': 'FREEDOM SB'}
+4
+2020-04-07,NA,FN/SHP/SFBK8...,4825.00,23164.26
+2020-04-08,NA,UPI IN/00990...,10.00,23174.26
+2020-04-24,NA,UPIOUT/01150...,399.00,22355.26
+2020-04-30,NA,NFT/PERFIOS/...,15300.00,37655.26
+#EndResult
+#AccountEnd

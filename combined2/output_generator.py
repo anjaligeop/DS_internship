@@ -54,7 +54,7 @@ def generate_csv(account_details):
 		string = string + "#BeginResult\n"
 		string = string + "#JSON " + str(account_details[keys]['accountSummary']) +"\n"
 		transaction_list = account_details[keys]['transactions']
-		string = string + str(len(transaction_list)) + "\n"
+		string = string + str(len(transaction_list)) + "\n" # total number of transactions
 		for trans in transaction_list:
 			string = string + trans + "\n"
 		string = string + "#EndResult\n"

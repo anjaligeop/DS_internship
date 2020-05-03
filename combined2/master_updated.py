@@ -24,10 +24,10 @@ def main(argvs):
     try:
         jsonParams = argvs[0:]
         params = json.loads(jsonParams)
-        bnm = params['bankName'] #input("enter bankname : ")
-        uname = params['loginId'] #input("enter username : ")
-        pwd = params['password'] #input("enter password : ")
-        form = 'xml' #input("enter format (json, csv, xml) : ")
+        bnm = params['bankName'] 
+        uname = params['loginId'] 
+        pwd = params['password'] 
+        form = params['format']  #xml,json,csv
         account_detail={}
 
         driver, lin, nav, tr, lout = init_objects(bnm) # Getting Login, Navigator, Transaction and Logout objects
@@ -57,4 +57,10 @@ def main(argvs):
         time.sleep(2)
         sys.exit()
 
-if __name__ == "__main__": main('{"bankName":"canara", "loginId":"", "password":""}')
+if __name__ == "__main__": main('{"bankName":"canara", "loginId":"71204880", "password":"Mybd060195","format":"xml"}')
+
+
+
+
+
+
