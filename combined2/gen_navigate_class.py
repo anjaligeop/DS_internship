@@ -2,6 +2,7 @@ from selenium import webdriver
 import re
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.action_chains import ActionChains
 import time
 import driverfile as dfr    #configuration file
 import config as cfg        #configuration file
@@ -16,7 +17,11 @@ def download_html(name,driver):
 
 class Driver_ini():
     def init_driver():
+        options=Options()
+        options.add_argument("--headless")
+        options.add_argument("--no-sandbox")        
         driver = eval(cfg.webdriver_path["chrome"])
+        driver.set_window_size(1920,1080)        
         return driver
 
 
@@ -52,6 +57,7 @@ class Login(Driver_ini): #extending Driver_ini class
             driver.switch_to.window(child)
             time.sleep(2)
 
+        
         return driver.page_source
 
 
@@ -134,14 +140,15 @@ class Trans(Driver_ini):
             driver.execute_script(
                 'document.getElementById("TransactionHistoryFG.FROM_TXN_DATE").removeAttribute("readonly")')
             eval(dfr.findElement(cfg.transaction_id[bankname]["dateFrom"])).clear()
-            eval(dfr.findElement(cfg.transaction_id[bankname]["dateFrom"])).send_keys("01-04-2020")
+            eval(dfr.findElement(cfg.transaction_id[bankname]["dateFrom"])).send_keys("05-02-2020")
             driver.execute_script(
                 'document.getElementById("TransactionHistoryFG.TO_TXN_DATE").removeAttribute("readonly")')
             eval(dfr.findElement(cfg.transaction_id[bankname]["dateTo"])).clear()
-            eval(dfr.findElement(cfg.transaction_id[bankname]["dateTo"])).send_keys("01-05-2020")
+            eval(dfr.findElement(cfg.transaction_id[bankname]["dateTo"])).send_keys("05-05-2020")
             eval(dfr.findElement(cfg.transaction_id[bankname]["click6"])).click()
+            
             page_source1 = driver.page_source
-
+            
 
 
 

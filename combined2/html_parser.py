@@ -4,9 +4,10 @@ import re
 def fed_html(page_source1):
     soup = BeautifulSoup(page_source1,'html.parser')
     tr_d = soup.find_all(title="Transaction Date")
+    
     tr_particular = soup.find_all('td',attrs={'data-label':"Particulars : "})
     tr_amt = soup.find_all(title="Amount")
-    tr_type=soup.find_all(title="Amount Type")
+    tr_type=soup.find_all('td',attrs={'data-label':"Amount Type : "})
     tr_balance = soup.find_all(title="Balance Amount")
     trans={}
     x=[]
@@ -18,39 +19,51 @@ def fed_html(page_source1):
     tr_dt=[]
     amt=[]
     bal=[]
+    tr_ty=[]
     for a, b, c, d, e in zip(tr_d,tr_particular,tr_type,tr_amt,tr_balance):
         x.append(a.text)
         pat.append(b.text)
         z.append(c.text)
         p.append(d.text)
         q.append(e.text)
-
+    
     for val in p:
         amt.append(val.replace(',',''))
+    
     for val in q:
         bal.append(val.replace(',',''))
+
+    
     for dt in x:
         val=dt.split("-")
         tr_dt.append(val[2]+"-"+val[1]+"-"+val[0])
-
+    
     for val in pat:
         y.append(val[1:])
+  
+    for val in z:
+        tr_ty.append(val[1:])
+    
     trans_list = []
-    for a, b, c, d, e in zip(tr_dt, y, z, amt, bal): #store in a dictionary
-        trans_str = ''
-        if c.upper() == "DR.":
-            key="transactions"
+    trans_str = ''
+    
+    for a, b, c, d, e in zip(tr_dt, y, tr_ty, amt, bal): #store in a dictionary      
+        print(str(a)+str(b)+str(c)+str(d)+str(e))
+        
+        if c.upper() == "CR." or c.upper()=="DR.":  
+            key="transactions"          
             trans.setdefault(key,[])
+            
             if c.upper() == "DR.":
                 ltr=[a,'',b,'',d,e] #date,chequeNum,particulars,withdraw,deposit,balance
                 trans_str = str(a) + ',NA,' + str(b) + ',' + str(d) + ',' + str(e)
             else:
-                trans_str = str(a) + ',NA,' + str(b) + ',-' + str(d) + ',' + str(e)
+                trans_str = str(a) + ',NA,' + str(b) + ',' + str(d) + ',' + str(e)
                 ltr = [a,'', b,d,'',e]
 
             trans[key].append(ltr)
             trans_list.append(trans_str)
-
+    
     return trans_list
 
 #===============================================================================================================================
