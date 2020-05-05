@@ -50,7 +50,7 @@ class Login(Driver_ini): #extending Driver_ini class
             #eval(dfr.findElement(cfg.login_id[bankname]["captchaid"])).click()
             #a = input("captcha?")
             #eval(dfr.findElement(cfg.login_id[bankname]["captchaid"])).send_keys(a)
-        time.sleep(4)
+        time.sleep(2)
         eval(dfr.findElement(cfg.login_id[bankname]["clicklogin"])).click()
         if bankname.upper()=="CANARA":
             child = driver.window_handles[1]
@@ -79,7 +79,8 @@ class Logout(Driver_ini):
         elif bankname.upper()=="CANARA":
             time.sleep(5)
             driver.switch_to.frame(0)
-            eval(dfr.findElement(cfg.logout_id[bankname]["logoutbtn"])).click()
+            element=eval(dfr.findElement(cfg.logout_id[bankname]["logoutbtn"]))
+            ActionChains(driver).move_to_element(element).click().perform()
             driver.switch_to.default_content()
             driver.close()
 
@@ -171,9 +172,9 @@ class Trans(Driver_ini):
             # enter date
             time.sleep(3)
             eval(dfr.findElement(cfg.transaction_id[bankname]["dateFrom"])).click()
-            eval(dfr.findElement(cfg.transaction_id[bankname]["dateFrom"])).send_keys('01-01-2020')
+            eval(dfr.findElement(cfg.transaction_id[bankname]["dateFrom"])).send_keys('05-02-2020')
             eval(dfr.findElement(cfg.transaction_id[bankname]["dateTo"])).clear()
-            eval(dfr.findElement(cfg.transaction_id[bankname]["dateTo"])).send_keys("30-03-2020")
+            eval(dfr.findElement(cfg.transaction_id[bankname]["dateTo"])).send_keys("05-05-2020")
             eval(dfr.findElement(cfg.transaction_id[bankname]["click1"])).click()
             time.sleep(2)
             page_source1 = driver.page_source
@@ -198,10 +199,10 @@ class Trans(Driver_ini):
             Select(eval(dfr.findElement(cfg.transaction_id[bankname]["click3"]))).select_by_visible_text("Date Range")
             driver.execute_script('document.getElementsByName("textfield4")[0].removeAttribute("readonly")')
             eval(dfr.findElement(cfg.transaction_id[bankname]["dateFrom"])).clear()
-            eval(dfr.findElement(cfg.transaction_id[bankname]["dateFrom"])).send_keys("01/01/2020")
+            eval(dfr.findElement(cfg.transaction_id[bankname]["dateFrom"])).send_keys("05/02/2020")
             driver.execute_script('document.getElementsByName("textfield5")[0].removeAttribute("readonly")')
             eval(dfr.findElement(cfg.transaction_id[bankname]["dateTo"])).clear()
-            eval(dfr.findElement(cfg.transaction_id[bankname]["dateTo"])).send_keys("30/03/2020")
+            eval(dfr.findElement(cfg.transaction_id[bankname]["dateTo"])).send_keys("05/05/2020")
             eval(dfr.findElement(cfg.transaction_id[bankname]["click4"])).click()
             time.sleep(3)
             page_source1 = driver.page_source

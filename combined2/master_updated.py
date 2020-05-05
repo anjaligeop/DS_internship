@@ -55,8 +55,6 @@ def main(argvs):
 
             page_source1=tr.transaction_history(bnm,account_detail[key]['accountSummary']['accountNumber'],driver)     #transaction
 
-            file_nm = open('/home/anjaligeorgep/Desktop/plz.html', 'w')
-            file_nm.write(page_source1)
 
             account_detail[key]['transactions'] = htmpr.parse_html(bnm, page_source1)
             print("completed\n")
@@ -75,7 +73,7 @@ def main(argvs):
         time.sleep(2)
         sys.exit()
 
-if __name__ == "__main__": main('{"bankName":"federal", "loginId":"P14096176", "password":"464Zh@255!","format":"csv"}')
+if __name__ == "__main__": main('{"bankName":"canara", "loginId":"71204880", "password":"Mybd060195","format":"json"}')
 
 
 

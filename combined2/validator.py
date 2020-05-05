@@ -5,7 +5,7 @@ from selenium.webdriver.chrome.options import Options
 import time
 import config as cfg
 import driverfile as dfr
-
+import sys
 def valid_page(bankname,page):
     
     page_titles=["FedNet :Dashboard","Citibank Online","Canara Bank Internet Banking"]
@@ -31,7 +31,14 @@ def valid_page(bankname,page):
             else:
                 pass
     except Exception as e:  
-        print("Did not reach home-page\n\n")      
+        path = os.getcwd()
+        error="ERROR\n Did not reach homepage"
+        filename = path + '/err'
+        with open(filename, 'w') as f1:
+            f1.write(error)
+        
+
+     
         print("Exception occcurred - "+str(e))
         
 

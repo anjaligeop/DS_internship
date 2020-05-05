@@ -1,5 +1,5 @@
 
-webdriver_path={"chrome":'webdriver.Chrome(executable_path="/usr/bin/chromedriver")'}
+webdriver_path={"chrome":'webdriver.Chrome(chrome_options=options,executable_path="/usr/bin/chromedriver")'}
 
 bank_url={"federal":"https://www.fednetbank.com/corp/AuthenticationController?__START_TRAN_FLAG__=Y&FORMSGROUP_ID__=AuthenticationFG&__EVENT_ID__=LOAD&FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=1&BANK_ID=049&LANGUAGE_ID=001","canara":"https://netbanking.canarabank.in/entry/ENULogin.jsp?","citi":"https://www.online.citibank.co.in/products-services/online-services/internet-banking.htm"}
 
