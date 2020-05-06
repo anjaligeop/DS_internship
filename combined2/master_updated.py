@@ -53,10 +53,16 @@ def main(argvs):
             print("fetching transactions\n")
             account_detail[key]['transactions'] = []
 
-            page_source1=tr.transaction_history(bnm,account_detail[key]['accountSummary']['accountNumber'],driver)     #transaction
+            file_type=tr.transaction_history(bnm,account_detail[key]['accountSummary']['accountNumber'],driver)     #transaction
+            if file_type == 'html':
+                source = driver.page_source
+            else:
+                name = file_type.split(',')
+                source = name[0]
+                file_type = name[1]
 
 
-            account_detail[key]['transactions'] = htmpr.parse_html(bnm, page_source1)
+            account_detail[key]['transactions'] = htmpr.parse_html(bnm, source)
             print("completed\n")
         
         

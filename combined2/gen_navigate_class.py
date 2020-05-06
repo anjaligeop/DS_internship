@@ -128,6 +128,14 @@ class Navigate(Driver_ini):
 class Trans(Driver_ini):
     def __init__(self,bankname):
         self.bankname=bankname
+
+    ef enable_download_in_headless_chrome(self, driver, download_dir):
+        #add missing support for chrome "send_command"  to selenium webdriver
+        driver.command_executor._commands["send_command"] = ("POST", '/session/$sessionId/chromium/send_command')
+
+        params = {'cmd': 'Page.setDownloadBehavior', 'params': {'behavior': 'allow', 'downloadPath': download_dir}}
+        command_result = driver.execute("send_command", params)
+
     def transaction_history(self,bankname,account,driver):
         #driver = (Driver_ini.driver)
 
@@ -147,6 +155,24 @@ class Trans(Driver_ini):
             eval(dfr.findElement(cfg.transaction_id[bankname]["dateTo"])).clear()
             eval(dfr.findElement(cfg.transaction_id[bankname]["dateTo"])).send_keys("05-05-2020")
             eval(dfr.findElement(cfg.transaction_id[bankname]["click6"])).click()
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(2)
+            eval(dfr.findElement(cfg.transaction_id[bankname]["dropdown"])).click()
+            eval(dfr.findElement(cfg.transaction_id[bankname]["csvselect"])).click()
+            self.enable_download_in_headless_chrome(driver, os.getcwd())
+            eval(dfr.findElement(cfg.transaction_id[bankname]["download"])).click()
+            files = os.listdir(os.curdir)
+            filename = ''
+            for f in files:
+                print (f)
+                if re.search(r'^OpTransactionHistory.*?\.csv$', str(f), re.I|re.S):
+                    filename = f
+                    break
+                else:
+                    continue
+            os.rename(filename, 'csvtest.csv')
+            page_source1 = driver.page_source
+            return 'csvtest.csv,csv'
             
             page_source1 = driver.page_source
             

@@ -1,73 +1,87 @@
 from bs4 import BeautifulSoup
 import re
+import csv
 
-def fed_html(page_source1):
-    soup = BeautifulSoup(page_source1,'html.parser')
-    tr_d = soup.find_all(title="Transaction Date")
-    
-    tr_particular = soup.find_all('td',attrs={'data-label':"Particulars : "})
-    tr_amt = soup.find_all(title="Amount")
-    tr_type=soup.find_all('td',attrs={'data-label':"Amount Type : "})
-    tr_balance = soup.find_all(title="Balance Amount")
-    trans={}
-    x=[]
-    y=[]
-    z=[]
-    p=[]
-    q=[]
-    pat=[]
-    tr_dt=[]
-    amt=[]
-    bal=[]
-    tr_ty=[]
-    for a, b, c, d, e in zip(tr_d,tr_particular,tr_type,tr_amt,tr_balance):
-        x.append(a.text)
-        pat.append(b.text)
-        z.append(c.text)
-        p.append(d.text)
-        q.append(e.text)
-    
-    for val in p:
-        amt.append(val.replace(',',''))
-    
-    for val in q:
-        bal.append(val.replace(',',''))
+def fed_html(file_type, page_source1):
+    if file_type == 'html':
+        soup = BeautifulSoup(page_source1,'html.parser')
+        tr_d = soup.find_all(title="Transaction Date")
+        tr_particular = soup.find_all('td',attrs={'data-label':"Particulars : "})
+        tr_amt = soup.find_all(title="Amount")
+        tr_type=soup.find_all(title="Amount Type")
+        tr_balance = soup.find_all(title="Balance Amount")
+        trans={}
+        x=[]
+        y=[]
+        z=[]
+        p=[]
+        q=[]
+        pat=[]
+        tr_dt=[]
+        amt=[]
+        bal=[]
+        for a, b, c, d, e in zip(tr_d,tr_particular,tr_type,tr_amt,tr_balance):
+            x.append(a.text)
+            pat.append(b.text)
+            z.append(c.text)
+            p.append(d.text)
+            q.append(e.text)
 
-    
-    for dt in x:
-        val=dt.split("-")
-        tr_dt.append(val[2]+"-"+val[1]+"-"+val[0])
-    
-    for val in pat:
-        y.append(val[1:])
-  
-    for val in z:
-        tr_ty.append(val[1:])
-    
-    trans_list = []
-    trans_str = ''
-    
-    for a, b, c, d, e in zip(tr_dt, y, tr_ty, amt, bal): #store in a dictionary      
-        print(str(a)+str(b)+str(c)+str(d)+str(e))
-        
-        if c.upper() == "CR." or c.upper()=="DR.":  
-            key="transactions"          
-            trans.setdefault(key,[])
-            
+        for val in p:
+            amt.append(val.replace(',',''))
+        for val in q:
+            bal.append(val.replace(',',''))
+        for dt in x:
+            val=dt.split("-")
+            tr_dt.append(val[2]+"-"+val[1]+"-"+val[0])
+
+        for val in pat:
+            y.append(val[1:])
+        trans_list = []
+        for a, b, c, d, e in zip(tr_dt, y, z, amt, bal): #store in a dictionary
+            trans_str = ''
             if c.upper() == "DR.":
-                ltr=[a,'',b,'',d,e] #date,chequeNum,particulars,withdraw,deposit,balance
-                trans_str = str(a) + ',NA,' + str(b) + ',' + str(d) + ',' + str(e)
-            else:
-                trans_str = str(a) + ',NA,' + str(b) + ',' + str(d) + ',' + str(e)
-                ltr = [a,'', b,d,'',e]
+                key="transactions"
+                trans.setdefault(key,[])
+                if c.upper() == "DR.":
+                    ltr=[a,'',b,'',d,e] #date,chequeNum,particulars,withdraw,deposit,balance
+                    trans_str = str(a) + ',NA,' + str(b) + ',' + str(d) + ',' + str(e)
+                else:
+                    trans_str = str(a) + ',NA,' + str(b) + ',-' + str(d) + ',' + str(e)
+                    ltr = [a,'', b,d,'',e]
 
-            trans[key].append(ltr)
-            trans_list.append(trans_str)
-    
-    return trans_list
+                trans[key].append(ltr)
+                trans_list.append(trans_str)
+
+        return trans_list
+    if file_type == 'csv':
+        rows = []
+        trans_list = []
+        with open(page_source1, 'r', encoding='utf-8-sig') as csvfile:
+            csvreader = csv.reader(csvfile)
+            for row in csvreader:
+                rows.append(row)
+        for row in rows:
+            if row == '' :
+                continue
+            if not re.search(r'^\d+$', str(row[0]), re.I|re.S) or re.search(r'^\s*$', str(row[1]), re.I|re.S):
+                continue
+            dates = str(row[1]).split('-')
+            date = dates[2] + '-' + dates[1] + '-' + dates[0]
+            desc = str(row[2]).replace('\\', ' ')
+            amt = ''
+            if re.search(r'^\s*$', str(row[7]), re.I|re.S):
+                amt = str(row[8])
+            else:
+                amt = '-' + str(row[7])
+            amt = amt.replace(',', '')
+            bal = str(row[9]).replace(',','')
+            trans_list.append(date+ ',NA,' +desc+ ',' +amt+ ',' +bal)
+        csvfile.close()
+        return trans_list
 
 #===============================================================================================================================
-def citi_html(page_source1):
+def citi_html(file_type, page_source1):
     soup = BeautifulSoup(page_source1,'html.parser')
     rows1 = soup.findAll('table',attrs={'bgcolor':'#A7CBE3','cellpadding':'3'})
     trans={}
@@ -133,7 +147,7 @@ def citi_html(page_source1):
 
     return trans_list
 #===============================================================================================================================
-def canara_html(page_source1):
+def canara_html(file_type, page_source1):
     soup = BeautifulSoup(page_source1,'html.parser')
     trans={}
     tr_date = []
@@ -178,10 +192,10 @@ def canara_html(page_source1):
     return trans_list
 #===============================================================================================================================
 
-def parse_html(bank_name, page_source):
+def parse_html(bank_name, file_type, page_source):
     if bank_name.upper() == "FEDERAL":
-        return fed_html(page_source)
+        return fed_html(file_type, page_source)
     elif bank_name.upper() == "CITI":
-        return citi_html(page_source)
+        return citi_html(file_type, page_source)
     elif bank_name.upper() == "CANARA":
-        return canara_html(page_source)
+        return canara_html(file_type, page_source)

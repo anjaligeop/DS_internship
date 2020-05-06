@@ -29,6 +29,9 @@ transaction_id={"federal":{"click0":"//a[@id='Accounts']/span,xpath",
                            "click6":"//*[@id='Button33089187'],xpath",
                            "dateFrom":"TransactionHistoryFG.FROM_TXN_DATE,id",
                            "dateTo":"TransactionHistoryFG.TO_TXN_DATE,id",
+                           "dropdown":"//*[@id='s2id_TransactionHistoryFG.OUTFORMAT'],xpath",
+                           "csvselect":"//*[@id='select2-drop']/ul/li[2],xpath",
+                           "download":"//*[@id='okButton'],xpath"
 
                            },
                 "canara":{"clickA":"grpspan_A_A07,id",
