@@ -174,8 +174,6 @@ class Trans(Driver_ini):
             page_source1 = driver.page_source
             return 'csvtest.csv,csv'
             
-            page_source1 = driver.page_source
-            
 
 
 
@@ -205,6 +203,7 @@ class Trans(Driver_ini):
             time.sleep(2)
             page_source1 = driver.page_source
             driver.switch_to.default_content()
+            return  page_source1
 
 
 
@@ -234,8 +233,7 @@ class Trans(Driver_ini):
             page_source1 = driver.page_source
             driver.switch_to.default_content()
             time.sleep(3)
-
-        return  page_source1
+            return  page_source1
 
 
 

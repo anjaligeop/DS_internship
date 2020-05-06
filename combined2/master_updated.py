@@ -54,12 +54,13 @@ def main(argvs):
             account_detail[key]['transactions'] = []
 
             file_type=tr.transaction_history(bnm,account_detail[key]['accountSummary']['accountNumber'],driver)     #transaction
-            if file_type == 'html':
-                source = driver.page_source
-            else:
+            if file_type == 'csv':
                 name = file_type.split(',')
                 source = name[0]
                 file_type = name[1]
+            else:
+                source = file_type
+                file_type = 'html'
 
 
             account_detail[key]['transactions'] = htmpr.parse_html(bnm, source)
